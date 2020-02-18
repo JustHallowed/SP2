@@ -23,6 +23,8 @@ class SceneText : public Scene
 		GEO_DICE,
 		GEO_LIGHTSPHERE,
 		GEO_TEXT,
+		GEO_UFO,
+		GEO_ROBOT,
 		NUM_GEOMETRY,
 	};
 
