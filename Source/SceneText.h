@@ -83,7 +83,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void CalculateFrameRate();
-	void renderObject(Object obj);
+	void renderObject(Object* obj);
 
 public:
 	SceneText();

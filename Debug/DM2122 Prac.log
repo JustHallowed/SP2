@@ -1,5 +1,2 @@
-﻿  SceneText.cpp
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\SceneText.cpp(181,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\SceneText.cpp(190,36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\SceneText.cpp(459,22): warning C4018: '<': signed/unsigned mismatch
+﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe

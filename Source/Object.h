@@ -21,6 +21,7 @@ class Object
 	bool render; //where object is rendered
 public:
 	Object();
+	~Object();
 	//setters
 	void setPos(float x, float y, float z);
 	void setTranslation(float x, float y, float z);

@@ -232,7 +232,7 @@ void SceneText::Render()
 		if (object[i].getParent() == nullptr&&object[i].getMesh()!=nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(object[i]);
+			renderObject(&object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -449,39 +449,39 @@ void SceneText::CalculateFrameRate()
 		framesPerSecond = 0;
 	}
 }
-void SceneText::renderObject(Object obj)
+void SceneText::renderObject(Object* obj)
 {
-	if (obj.isRender())
+	if (obj->isRender())
 	{
-		modelStack.Translate(obj.getTranslation().x, obj.getTranslation().y, obj.getTranslation().z);
-		if (obj.getChild().size() != 0)
+		modelStack.Translate(obj->getTranslation().x, obj->getTranslation().y, obj->getTranslation().z);
+		if (obj->getChild().size() != 0)
 		{
-			for (int i = 0; i < obj.getChild().size(); ++i)
+			for (int i = 0; i < obj->getChild().size(); ++i)
 			{
 				modelStack.PushMatrix();
-				if (obj.getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
+				if (obj->getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
 				{
-					if (obj.getAngle().x != 0)
-						modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
-					if (obj.getAngle().y != 0)
-						modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
-					if (obj.getAngle().z != 0)
-						modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+					if (obj->getAngle().x != 0)
+						modelStack.Rotate(obj->getAngle().x, 1, 0, 0);
+					if (obj->getAngle().y != 0)
+						modelStack.Rotate(obj->getAngle().y, 0, 1, 0);
+					if (obj->getAngle().z != 0)
+						modelStack.Rotate(obj->getAngle().z, 0, 0, 1);
 				}
-				if (obj.getChild()[i]->followParentScale())
-					modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
-				renderObject(*obj.getChild()[i]);
+				if (obj->getChild()[i]->followParentScale())
+					modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
+				renderObject(obj->getChild()[i]);
 				modelStack.PopMatrix();
 			}
 		}
-		if (obj.getAngle().x != 0)
-			modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
-		if (obj.getAngle().y != 0)
-			modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
-		if (obj.getAngle().z != 0)
-			modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+		if (obj->getAngle().x != 0)
+			modelStack.Rotate(obj->getAngle().x, 1, 0, 0);
+		if (obj->getAngle().y != 0)
+			modelStack.Rotate(obj->getAngle().y, 0, 1, 0);
+		if (obj->getAngle().z != 0)
+			modelStack.Rotate(obj->getAngle().z, 0, 0, 1);
 
-		modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
-		RenderMesh(obj.getMesh(), true);
+		modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
+		RenderMesh(obj->getMesh(), true);
 	}
 }
