@@ -130,6 +130,13 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y == 0)
+			continue;
+		Camera::getCam().updateCollision(object[i]);
+	}
+
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);

@@ -5,15 +5,22 @@
 #include "Light.h"
 #include "ShaderManager.hpp"
 #include "ParticleSystem.h"
+#include "Object.h"
 
 class MotorScene final: public Scene{
 	enum class MESH{
 		BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, NUM_GEOMETRY
 	};
+	enum OBJECT_INSTANCES
+	{
+		UFO,
+		NUM_INSTANCES,
+	};
 	bool showDebugInfo, showLightSphere;
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
 	double bulletBounceTime, debugBounceTime, lightBounceTime;
 	double CalcFrameRate() const;
+	Object object[NUM_INSTANCES];
 	Light light[1]{Light(0.f, 192.4f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
