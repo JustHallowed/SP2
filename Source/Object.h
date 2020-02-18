@@ -55,7 +55,7 @@ public:
 	Vector3 getDimension();
 	void setInteractable(bool canInteract);
 	void unbindChild(Object* child);//removes child from child vector
-
+	void renderObject();
 	//binds two objects
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);
 	//unbinds child from parent

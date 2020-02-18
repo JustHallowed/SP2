@@ -6,6 +6,7 @@
 #include "Camera2.h"
 #include "Mesh.h"
 #include "Light.h"
+#include "Object.h"
 
 class SceneText : public Scene
 {
@@ -56,6 +57,12 @@ class SceneText : public Scene
 		U_TOTAL,
 	};
 
+	enum OBJECT_INSTANCES
+	{
+		//Try not to add more instances than necessary, though failsafe system is in place
+		EXAMPLE,
+		NUM_INSTANCES,
+	};
 private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
@@ -68,6 +75,7 @@ private:
 	Light light[1];
 
 	Camera2 camera;
+	Object object[NUM_INSTANCES];
 	
 	void RenderMesh(Mesh* mesh, bool enableLight);
 	void RenderSkybox();
@@ -75,6 +83,7 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void CalculateFrameRate();
+	void renderObject(Object obj);
 
 public:
 	SceneText();

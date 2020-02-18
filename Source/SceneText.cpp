@@ -131,6 +131,11 @@ void SceneText::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
 
+	object[EXAMPLE].setMesh(meshList[GEO_DICE]);
+	object[EXAMPLE].setTranslation(0, 3, 0);		//default (0,0,0) if not set
+	object[EXAMPLE].setScale(2, 2, 2);				//default (1,1,1) if not set
+	object[EXAMPLE].setRotation(45, 'x');			//(degrees, axis)
+	object[EXAMPLE].setDimension(2, 2, 2);			//no collision if not set
 }
 
 void SceneText::Update(double dt)
@@ -169,6 +174,25 @@ void SceneText::Update(double dt)
 	}
 	camera.Update(dt);
 	CalculateFrameRate();
+	
+	//Animation example
+	if (!object[EXAMPLE].isClockwise())//clockwise is a boolean that is default false
+	{
+		object[EXAMPLE].addRotation(80 * dt, 'y');	//increase magnitude of a rotation on one axis
+		if (object[EXAMPLE].getAngle().y > 90)
+		{
+			object[EXAMPLE].setIsClockwise(true);
+		}
+	}
+	else
+		if (object[EXAMPLE].isClockwise())
+		{
+			object[EXAMPLE].addRotation(-80 * dt, 'y');
+			if (object[EXAMPLE].getAngle().y < -90)
+			{
+				object[EXAMPLE].setIsClockwise(false);
+			}
+		}
 }
 
 void SceneText::Render()
@@ -201,9 +225,18 @@ void SceneText::Render()
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
 	}
-
 	RenderSkybox();
 
+	for (int i = 0; i < NUM_INSTANCES; ++i)//goes though number of instances declared and render them all
+	{
+		if (object[i].getParent() == nullptr&&object[i].getMesh()!=nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+	
 	modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	RenderMesh(meshList[GEO_LIGHTSPHERE], false);
@@ -414,5 +447,41 @@ void SceneText::CalculateFrameRate()
 		lastTime = currentTime;
 		fps = (int)framesPerSecond;
 		framesPerSecond = 0;
+	}
+}
+void SceneText::renderObject(Object obj)
+{
+	if (obj.isRender())
+	{
+		modelStack.Translate(obj.getTranslation().x, obj.getTranslation().y, obj.getTranslation().z);
+		if (obj.getChild().size() != 0)
+		{
+			for (int i = 0; i < obj.getChild().size(); ++i)
+			{
+				modelStack.PushMatrix();
+				if (obj.getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
+				{
+					if (obj.getAngle().x != 0)
+						modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
+					if (obj.getAngle().y != 0)
+						modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
+					if (obj.getAngle().z != 0)
+						modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+				}
+				if (obj.getChild()[i]->followParentScale())
+					modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
+				renderObject(*obj.getChild()[i]);
+				modelStack.PopMatrix();
+			}
+		}
+		if (obj.getAngle().x != 0)
+			modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
+		if (obj.getAngle().y != 0)
+			modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
+		if (obj.getAngle().z != 0)
+			modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+
+		modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
+		RenderMesh(obj.getMesh(), true);
 	}
 }
