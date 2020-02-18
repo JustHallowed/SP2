@@ -17,7 +17,7 @@ class Object
 	bool clockwise;//controls rotation
 	bool parentRotation;//whether object rotates with parent
 	bool parentScale; //whether object scale with parent
-	bool interactable; //whether object can be interacted with "E"
+	bool interactable; //whether object can be interacted
 	bool render; //where object is rendered
 public:
 	Object();
@@ -35,7 +35,7 @@ public:
 	void setParent(Object* parent);
 	void setChild(Object* child);
 	void addRotation(float angle, char axis);//increments angle
-	void setIsClockwise(bool boolean);
+	void setIsClockwise(bool boolean);//set rotation direction
 	void setRender(bool render);
 
 	//getters
@@ -55,7 +55,6 @@ public:
 	Vector3 getDimension();
 	void setInteractable(bool canInteract);
 	void unbindChild(Object* child);//removes child from child vector
-	void renderObject();
 	//binds two objects
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);
 	//unbinds child from parent
