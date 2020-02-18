@@ -2,7 +2,7 @@
 #include "Vertex.h"
 
 struct Light final{
-	Light(float x = 0.f, float y = 8.f, float z = 0.f, Vector3 spotDir = Vector3(0.f, 1.f, 0.f)){
+	Light(float x = 0.f, float y = 49.f, float z = 0.f, Vector3 spotDir = Vector3(0.f, 1.f, 0.f)){
 		type = LIGHT_TYPE::SPOT;
 		position.Set(x, y, z);
 		color.Set(1.f, 1.f, 1.f);

@@ -39,20 +39,20 @@ void MotorScene::InitLight() const{
 }
 
 void MotorScene::InitMeshes(){
-	meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
+	//meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
+	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::RIGHT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::RIGHT)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
+	meshList[unsigned int(MESH::RIGHT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::FRONT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::FRONT)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
+	meshList[unsigned int(MESH::FRONT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::BACK)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::BACK)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
+	meshList[unsigned int(MESH::BACK)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::TOP)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::TOP)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
+	meshList[unsigned int(MESH::TOP)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::BOTTOM)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::BOTTOM)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
-	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 20, 20, 1.f);
+	meshList[unsigned int(MESH::BOTTOM)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 }
@@ -145,7 +145,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 
 	delete shMan;
 	shMan = new ShaderManager("Resources/Shaders/Particle.vs", "Resources/Shaders/Particle.fs");
-	for(Particle* p: bulletGenerator.particlePool){
+	/*for(Particle* p: bulletGenerator.particlePool){
 		if(p->life > 0.0f){
 			delete meshList[unsigned int(MESH::BULLET)];
 			meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(p->color, .4f, .4f, .4f);
@@ -154,7 +154,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 				RenderParticle(meshList[unsigned int(MESH::BULLET)], p->life);
 			modelStack.PopMatrix();
 		}
-	}
+	}*/
 
 	delete shMan;
 	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
