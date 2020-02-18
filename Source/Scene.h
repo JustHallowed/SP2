@@ -1,16 +1,8 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
+#include "Camera.h"
 
-class Scene
-{
+class Scene{
 public:
-	Scene() {}
-	virtual ~Scene() {}
-
-	virtual void Init() = 0;
-	virtual void Update(double dt) = 0;
-	virtual void Render() = 0;
-	virtual void Exit() = 0;
+	virtual	~Scene(){}
+	virtual void Init() = 0, Update(double, float) = 0, Render(double, int, int) = 0, Exit(Scene*) = 0;
 };
-
-#endif

@@ -1,28 +1,21 @@
-#ifndef MESH_BUILDER_H
-#define MESH_BUILDER_H
-
+#pragma once
+#include <vector>
 #include "Mesh.h"
 
-/******************************************************************************/
-/*!
-		Class MeshBuilder:
-\brief	Provides methods to generate mesh of different shapes
-*/
-/******************************************************************************/
-class MeshBuilder
-{
+class MeshBuilder final{ //Class MeshBuilder: Provides methods to generate meshes of diff shapes
 public:
-	static Mesh* GenerateAxes(const std::string &meshName, float lengthX, float lengthY, float lengthZ);
-	static Mesh* GenerateQuad(const std::string &meshName, Color color, float lengthX, float lengthY);
-	static Mesh* GenerateCuboid(const std::string& meshName, Color color, float lengthX, float lengthY, float lengthZ);
-	static Mesh* GenerateRing(const std::string& meshName, Color color, unsigned numSlice, float outerR, float innerR);
-	static Mesh* GenerateSphere(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius);
-	static Mesh* GenerateCone(const std::string& meshName, Color color, unsigned numSlice, float radius, float height);
-	static Mesh* GenerateCylinder(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius, float height);
-	static Mesh* GenerateTorus(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float outerR, float innerR);
-	static Mesh* GenerateOBJ(const std::string& meshName, const std::string& file_path);
-	static Mesh* GenerateText(const std::string& meshName, unsigned numRow, unsigned numCol);
-
+	static Mesh* CreateMesh(Mesh::DRAW_MODE, std::vector<Vertex>, std::vector<GLuint>);
+	static Mesh* GenerateAxes(float, float, float);
+	static Mesh* GenerateQuad(Color, float, float);
+	static Mesh* GenerateCuboid(Color, float, float, float);
+	static Mesh* GenerateSphere(Color, unsigned, unsigned, float);
+	static Mesh* GenerateHemisphere(Color, unsigned, unsigned, float);
+	static Mesh* GenerateRing(Color, unsigned, float, float);
+	static Mesh* GenerateCircle(Color, unsigned, float);
+	static Mesh* GenerateCylinder(Color, unsigned, float, float);
+	static Mesh* GenerateCone(Color, unsigned, float, float);
+	static Mesh* GenerateConicalFrustum(Color, unsigned, float, float, float);
+	static Mesh* GenerateTorus(Color, unsigned, unsigned, float, float);
+	static Mesh* GenerateOBJ(const std::string&);
+	static Mesh* GenerateText(unsigned, unsigned);
 };
-
-#endif

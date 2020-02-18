@@ -1,13 +1,10 @@
-
-
 #include "Application.h"
-#include <iostream>
+#include <crtdbg.h>
+#include <time.h>
 
-int main( void )
-{
-	Application app;
-	app.Init();
-	app.Run();
-	_CrtDumpMemoryLeaks();
-	app.Exit();
+int main(){
+	srand(unsigned int(time(0)));
+	Application::getApp()->IRun();
+	delete Application::getApp();
+	_CrtDumpMemoryLeaks(); //To check for memory leaks
 }

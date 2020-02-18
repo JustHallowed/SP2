@@ -1,224 +1,127 @@
-#include "MeshBuilder.h"
 #include <GL\glew.h>
-#include <vector>
-#include <MyMath.h>
-#include "LoadOBJ.h"
+#include "LoadOBJ.hpp"
+#include "MeshBuilder.h"
 
-/******************************************************************************/
-/*!
-\brief
-Generate the vertices of a reference Axes; Use red for x-axis, green for y-axis, blue for z-axis
-Then generate the VBO/IBO and store them in Mesh object
-
-\param meshName - name of mesh
-\param lengthX - x-axis should start at -lengthX / 2 and end at lengthX / 2
-\param lengthY - y-axis should start at -lengthY / 2 and end at lengthY / 2
-\param lengthZ - z-axis should start at -lengthZ / 2 and end at lengthZ / 2
-
-\return Pointer to mesh storing VBO/IBO of reference axes
-*/
-/******************************************************************************/
-Mesh* MeshBuilder::GenerateAxes(const std::string &meshName, float lengthX, float lengthY, float lengthZ)
-{
-	Vertex v;
-	std::vector<Vertex> vertex_buffer_data;
-	// 3 lines using 6 vertices
-	vertex_buffer_data.reserve(6);
-
-	v.pos.Set(0 - lengthX * 0.5, 0, 0);
-	v.color.Set(1, 0, 0);
-	vertex_buffer_data.push_back(v);
-	v.pos.Set(lengthX * 0.5, 0, 0);
-	v.color.Set(1, 0, 0);
-	vertex_buffer_data.push_back(v);
-	v.pos.Set(0, 0 - lengthX * 0.5, 0);
-	v.color.Set(0, 1, 0);
-	vertex_buffer_data.push_back(v);
-	v.pos.Set(0, lengthX * 0.5, 0);
-	v.color.Set(0, 1, 0);
-	vertex_buffer_data.push_back(v);
-	v.pos.Set(0, 0, 0 - lengthX * 0.5);
-	v.color.Set(0, 0, 1);
-	vertex_buffer_data.push_back(v);
-	v.pos.Set(0, 0, lengthX * 0.5);
-	v.color.Set(0, 0, 1);
-	vertex_buffer_data.push_back(v);
-
-	std::vector<GLuint> index_buffer_data;
-	index_buffer_data.reserve(6);
-	index_buffer_data.push_back(0);
-	index_buffer_data.push_back(1);
-	index_buffer_data.push_back(2);
-	index_buffer_data.push_back(3);
-	index_buffer_data.push_back(4);
-	index_buffer_data.push_back(5);
-
-	Mesh* mesh = new Mesh(meshName);
+Mesh *MeshBuilder::CreateMesh(Mesh::DRAW_MODE drawMode, std::vector<Vertex> vertex_buffer_data, std::vector<GLuint> index_buffer_data){ //For generating mesh
+	Mesh *mesh = new Mesh;
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0],
-		GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0],
-		GL_STATIC_DRAW);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_LINES;
-
-	return mesh;
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+	mesh->mode = drawMode;
+	return mesh; //Stores VBO and IBO
 }
 
-/******************************************************************************/
-/*!
-\brief
-Generate the vertices of a quad; Use random color for each vertex
-Then generate the VBO/IBO and store them in Mesh object
-
-\param meshName - name of mesh
-\param lengthX - width of quad
-\param lengthY - height of quad
-
-\return Pointer to mesh storing VBO/IBO of quad
-*/
-/******************************************************************************/
-Mesh* MeshBuilder::GenerateQuad(const std::string& meshName, Color color, float lengthX, float lengthY)
-{
+Mesh *MeshBuilder::GenerateAxes(float lengthX, float lengthY, float lengthZ){ //Axes mesh generator, use red for x-axis, green for... then gen VBO/IBO and store them in Mesh obj, x-axis should start at -lengthX / 2 and end at lengthX / 2, y-axis...
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
-	// a quad has 4 vertices
-	vertex_buffer_data.reserve(4);
-	v.color = color;
+	std::vector<GLuint> index_buffer_data;
+
+	v.color.Set(1, 0, 0);
+	v.pos.Set(-lengthX * 0.5f, 0, 0);
+	vertex_buffer_data.push_back(v);
+	v.pos.Set(lengthX * 0.5f, 0, 0);
+	vertex_buffer_data.push_back(v);
+
+	v.color.Set(0, 1, 0);
+	v.pos.Set(0, -lengthY * 0.5f, 0);
+	vertex_buffer_data.push_back(v);
+	v.pos.Set(0, lengthY * 0.5f, 0);
+	vertex_buffer_data.push_back(v);
+
+	v.color.Set(0, 0, 1);
+	v.pos.Set(0, 0, -lengthZ * 0.5f);
+	vertex_buffer_data.push_back(v);
+	v.pos.Set(0, 0, lengthZ * 0.5f);
+	vertex_buffer_data.push_back(v);
+
+	for(int i = 0; i < 6; ++i){
+		index_buffer_data.push_back(i);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_LINES, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateQuad(Color c, float lengthX, float lengthY){ //Quad mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
 	v.normal.Set(0, 0, 1.0f);
 
-	float midvalueX = lengthX * 0.5;
-	float midvalueY = lengthY * 0.5;
-	v.pos.Set(-midvalueX, midvalueY, 0);
+	float midX = lengthX * 0.5f, midY = lengthY * 0.5f;
+	v.pos.Set(-midX, midY, 0);
 	v.texCoord.Set(0, 1.f);
 	vertex_buffer_data.push_back(v);
-
-	v.pos.Set(-midvalueX, -midvalueY, 0);
+	v.pos.Set(-midX, -midY, 0);
 	v.texCoord.Set(0.f, 0.f);
 	vertex_buffer_data.push_back(v);
-
-	v.pos.Set(midvalueX, midvalueY, 0);
+	v.pos.Set(midX, midY, 0);
 	v.texCoord.Set(1.f, 1.f);
 	vertex_buffer_data.push_back(v);
-
-	v.pos.Set(midvalueX, -midvalueY, 0);
+	v.pos.Set(midX, -midY, 0);
 	v.texCoord.Set(1.f, 0.f);
 	vertex_buffer_data.push_back(v);
 
-	std::vector<GLuint> index_buffer_data;
-	index_buffer_data.reserve(6);
+	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(0);
 	index_buffer_data.push_back(1);
 	index_buffer_data.push_back(2);
-	index_buffer_data.push_back(2);
 	index_buffer_data.push_back(1);
 	index_buffer_data.push_back(3);
-
-	Mesh* mesh = new Mesh(meshName);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], 
-		GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0],
-		GL_STATIC_DRAW);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLES;
-	return mesh;
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLES, vertex_buffer_data, index_buffer_data);
 }
 
-/******************************************************************************/
-/*!
-\brief
-Generate the vertices of a cuboid; Use random color for each vertex
-Then generate the VBO/IBO and store them in Mesh object
-
-\param meshName - name of mesh
-\param lengthX - width of cube
-\param lengthY - height of cube
-\param lengthZ - depth of cube
-
-\return Pointer to mesh storing VBO/IBO of cube
-*/
-/******************************************************************************/
-Mesh* MeshBuilder::GenerateCuboid(const std::string& meshName, Color color, float lengthX, float lengthY, float lengthZ)
-{
-	// An array of 3 vectors which represents 3 vertices
+Mesh *MeshBuilder::GenerateCuboid(Color c, float lengthX, float lengthY, float lengthZ){ //Cuboid mesh generator (uses 24 vertices)
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-
-	float midvalueX = lengthX * 0.5;
-	float midvalueY = lengthY * 0.5;
-	float midvalueZ = lengthZ * 0.5;
-	v.color = color;
+	v.color = c;
+	float midvalueX = lengthX * 0.5f, midvalueY = lengthY * 0.5f, midvalueZ = lengthZ * 0.5f, input = .5f;
 
 	//Top
 	v.normal = Vector3(0.f, 1.f, 0.f);
 	v.pos.Set(midvalueX, midvalueY, midvalueZ);
-	v.texCoord.Set(0, 0);
-
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //0
 	v.pos.Set(midvalueX, midvalueY, -midvalueZ);
-	v.texCoord.Set(1, 0);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //1
 	v.pos.Set(-midvalueX, midvalueY, -midvalueZ);
-	v.texCoord.Set(1, 1);
+	v.texCoord.Set(0, input);
 	vertex_buffer_data.push_back(v); //2
 	v.pos.Set(-midvalueX, midvalueY, midvalueZ);
-	v.texCoord.Set(0, 1);
+	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //3
 
-	index_buffer_data.push_back(0);
-	index_buffer_data.push_back(1);
-	index_buffer_data.push_back(2);
-	index_buffer_data.push_back(2);
-	index_buffer_data.push_back(3);
-	index_buffer_data.push_back(0);
-
-	//Rside
+	//Right
 	v.normal = Vector3(1.f, 0.f, 0.f);
 	v.pos.Set(midvalueX, -midvalueY, midvalueZ);
 	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //4
 	v.pos.Set(midvalueX, -midvalueY, -midvalueZ);
-	v.texCoord.Set(1, 0);
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //5
 	v.pos.Set(midvalueX, midvalueY, -midvalueZ);
-	v.texCoord.Set(1,1);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //6
 	v.pos.Set(midvalueX, midvalueY, midvalueZ);
-	v.texCoord.Set(0, 1);
+	v.texCoord.Set(0, input);
 	vertex_buffer_data.push_back(v); //7
-
-	index_buffer_data.push_back(4);
-	index_buffer_data.push_back(5);
-	index_buffer_data.push_back(6);
-	index_buffer_data.push_back(6);
-	index_buffer_data.push_back(7);
-	index_buffer_data.push_back(4);
 
 	//Front
 	v.normal = Vector3(0.f, 0.f, 1.f);
 	v.pos.Set(midvalueX, midvalueY, midvalueZ);
-	v.texCoord.Set(1, 1);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //8
 	v.pos.Set(-midvalueX, midvalueY, midvalueZ);
-	v.texCoord.Set(0, 1);
-	vertex_buffer_data.push_back(v); //8
+	v.texCoord.Set(0, input);
+	vertex_buffer_data.push_back(v); //9
 	v.pos.Set(-midvalueX, -midvalueY, midvalueZ);
 	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //10
 	v.pos.Set(midvalueX, -midvalueY, midvalueZ);
-	v.texCoord.Set(1, 0);
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //11
-
-	index_buffer_data.push_back(8);
-	index_buffer_data.push_back(9);
-	index_buffer_data.push_back(10);
-	index_buffer_data.push_back(10);
-	index_buffer_data.push_back(11);
-	index_buffer_data.push_back(8);
 
 	//Back
 	v.normal = Vector3(0.f, 0.f, -1.f);
@@ -226,391 +129,338 @@ Mesh* MeshBuilder::GenerateCuboid(const std::string& meshName, Color color, floa
 	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //12
 	v.pos.Set(-midvalueX, -midvalueY, -midvalueZ);
-	v.texCoord.Set(1, 0);
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //13
 	v.pos.Set(-midvalueX, midvalueY, -midvalueZ);
-	v.texCoord.Set(0, 1);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //14
 	v.pos.Set(midvalueX, midvalueY, -midvalueZ);
-	v.texCoord.Set(1, 1);
+	v.texCoord.Set(0, input);
 	vertex_buffer_data.push_back(v); //15
 
-	index_buffer_data.push_back(12);
-	index_buffer_data.push_back(13);
-	index_buffer_data.push_back(14);
-	index_buffer_data.push_back(14);
-	index_buffer_data.push_back(15);
-	index_buffer_data.push_back(12);
-
-	//Lside
+	//Left
 	v.normal = Vector3(-1.f, 0.f, 0.f);
 	v.pos.Set(-midvalueX, -midvalueY, -midvalueZ);
+	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //16
 	v.pos.Set(-midvalueX, -midvalueY, midvalueZ);
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //17
 	v.pos.Set(-midvalueX, midvalueY, midvalueZ);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //18
 	v.pos.Set(-midvalueX, midvalueY, -midvalueZ);
+	v.texCoord.Set(0, input);
 	vertex_buffer_data.push_back(v); //19
-
-	index_buffer_data.push_back(16);
-	index_buffer_data.push_back(17);
-	index_buffer_data.push_back(18);
-	index_buffer_data.push_back(18);
-	index_buffer_data.push_back(19);
-	index_buffer_data.push_back(16);
 
 	//Bottom
 	v.normal = Vector3(0.f, -1.f, 0.f);
 	v.pos.Set(-midvalueX, -midvalueY, -midvalueZ);
+	v.texCoord.Set(0, 0);
 	vertex_buffer_data.push_back(v); //20
 	v.pos.Set(midvalueX, -midvalueY, -midvalueZ);
+	v.texCoord.Set(input, 0);
 	vertex_buffer_data.push_back(v); //21
 	v.pos.Set(midvalueX, -midvalueY, midvalueZ);
+	v.texCoord.Set(input, input);
 	vertex_buffer_data.push_back(v); //22
 	v.pos.Set(-midvalueX, -midvalueY, midvalueZ);
+	v.texCoord.Set(0, input);
 	vertex_buffer_data.push_back(v); //23
 
-	index_buffer_data.push_back(20);
-	index_buffer_data.push_back(21);
-	index_buffer_data.push_back(22);
-	index_buffer_data.push_back(22);
-	index_buffer_data.push_back(23);
-	index_buffer_data.push_back(20);
-
-	Mesh* mesh = new Mesh(meshName);
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	mesh->indexSize = 36;
-	mesh->mode = Mesh::DRAW_TRIANGLES;
-
-	return mesh;
-
+	short myArr[6]{0, 1, 2, 2, 3, 0};
+	for(short i = 0; i < 6; ++i){
+		for(short j = 0; j < 6; ++j){
+			index_buffer_data.push_back(i * 4 + myArr[j]);
+		}
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLES, vertex_buffer_data, index_buffer_data);
 }
 
-
-/******************************************************************************/
-/*!
- \brief
- Generate the vertices of a Sphere or Hemisphere; Use random color for each vertex
- Then generate the VBO/IBO and store them in Mesh object
-
- \param meshName - name of mesh
- \param numSlice - number of triangle used to draw
- \param numStack - number of layers used to draw
- \param radius -  radius of the circle
-
- \return Pointer to mesh storing VBO/IBO of cube
- */
- /******************************************************************************/
-
-float sphereX(float phi, float theta) {
-	return cos(Math::DegreeToRadian(phi)) * cos(Math::DegreeToRadian(theta));
-}
-float sphereY(float phi, float theta) {
-	return sin(Math::DegreeToRadian(phi));
-}
-float sphereZ(float phi, float theta) {
-	return cos(Math::DegreeToRadian(phi)) * sin(Math::DegreeToRadian(theta));
-}
-
-/******************************************************************************/
-Mesh* MeshBuilder::GenerateSphere(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius)
-{
+Mesh *MeshBuilder::GenerateSphere(Color c, unsigned numStack, unsigned numSlice, float r){ //Sphere mesh generator
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-	float degreePerStack = 180.f / numStack;
-	float degreePerSlice = 360.f / numSlice;
-	for (unsigned stack = 0; stack < numStack + 1; ++stack) {
+	v.color = c;
+	float degreePerStack = 180.f / numStack, degreePerSlice = 360.f / numSlice;
+	for(unsigned stack = 0; stack < numStack + 1; ++stack){
 		float phi = -90 + stack * degreePerStack;
-		for (unsigned slice = 0; slice < numSlice + 1; ++slice) {
+		for(unsigned slice = 0; slice < numSlice + 1; ++slice){
 			float theta = slice * degreePerSlice;
-			v.pos.Set(radius * sphereX(phi, theta), radius * sphereY(phi, theta), radius * sphereZ(phi, theta));
-			v.color = color;
-			v.normal.Set(v.pos.x, v.pos.y, v.pos.z);
+			v.pos.Set(r * cos(Math::DegreeToRadian(phi)) * cos(Math::DegreeToRadian(theta)),
+				r * sin(Math::DegreeToRadian(phi)), r * cos(Math::DegreeToRadian(phi)) * sin(Math::DegreeToRadian(theta)));
+			Vector3 normal = Vector3(v.pos.x, v.pos.y, v.pos.z).Normalized();
+			v.normal.Set(normal.x, normal.y, normal.z);
 			vertex_buffer_data.push_back(v);
-		}
-	}
-	for (unsigned stack = 0; stack < numStack; ++stack) {
-		for (unsigned slice = 0; slice < numSlice + 1; ++slice) {
 			index_buffer_data.push_back(stack * (numSlice + 1) + slice);
 			index_buffer_data.push_back((stack + 1) * (numSlice + 1) + slice);
 		}
 	}
-	Mesh* mesh = new Mesh(meshName);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	return mesh;
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
 }
 
-Mesh* MeshBuilder::GenerateRing(const std::string& meshName, Color color, unsigned numSlice, float outerR, float innerR)
-{
+Mesh *MeshBuilder::GenerateHemisphere(Color c, unsigned numStack, unsigned numSlice, float r){ //Hemisphere mesh generator
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-	float degreePerSlice = 360.f / numSlice;
-	for (unsigned slice = 0; slice < numSlice; ++slice) {
-
+	v.color = c;
+	v.normal.Set(0, -1.0f, 0);
+	float degreePerStack = 90.f / numStack, degreePerSlice = 360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
 		float theta = slice * degreePerSlice;
-		/*v0*/	v.pos.Set(outerR * cos(Math::DegreeToRadian(theta)), 0, outerR * sin(Math::DegreeToRadian(theta)));
-		v.color = color;
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), 0, r * sin(Math::DegreeToRadian(theta)));
 		vertex_buffer_data.push_back(v);
-
-		/*v1*/	v.pos.Set(innerR * cos(Math::DegreeToRadian(theta)), 0, innerR * sin(Math::DegreeToRadian(theta)));
-		v.color = color;
+		v.pos.Set(0, 0, 0);
 		vertex_buffer_data.push_back(v);
-
-		float theta2 = (slice + 1) * degreePerSlice;
-		/*v2*/	v.pos.Set(outerR * cos(Math::DegreeToRadian(theta2)), 0, outerR * sin(Math::DegreeToRadian(theta2)));
-		v.color = color;
-		vertex_buffer_data.push_back(v);
-
-		/*v3*/	v.pos.Set(innerR * cos(Math::DegreeToRadian(theta2)), 0, innerR * sin(Math::DegreeToRadian(theta2)));
-		v.color = color;
-		vertex_buffer_data.push_back(v);
-	}
-	for (unsigned slice = 0; slice < numSlice; ++slice) {
-		index_buffer_data.push_back(slice * 4 + 0);
-		index_buffer_data.push_back(slice * 4 + 1);
-		index_buffer_data.push_back(slice * 4 + 2);
-
-		index_buffer_data.push_back(slice * 4 + 3);
-		index_buffer_data.push_back(slice * 4 + 2);
-		index_buffer_data.push_back(slice * 4 + 1);
-	}
-	Mesh* mesh = new Mesh(meshName);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLES;
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	return mesh;
-}
-
-
-Mesh* MeshBuilder::GenerateCone(const std::string& meshName, Color color, unsigned numSlice, float radius, float height)
-{
-	std::vector<Vertex> vertex_buffer_data;
-	std::vector<GLuint> index_buffer_data;
-
-	Vertex v;
-	float degreePerSlice = 360.f / numSlice;
-
-	for (unsigned slice = 0; slice < numSlice + 1; ++slice) //slice
-	{
-		float theta = slice * degreePerSlice;
-
-		v.pos.Set(radius * cos(Math::DegreeToRadian(theta)), 0, radius * sin(Math::DegreeToRadian(theta)));
-		v.color = color;
-		vertex_buffer_data.push_back(v);
-
-		v.pos.Set(0, height, 0);
-		v.color = color;
-		vertex_buffer_data.push_back(v);
-	}
-	for (unsigned slice = 0; slice < numSlice + 1; ++slice)
-	{
-		index_buffer_data.push_back(slice * 2 + 0);
+		index_buffer_data.push_back(slice * 2);
 		index_buffer_data.push_back(slice * 2 + 1);
 	}
-
-	Mesh* mesh = new Mesh(meshName);
-
-	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	mesh->indexSize = index_buffer_data.size();
-
-	return mesh;
+	for(unsigned stack = 0; stack < numStack + 1; ++stack){
+		float phi = stack * degreePerStack;
+		for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+			float theta = slice * degreePerSlice;
+			v.pos.Set(r * cos(Math::DegreeToRadian(phi)) * cos(Math::DegreeToRadian(theta)),
+				r * sin(Math::DegreeToRadian(phi)), r * cos(Math::DegreeToRadian(phi)) * sin(Math::DegreeToRadian(theta)));
+			Vector3 normal = Vector3(v.pos.x, v.pos.y, v.pos.z).Normalized();
+			v.normal.Set(normal.x, normal.y, normal.z);
+			vertex_buffer_data.push_back(v);
+			index_buffer_data.push_back(stack * (numSlice + 1) + slice + numSlice * 2 + 2);
+			index_buffer_data.push_back((stack + 1) * (numSlice + 1) + slice + numSlice * 2 + 2);
+		}
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
 }
 
-Mesh* MeshBuilder::GenerateCylinder(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float radius, float height)
-{
+Mesh *MeshBuilder::GenerateRing(Color c, unsigned numSlice, float outerR, float innerR){ //Ring mesh generator
 	Vertex v;
-
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-	float degreePerStack = 180.0f / numStack;
-	float degreePerSlice = 360.0f / numSlice;
-	float stackHeight = height / numStack;
-	for (unsigned stack = 0; stack < numStack + 1; ++stack)
-	{
-		for (unsigned slice = 0; slice < numSlice + 1; ++slice)
-		{
-			float theta = slice * degreePerSlice;
-			v.pos.Set(radius * cos(Math::DegreeToRadian(theta)) /*cylinderX(theta)*/, 
-					-height / 2 + stack * stackHeight, radius * sin(Math::DegreeToRadian(theta)) /*cylinderZ(theta)*/);
-			v.color = color;
+	v.color = c;
+	v.normal.Set(0, 1.0f, 0);
+	float degreePerSlice = -360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(innerR * cos(Math::DegreeToRadian(theta)), 0, innerR * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(outerR * cos(Math::DegreeToRadian(theta)), 0, outerR * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2);
+		index_buffer_data.push_back(slice * 2 + 1);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateCircle(Color c, unsigned numSlice, float r){ //Circle mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
+	v.normal.Set(0, 1.0f, 0);
+	float degreePerSlice = -360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, 0, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), 0, r * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2);
+		index_buffer_data.push_back(slice * 2 + 1);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateCylinder(Color c, unsigned numSlice, float r, float h){ //Cylinder mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
+	v.normal.Set(0, 1.0f, 0);
+	float degreePerSlice = -360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){ //top
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, h / 2, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), h / 2, r * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2);
+		index_buffer_data.push_back(slice * 2 + 1);
+	}
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), h / 2, r * sin(Math::DegreeToRadian(theta)));
+		Vector3 normal = Vector3(v.pos.x, 0, v.pos.z).Normalized();
+		v.normal.Set(normal.x, normal.y, normal.z);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), -h / 2, r * sin(Math::DegreeToRadian(theta)));
+		normal = Vector3(v.pos.x, 0, v.pos.z).Normalized();
+		v.normal.Set(normal.x, normal.y, normal.z);
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2 + 1);
+	}
+	v.normal.Set(0, -1.0f, 0);
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){ //bottom
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, -h / 2, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), -h / 2, r * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + numSlice * 2 + 2 + 2);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + numSlice * 2 + 2 + 2 + 1);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateCone(Color c, unsigned numSlice, float r, float h){ //Cone mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
+	float degreePerSlice = -360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, h / 2, 0);
+		v.normal.Set(0, 1.0f, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), -h / 2, r * sin(Math::DegreeToRadian(theta)));
+		Vector3 normal = Vector3(v.pos.x, 0, v.pos.z).Normalized();
+		v.normal.Set(normal.x, normal.y, normal.z);
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2);
+		index_buffer_data.push_back(slice * 2 + 1);
+	}
+	v.normal.Set(0, -1.0f, 0);
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, -h / 2, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(r * cos(Math::DegreeToRadian(theta)), -h / 2, r * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2 + 1);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateConicalFrustum(Color c, unsigned numSlice, float outerR, float innerR, float h){ //Conical frustum mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
+	v.normal.Set(0, 1.0f, 0);
+	float degreePerSlice = -360.f / numSlice;
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){ //top
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, h / 2, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(innerR * cos(Math::DegreeToRadian(theta)), h / 2, innerR * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2);
+		index_buffer_data.push_back(slice * 2 + 1);
+	}
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+		float theta = slice * degreePerSlice;
+		v.pos.Set(innerR * cos(Math::DegreeToRadian(theta)), h / 2, innerR * sin(Math::DegreeToRadian(theta)));
+		Vector3 normal = Vector3(h * v.pos.x, innerR, h * v.pos.z).Normalized();
+		v.normal.Set(normal.x, normal.y, normal.z);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(outerR * cos(Math::DegreeToRadian(theta)), -h / 2, outerR * sin(Math::DegreeToRadian(theta)));
+		normal = Vector3(h * v.pos.x, outerR, h * v.pos.z).Normalized();
+		v.normal.Set(normal.x, normal.y, normal.z);
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + 2 + 1);
+	}
+	v.normal.Set(0, -1.0f, 0);
+	for(unsigned slice = 0; slice < numSlice + 1; ++slice){ //bottom
+		float theta = slice * degreePerSlice;
+		v.pos.Set(0, -h / 2, 0);
+		vertex_buffer_data.push_back(v);
+		v.pos.Set(outerR * cos(Math::DegreeToRadian(theta)), -h / 2, outerR * sin(Math::DegreeToRadian(theta)));
+		vertex_buffer_data.push_back(v);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + numSlice * 2 + 2 + 2);
+		index_buffer_data.push_back(slice * 2 + numSlice * 2 + numSlice * 2 + 2 + 2 + 1);
+	}
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
+}
+
+Mesh *MeshBuilder::GenerateTorus(Color c, unsigned numStack, unsigned numSlice, float outerR, float innerR){ //Torus mesh generator
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+	v.color = c;
+	float degreePerStack = 360.f / numStack, degreePerSlice = 360.f / numSlice;
+	float x1, z1, x2, y2, z2; //y1 is always 0
+	for(unsigned stack = 0; stack < numStack + 1; ++stack){
+		for(unsigned slice = 0; slice < numSlice + 1; ++slice){
+			z1 = outerR * cos(Math::DegreeToRadian(stack * degreePerStack));
+			x1 = outerR * sin(Math::DegreeToRadian(stack * degreePerStack));
+			x2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * sin(Math::DegreeToRadian(stack * degreePerStack));
+			y2 = innerR * sin(Math::DegreeToRadian(slice * degreePerSlice));
+			z2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * cos(Math::DegreeToRadian(stack * degreePerStack));
+			v.pos.Set(x2, y2, z2);
+			Vector3 normal = Vector3(x2 - x1, y2, z2 - z1).Normalized();
+			v.normal.Set(normal.x, normal.y, normal.z);
 			vertex_buffer_data.push_back(v);
 		}
 	}
-
-	for (unsigned stack = 0; stack < numStack; ++stack)
-	{
-		for (unsigned slice = 0; slice < numSlice + 1; ++slice)
-		{
+	for(unsigned stack = 0; stack < numStack; ++stack){
+		for(unsigned slice = 0; slice < numSlice + 1; ++slice){
 			index_buffer_data.push_back(stack * (numSlice + 1) + slice);
 			index_buffer_data.push_back((stack + 1) * (numSlice + 1) + slice);
 		}
-
 	}
-
-	Mesh* mesh = new Mesh(meshName);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	return mesh;
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLE_STRIP, vertex_buffer_data, index_buffer_data);
 }
 
-Mesh* MeshBuilder::GenerateTorus(const std::string& meshName, Color color, unsigned numStack, unsigned numSlice, float outerR, float innerR)
-{
-	Vertex v;
-	std::vector<Vertex> vertex_buffer_data;
-	std::vector<GLuint> index_buffer_data;
-
-	float degreePerStack = 360.f / numStack;
-	float degreePerSlice = 360.f / numSlice;
-	float x1, z1;
-	float x2, y2, z2;
-
-	for (unsigned stack = 0; stack < numStack + 1; stack++)
-	{
-		for (unsigned slice = 0; slice < numSlice + 1; slice++)
-		{
-			z1 = outerR * cos(Math::DegreeToRadian(stack * degreePerStack));
-			x1 = outerR * sin(Math::DegreeToRadian(stack * degreePerStack));
-			x2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * cos(Math::DegreeToRadian(stack * degreePerStack));
-			y2 = (outerR + innerR * cos(Math::DegreeToRadian(slice * degreePerSlice))) * sin(Math::DegreeToRadian(stack * degreePerStack));
-			z2 = innerR * sin(Math::DegreeToRadian(slice * degreePerSlice));
-
-			v.pos.Set(x2, y2, z2);
-			v.color = color;
-
-			vertex_buffer_data.push_back(v);
-		}
-	}
-	for (unsigned stack = 0; stack < numStack; stack++)
-	{
-		for (unsigned slice = 0; slice < numSlice + 1; slice++)
-		{
-			index_buffer_data.push_back((numSlice + 1) * stack + slice + 0);
-			index_buffer_data.push_back((numSlice + 1) * (stack + 1) + slice + 0);
-		}
-	}
-	Mesh* mesh = new Mesh(meshName);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer); // bind index buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
-
-	return mesh;
-}
-
-Mesh* MeshBuilder::GenerateOBJ(const std::string& meshname, const std::string& file_path)
-{
+Mesh* MeshBuilder::GenerateOBJ(const std::string& filePath){
 	std::vector<Position> vertices;
-	std::vector<TexCoord> uvs;
+	std::vector<TexCoord> UVs;
 	std::vector<Vector3> normals;
-	bool success = LoadOBJ(file_path.c_str(), vertices, uvs, normals);
-	if (!success) return NULL;
+	if(!LoadOBJ(filePath.c_str(), vertices, UVs, normals)){
+		return 0;
+	}
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-	IndexVBO(vertices, uvs, normals, index_buffer_data, vertex_buffer_data);
-
-	Mesh* mesh = new Mesh(meshname);
-	mesh->mode = Mesh::DRAW_TRIANGLES;
-
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
-
-	mesh->indexSize = index_buffer_data.size();
-
-	return mesh;
+	IndexVBO(vertices, UVs, normals, index_buffer_data, vertex_buffer_data);
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLES, vertex_buffer_data, index_buffer_data);
 }
 
-Mesh* MeshBuilder::GenerateText(const std::string& meshName, unsigned numRow, unsigned numCol)
-{
+Mesh* MeshBuilder::GenerateText(unsigned numRow, unsigned numCol){
 	Vertex v;
-	v.normal.Set(0, 0, 1.0f);
-
 	std::vector<Vertex> vertex_buffer_data;
 	std::vector<GLuint> index_buffer_data;
-	// a quad has 4 vertices
-//	vertex_buffer_data.reserve(numRow* numCol* 4);
-//	index_buffer_data.reserve(numRow * numCol * 6);
-
+	v.normal.Set(0, 0, 1.0f);
+	vertex_buffer_data.reserve(numRow * numCol * 4);
+	index_buffer_data.reserve(numRow * numCol * 6);
 	int nCnt = 0;
-	float width = 1.f / numCol;
-	float height = 1.f / numRow;
-	for (unsigned j = 0; j < numRow; ++j)
-	{
-		for (unsigned i = 0; i < numCol; ++i)
-		{
-			//Task: Add 4 vertices into vertex_buffer_data
+	float width = 1.f / numCol, height = 1.f / numRow;
+	for(unsigned i = 0; i < numRow; ++i){
+		for(unsigned j = 0; j < numCol; ++j){
 			v.pos.Set(0, 1, 0);
-			v.texCoord.Set(width * i, height* (numRow - j));
+			v.texCoord.Set(width * j, height * (numRow - i)); //0, height
 			vertex_buffer_data.push_back(v);
+
 			v.pos.Set(0, 0, 0);
-			v.texCoord.Set(width * i, height * (numRow - j - 1));
+			v.texCoord.Set(width * j, height * (numRow - i - 1)); //0, 0
 			vertex_buffer_data.push_back(v);
+
 			v.pos.Set(1, 1, 0);
-			v.texCoord.Set(width * (i + 1), height * (numRow - j));
+			v.texCoord.Set(width * (j + 1), height * (numRow - i)); //width, height
 			vertex_buffer_data.push_back(v);
+
 			v.pos.Set(1, 0, 0);
-			v.texCoord.Set(width * (i + 1), height * (numRow - j - 1));
+			v.texCoord.Set(width * (j + 1), height * (numRow - i - 1)); //width, 0
 			vertex_buffer_data.push_back(v);
 
-
-			//Task: Add 6 indices into index_buffer_data
 			index_buffer_data.push_back(nCnt);
-			index_buffer_data.push_back(nCnt+1);
-			index_buffer_data.push_back(nCnt+2);
-			index_buffer_data.push_back(nCnt+2);
-			index_buffer_data.push_back(nCnt+1);
-			index_buffer_data.push_back(nCnt+3);
+			index_buffer_data.push_back(nCnt + 1);
+			index_buffer_data.push_back(nCnt + 2);
+			index_buffer_data.push_back(nCnt + 2);
+			index_buffer_data.push_back(nCnt + 1);
+			index_buffer_data.push_back(nCnt + 3);
 			nCnt = nCnt + 4;
 		}
 	}
-
-	Mesh* mesh = new Mesh(meshName);
-	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0],
-		GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0],
-		GL_STATIC_DRAW);
-	mesh->indexSize = index_buffer_data.size();
-	mesh->mode = Mesh::DRAW_TRIANGLES;
-	return mesh;
-
+	return CreateMesh(Mesh::DRAW_MODE::DRAW_TRIANGLES, vertex_buffer_data, index_buffer_data);
 }

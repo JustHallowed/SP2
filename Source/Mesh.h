@@ -1,42 +1,15 @@
-#ifndef MESH_H
-#define MESH_H
-
-#include <string>
+#pragma once
 #include "Vertex.h"
 #include "Material.h"
 
-/******************************************************************************/
-/*!
-		Class Mesh:
-\brief	To store VBO (vertex & color buffer) and IBO (index buffer)
-*/
-/******************************************************************************/
-class Mesh
-{
+class Mesh final{ //To store Vertex Buffer Obj (VBO, for vertices and colors) and Index Buffer Obj (IBO)
 public:
-	enum DRAW_MODE
-	{
-		DRAW_TRIANGLES, //default mode
-		DRAW_TRIANGLE_STRIP,
-		DRAW_LINES,
-		DRAW_FAN,
-		DRAW_MODE_LAST,
+	enum class DRAW_MODE{
+		DRAW_TRIANGLES, DRAW_TRIANGLE_STRIP, DRAW_LINES, DRAW_FAN, DRAW_MODE_LAST
 	};
-
-	Mesh(const std::string &meshName);
-	~Mesh();
-	void Render();
-	void Render(unsigned, unsigned);
-
-	const std::string name;
+	Mesh(), ~Mesh();
+	void Render(), Render(float), Render(unsigned, unsigned);
 	DRAW_MODE mode;
-	unsigned vertexBuffer;
-	unsigned colorBuffer;
-	unsigned indexBuffer;
-	unsigned indexSize;
-
+	unsigned vertexBuffer, colorBuffer, indexBuffer, textureID;
 	Material material;
-	unsigned textureID;
 };
-
-#endif
