@@ -514,6 +514,7 @@ void MotorScene::createRobot1()
 	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
 	object[ROBOT_BODY1].setTranslation(50, 5.2, 50);
 	object[ROBOT_BODY1].setScale(2);
+	object[ROBOT_BODY1].setDimension(6, 15, 6);
 
 	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM1].setTranslation(-1, 2, 0);
