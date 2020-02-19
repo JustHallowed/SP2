@@ -179,9 +179,9 @@ bool Object::isRender()
 {
 	return render;
 }
-bool Object::inRange(Vector3 player, Object object)
+bool Object::inRange(Vector3 player)
 {
-	if (sqrt(pow(object.getPos().x - player.x, 2.0) + pow(object.getPos().z - player.z, 2.0)))
+	if (sqrt(pow(getPos().x - player.x, 2.0) + pow(getPos().z - player.z, 2.0)))
 		return true;
 	else
 		return false;

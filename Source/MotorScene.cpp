@@ -125,7 +125,6 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		isSingleplayer = !isSingleplayer;
 		screenBounceTime = elapsedTime + 0.5;
 	}
-
 	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
 		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
 		p->color = Color(1.f, 0.f, 0.f);
