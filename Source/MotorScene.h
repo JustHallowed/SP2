@@ -16,9 +16,9 @@ class MotorScene final: public Scene{
 		UFO,
 		NUM_INSTANCES,
 	};
-	bool showDebugInfo, showLightSphere;
+	bool showDebugInfo, showLightSphere, isSingleplayer;
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double bulletBounceTime, debugBounceTime, lightBounceTime;
+	double bulletBounceTime, debugBounceTime, lightBounceTime, screenBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
 	Light light[1]{Light(0.f, 192.4f, 0.f)};
@@ -32,4 +32,7 @@ class MotorScene final: public Scene{
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
+	void RenderScreen1(double, int, int),	// Main Screen
+		RenderScreen2(double, int, int),	// Player 2
+		RenderScreen3(double, int, int);	// Minimap
 };
