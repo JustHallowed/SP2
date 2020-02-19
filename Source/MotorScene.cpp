@@ -40,6 +40,7 @@ void MotorScene::InitLight() const{
 
 void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::HITSPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f),16,16,1);
 	meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
@@ -63,6 +64,9 @@ void MotorScene::InitMeshes(){
 void MotorScene::CreateInstances()
 {
 	object[UFO1].setMesh(meshList[unsigned int(MESH::UFO)]);
+	object[UFO1].setTranslation(0, 5, 0);
+	object[UFO1].setScale(4);
+	object[UFO1].setInteractable(true);
 }
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
@@ -76,6 +80,7 @@ void MotorScene::Init(){ //Init scene
 	Camera::getCam().Init(Vector3(0.f, 5.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
+	CreateInstances();
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
@@ -180,9 +185,10 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z);
+	//RenderMesh(meshList[unsigned int(MESH::HITSPHERE)], false);
+	//modelStack.PopMatrix();
 
 	//displays hitboxes
 	for (int i = 0; i < NUM_INSTANCES; ++i)

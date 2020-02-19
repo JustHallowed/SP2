@@ -39,6 +39,14 @@ void Camera::Update(double dt){ //Update cam
 			right.y = 0;
 			up = right.Cross(front).Normalized();
 		}
+		else
+		{
+			target = pos + front*2;
+			front.y = 0;
+			right = front.Cross(up);
+			right.y = 0;
+			up = right.Cross(front).Normalized();
+		}
 		modeBounceTime = elapsedTime + 0.2;
 	}
 
@@ -130,7 +138,7 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 	Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
 	right.y = 0;
 	Mtx44 r1, r2;
-	r1.SetToRotation(-yaw, up.x,up.y,up.z);
+	r1.SetToRotation(-yaw, 0,1,0);
 	r2.SetToRotation(-pitch, right.x, right.y, right.z);
 	if(mode == MODE::FOCUS){
 		front = r1 * r2 * (target - pos);
@@ -143,7 +151,7 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 			r2.SetToRotation(0, 1, 1, 1);
 
 		front = r1 * r2 * front;
-		target = pos + front;
+		target = pos + front*5;
 	}
 	up = right.Cross(front).Normalized();
 }
