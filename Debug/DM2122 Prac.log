@@ -1,4 +1,3 @@
 ﻿  Object.cpp
-D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\Object.cpp(21,20): warning C4018: '<': signed/unsigned mismatch
-D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\Object.cpp(188,20): warning C4018: '<': signed/unsigned mismatch
-  DM2122 Prac.vcxproj -> D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\Debug\DM2122 Prac.exe
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(181,20): warning C4018: '<': signed/unsigned mismatch
+  DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe
