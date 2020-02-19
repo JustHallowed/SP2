@@ -24,7 +24,7 @@ void Camera::Init(const Vector3 &pos, const Vector3 &target, const Vector3 &up){
 }
 
 void Camera::Update(double dt){ //Update cam
-	resetCollision();
+	
 	displacement.SetZero();
 	if(Application::IsKeyPressed('B') && modeBounceTime <= elapsedTime){ //Change cam mode
 		mode = MODE(!bool(mode));
@@ -132,6 +132,7 @@ void Camera::Update(double dt){ //Update cam
 			pos.z += displacement.z;
 			target.z += displacement.z;
 		}
+	resetCollision();
 }
 
 void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to mouse movement
