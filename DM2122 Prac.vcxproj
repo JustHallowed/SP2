@@ -141,6 +141,7 @@
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\ShaderManager.hpp" />
     <ClInclude Include="Source\Utility.h" />
+    <ClInclude Include="Source\Vehicle.h" />
     <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
+    <ClCompile Include="Source\Vehicle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

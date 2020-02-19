@@ -5,6 +5,7 @@
 #include <Mtx44.h>
 class Object
 {
+protected:
 	Mesh* meshType;//Stores meshtype
 
 	Vector3 pos; //Object's position relative to map
