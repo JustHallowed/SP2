@@ -18,14 +18,7 @@ Object::Object()
 
 Object::~Object()
 {
-	for (int i = 0; i < child.size(); ++i)
-	{
-		delete child[i];
-	}
-	if (parent != nullptr)
-	{
-		delete parent;
-	}
+
 }
 
 void Object::setPos(float x, float y, float z)
