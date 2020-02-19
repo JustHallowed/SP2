@@ -83,45 +83,50 @@ void MotorScene::CreateInstances()
 	object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM1].setTranslation(0, 0.5, 0);
 	object[PLATFORM1].setScale(4);
+	object[PLATFORM1].setDimension(50, 50, 50);
 
 	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM2].setTranslation(70, 0.5, 70);
 	object[PLATFORM2].setScale(4);
+	object[PLATFORM2].setDimension(50, 50, 50);
 
 	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM3].setTranslation(-70, 0.5, 70);
 	object[PLATFORM3].setScale(4);
+	object[PLATFORM3].setDimension(50, 50, 50);
 
 	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM4].setTranslation(70, 0.5, -70);
 	object[PLATFORM4].setScale(4);
+	object[PLATFORM4].setDimension(50, 50, 50);
 
 	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM5].setTranslation(-70, 0.5, -70);
 	object[PLATFORM5].setScale(4);
+	object[PLATFORM5].setDimension(50, 50, 50);
 
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(0, 2.85, 0);
+	object[UFO_BASE1].setTranslation(0, 0.6, 0);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
 
 	object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
-	object[UFO_PURPLE1].setTranslation(70, 2.85, 70);
+	object[UFO_PURPLE1].setTranslation(0, 0.6, 0);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
 
 	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(-70, 2.85, 70);
+	object[UFO_RED1].setTranslation(0, 0.6, 0);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
 
 	object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
-	object[UFO_BLUE1].setTranslation(70, 2.85, -70);
+	object[UFO_BLUE1].setTranslation(0, 0.6, 0);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
 
 	object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
-	object[UFO_PINK1].setTranslation(-70, 2.85, -70);
+	object[UFO_PINK1].setTranslation(0, 0.6, 0);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
 }
@@ -206,6 +211,21 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 			continue;
 		Camera::getCam().updateCollision(object[i]);
 	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		object[i].addRotation(1, 'y');
+	}
+
+	//if (!object[A].isClockwise)
+	//{
+	//	//do animation
+	//	if (condition to turn clockwise)
+	//		object[A].setIsClockwise(true);
+	//}
+	//then vice versa for clockwise
+
+	
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
