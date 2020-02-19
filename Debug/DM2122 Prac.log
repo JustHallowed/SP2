@@ -1,8 +1,6 @@
-﻿  Application.cpp
+
+﻿  MotorScene.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-  MotorScene.cpp
-D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-  Generating Code...
-D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-  DM2122 Prac.vcxproj -> D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\Debug\DM2122 Prac.exe
+C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(447,22): warning C4018: '<': signed/unsigned mismatch
+  DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe
