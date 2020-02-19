@@ -13,6 +13,7 @@ class Camera final{ //Singleton
 	bool canMove[NUM_AXIS];
 	friend class Application;
 	friend class MotorScene;
+	friend class GameScene;
 	friend class SceneManager;
 	Vector3 pos, target, up, defaultPos, defaultTarget, defaultUp, displacement;
 public:

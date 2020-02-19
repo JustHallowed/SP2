@@ -1,4 +1,15 @@
-﻿  Camera.cpp
+﻿  MotorScene.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-  DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(118,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(123,46): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(128,43): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(133,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(138,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(144,48): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(165,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(169,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(173,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(177,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(580,22): warning C4018: '<': signed/unsigned mismatch
+  DM2122 Prac.vcxproj -> D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\Debug\DM2122 Prac.exe
