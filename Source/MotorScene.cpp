@@ -155,14 +155,14 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	{
 		glViewport(0, 0, winWidth, winHeight);
 		RenderScreen1(dt, winWidth, winHeight);
-	//	glViewport(winWidth / 2, 0, winWidth / 2, winHeight);
-	//	RenderScreen3(dt, winWidth, winHeight);
+		glViewport(850,600, winWidth / 5, winHeight/5);
+		RenderScreen3(dt, winWidth, winHeight);
 	}
 	else
 	{
-		glViewport(0, winHeight/2, winWidth, winHeight/2);
+		glViewport(winWidth/4, winHeight/2, winWidth/2, winHeight/2);
 		RenderScreen1(dt, winWidth, winHeight);
-		glViewport(0, 0, winWidth, winHeight/2);
+		glViewport(winWidth/4, 0, winWidth/2, winHeight/2);
 		RenderScreen2(dt, winWidth, winHeight);
 	}
 }

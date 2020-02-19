@@ -45,6 +45,7 @@ public:
 	bool followParentScale();
 	bool isInteractable();
 	bool isRender();
+	bool inRange(Vector3 player, Object object);
 
 	Object* getParent();
 	std::vector<Object*> getChild();
