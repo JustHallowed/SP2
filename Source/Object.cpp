@@ -179,6 +179,13 @@ bool Object::isRender()
 {
 	return render;
 }
+bool Object::inRange(Vector3 player, Object object)
+{
+	if (sqrt(pow(object.getPos().x - player.x, 2.0) + pow(object.getPos().z - player.z, 2.0)))
+		return true;
+	else
+		return false;
+}
 void Object::setInteractable(bool canInteract)
 {
 	interactable = canInteract;
