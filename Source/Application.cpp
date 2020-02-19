@@ -46,7 +46,7 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos){ //For 
 		yLast = GLfloat(ypos);
 		firstMouse = 0;
 	}
-	float mouseSensitivity = 0.03f;
+	float mouseSensitivity = 0.06f;
 	float xOffset = (GLfloat(xpos) - xLast) * mouseSensitivity;
 	float yOffset = (GLfloat(ypos) - yLast) * mouseSensitivity;
 	xLast = GLfloat(xpos);

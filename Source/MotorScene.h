@@ -8,12 +8,12 @@
 #include "Object.h"
 
 class MotorScene final: public Scene{
-	enum class MESH{
-		BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, NUM_GEOMETRY
+	enum class MESH {
+		HITBOX,BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO, NUM_GEOMETRY
 	};
 	enum OBJECT_INSTANCES
 	{
-		UFO,
+		UFO1,
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;
@@ -27,8 +27,8 @@ class MotorScene final: public Scene{
 	ParticleEmitter bulletGenerator;
 	ShaderManager* shMan;
 	unsigned m_vertexArrayID;
-	void InitMeshes(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
-	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const;
+	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
+	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object obj);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;

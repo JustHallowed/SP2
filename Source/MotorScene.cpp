@@ -39,6 +39,7 @@ void MotorScene::InitLight() const{
 }
 
 void MotorScene::InitMeshes(){
+	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
 	meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
@@ -55,8 +56,14 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 20, 20, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
-}
 
+	meshList[unsigned int(MESH::UFO)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO)]->textureID = LoadTGA("Resources/OBJs/ufo_1.tga");
+}
+void MotorScene::CreateInstances()
+{
+	object[UFO1].setMesh(meshList[unsigned int(MESH::UFO)]);
+}
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
@@ -191,6 +198,25 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
+	}
+	//displays hitboxes
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
+		modelStack.PopMatrix();
+	}
+	//render all objects
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(object[i]);
+			modelStack.PopMatrix();
+		}
 	}
 }
 
@@ -401,4 +427,41 @@ void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, f
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+
+void MotorScene::renderObject(Object obj)
+{
+	if (obj.isRender() && obj.getMesh() != nullptr)
+	{
+		modelStack.Translate(obj.getTranslation().x, obj.getTranslation().y, obj.getTranslation().z);
+		if (obj.getChild().size() != 0)
+		{
+			for (int i = 0; i < obj.getChild().size(); ++i)
+			{
+				modelStack.PushMatrix();
+				if (obj.getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
+				{
+					if (obj.getAngle().x != 0)
+						modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
+					if (obj.getAngle().y != 0)
+						modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
+					if (obj.getAngle().z != 0)
+						modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+				}
+				if (obj.getChild()[i]->followParentScale())
+					modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
+				renderObject(*obj.getChild()[i]);
+				modelStack.PopMatrix();
+			}
+		}
+		if (obj.getAngle().x != 0)
+			modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
+		if (obj.getAngle().y != 0)
+			modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
+		if (obj.getAngle().z != 0)
+			modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+
+		modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
+		RenderMesh(obj.getMesh(), true);
+	}
 }
