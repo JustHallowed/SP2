@@ -72,8 +72,8 @@ void Camera::Update(double dt){ //Update cam
 			right.y = 0;
 			up = right.Cross(front).Normalized();
 		} else if(mode == MODE::FREE){
-			pos += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * up;
-			target += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * up;
+			pos += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0,1,0);
+			target += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0, 1, 0);
 		}
 	}
 
@@ -101,6 +101,7 @@ void Camera::Update(double dt){ //Update cam
 			displacement += float(-freeSpd * dt) * front;
 		}
 	}
+	//check for movement with collision
 	if (canMove[POSX] && displacement.x > 0)
 	{
 		pos.x += displacement.x;
@@ -129,7 +130,7 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 	Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
 	right.y = 0;
 	Mtx44 r1, r2;
-	r1.SetToRotation(-yaw, 0, 1, 0);
+	r1.SetToRotation(-yaw, up.x,up.y,up.z);
 	r2.SetToRotation(-pitch, right.x, right.y, right.z);
 	if(mode == MODE::FOCUS){
 		front = r1 * r2 * (target - pos);
@@ -138,6 +139,9 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 		right.y = 0;
 		up = right.Cross(front).Normalized();
 	} else if(mode == MODE::FREE){
+		if ((front.y <= -0.95 && pitch > 0) || (front.y >= 0.95 && pitch < 0))
+			r2.SetToRotation(0, 1, 1, 1);
+
 		front = r1 * r2 * front;
 		target = pos + front;
 	}
@@ -146,7 +150,6 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 
 void Camera::updateCollision(Object target)
 {
-
 	if (((abs(pos.x - target.getPos().x)) - 0.5) <= (target.getDimension().x / 2.f))
 	{
 		if ((abs(pos.z - target.getPos().z) - 1) <= (target.getDimension().z / 2.f))
