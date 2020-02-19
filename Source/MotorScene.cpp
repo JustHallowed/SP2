@@ -67,6 +67,7 @@ void MotorScene::CreateInstances()
 	object[UFO1].setTranslation(0, 5, 0);
 	object[UFO1].setScale(4);
 	object[UFO1].setInteractable(true);
+	ufo.setObject(&object[UFO1]);
 }
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
@@ -148,7 +149,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 			continue;
 		Camera::getCam().updateCollision(object[i]);
 	}
-
+	ufo.update(dt);
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);

@@ -6,7 +6,7 @@
 #include "ShaderManager.hpp"
 #include "ParticleSystem.h"
 #include "Object.h"
-
+#include "Vehicle.h"
 class MotorScene final: public Scene{
 	enum class MESH {
 		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO, NUM_GEOMETRY
@@ -21,6 +21,7 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
+	Vehicle ufo;
 	Light light[1]{Light(0.f, 192.4f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
