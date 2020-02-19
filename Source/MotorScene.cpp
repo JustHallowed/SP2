@@ -180,6 +180,32 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z);
+	modelStack.PopMatrix();
+
+	//displays hitboxes
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y > 0)
+		{
+		modelStack.PushMatrix();
+		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
+		modelStack.PopMatrix();
+		}
+	}
+	//render all objects
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(object[i]);
+			modelStack.PopMatrix();
+		}
+	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	std::ostringstream ss;
@@ -199,25 +225,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
 	}
-	//displays hitboxes
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
-		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
-		modelStack.PopMatrix();
-	}
-	//render all objects
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getParent() == nullptr)
-		{
-			modelStack.PushMatrix();
-			renderObject(object[i]);
-			modelStack.PopMatrix();
-		}
-	}
+
 }
 
 void MotorScene::RenderLight(){
