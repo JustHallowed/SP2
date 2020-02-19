@@ -58,16 +58,74 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 
-	meshList[unsigned int(MESH::UFO)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO)]->textureID = LoadTGA("Resources/OBJs/ufo_1.tga");
+	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
+	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_PURPLE)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
+	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
+	meshList[unsigned int(MESH::UFO_BLUE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
+	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");
+
+	//base mesh
+	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
+	meshList[unsigned int(MESH::PLATFORM)]->textureID = LoadTGA("Resources/TGAs/platform.tga");
+	/*meshList[unsigned int(MESH::PLATFORM)]->material.kAmbient.Set(1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kSpecular.Set(1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kShininess = 5.f;*/
 }
 void MotorScene::CreateInstances()
 {
-	object[UFO1].setMesh(meshList[unsigned int(MESH::UFO)]);
-	object[UFO1].setTranslation(0, 5, 0);
-	object[UFO1].setScale(4);
-	object[UFO1].setInteractable(true);
+	//multiple copies of platform
+	object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM1].setTranslation(0, 0.5, 0);
+	object[PLATFORM1].setScale(4);
+
+	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM2].setTranslation(70, 0.5, 70);
+	object[PLATFORM2].setScale(4);
+
+	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM3].setTranslation(-70, 0.5, 70);
+	object[PLATFORM3].setScale(4);
+
+	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM4].setTranslation(70, 0.5, -70);
+	object[PLATFORM4].setScale(4);
+
+	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM5].setTranslation(-70, 0.5, -70);
+	object[PLATFORM5].setScale(4);
+
+	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BASE1].setTranslation(0, 2.85, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
+
+	object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
+	object[UFO_PURPLE1].setTranslation(70, 2.85, 70);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
+
+	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
+	object[UFO_RED1].setTranslation(-70, 2.85, 70);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
+
+	object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
+	object[UFO_BLUE1].setTranslation(70, 2.85, -70);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
+
+	object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
+	object[UFO_PINK1].setTranslation(-70, 2.85, -70);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
 }
+
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
@@ -177,6 +235,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 
 	delete shMan;
 	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
+	InitLight();
 	RenderLight();
 
 	modelStack.PushMatrix();
@@ -212,7 +271,6 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 			modelStack.PopMatrix();
 		}
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	std::ostringstream ss;
 	if(showDebugInfo){
@@ -231,7 +289,8 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
 	}
-
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+	//RenderUFO();
 }
 
 void MotorScene::RenderLight(){
@@ -312,6 +371,7 @@ void MotorScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, f
 }
 
 void MotorScene::RenderSkybox(bool lightSwitch){
+	lightSwitch = 1;
 	modelStack.PushMatrix();
 		modelStack.Translate(-49.8f, 0.f, 0.f);
 		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);

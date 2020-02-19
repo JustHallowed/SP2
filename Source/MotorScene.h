@@ -9,11 +9,22 @@
 
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO, NUM_GEOMETRY
+		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, NUM_GEOMETRY
 	};
 	enum OBJECT_INSTANCES
 	{
-		UFO1,
+		PLATFORM1,
+		PLATFORM2, 
+		PLATFORM3, 
+		PLATFORM4, 
+		PLATFORM5,
+
+		UFO_BASE1,
+		UFO_PURPLE1,
+		UFO_RED1, 
+		UFO_BLUE1, 
+		UFO_PINK1,
+
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;
@@ -21,13 +32,14 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
-	Light light[1]{Light(0.f, 192.4f, 0.f)};
+	Light light[1]{Light(0.f, 192.f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
 	ShaderManager* shMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
+	void RenderUFO();
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object obj);
 public:
 	~MotorScene() override{}
