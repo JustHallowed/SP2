@@ -9,7 +9,7 @@
 
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, NUM_GEOMETRY,
+		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 	};
 	enum OBJECT_INSTANCES
 	{
@@ -38,9 +38,9 @@ class MotorScene final: public Scene{
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;
-	bool inRange[NUM_INSTANCES];
+	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double bulletBounceTime, debugBounceTime, lightBounceTime;
+	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
 	Light light[1]{Light(0.f, 192.f, 0.f)};
