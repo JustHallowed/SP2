@@ -33,6 +33,5 @@ public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
 	void RenderScreen1(double, int, int),	// Main Screen
-		RenderScreen2(double, int, int),	// Player 2
-		RenderScreen3(double, int, int);	// Minimap
+		RenderScreen2(double, int, int),	// Multiplayer
 };

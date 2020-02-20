@@ -154,8 +154,6 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	{
 		glViewport(0, 0, winWidth, winHeight);
 		RenderScreen1(dt, winWidth, winHeight);
-		glViewport(850,600, winWidth / 5, winHeight/5);
-		RenderScreen3(dt, winWidth, winHeight);
 	}
 	else
 	{
@@ -219,58 +217,6 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 }
 
 void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
-{
-	viewStack.LoadIdentity();
-	viewStack.LookAt(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
-		Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z,
-		Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z);
-	modelStack.LoadIdentity();
-
-	delete shMan;
-	shMan = new ShaderManager("Resources/Shaders/Particle.vs", "Resources/Shaders/Particle.fs");
-	for (Particle* p : bulletGenerator.particlePool) {
-		if (p->life > 0.0f) {
-			delete meshList[unsigned int(MESH::BULLET)];
-			meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(p->color, .4f, .4f, .4f);
-			modelStack.PushMatrix();
-			modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
-			RenderParticle(meshList[unsigned int(MESH::BULLET)], p->life);
-			modelStack.PopMatrix();
-		}
-	}
-
-	delete shMan;
-	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
-	RenderLight();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 100.f, 0.f);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	RenderSkybox(!light[0].power);
-	modelStack.PopMatrix();
-
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
-
-	std::ostringstream ss;
-	if (showDebugInfo) {
-		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Cam pos: " << Camera::getCam().pos.x << ", " << Camera::getCam().pos.y << ", " << Camera::getCam().pos.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << std::setprecision(3);
-		ss << "Elapsed: " << elapsedTime;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
-		ss.str("");
-		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-	}
-}
-
-void MotorScene::RenderScreen3(double dt, int winWidth, int winHeight)
 {
 	viewStack.LoadIdentity();
 	viewStack.LookAt(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
