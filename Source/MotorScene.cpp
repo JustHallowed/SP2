@@ -231,12 +231,12 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
-		ss << "Aceleration: " << ufo.getAcceleration().x<<"	"<<ufo.getAcceleration().y << "	"<<ufo.getAcceleration().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-		//ss << "Velocity: " << ufo.getVelocity().x << "	" << ufo.getVelocity().y << "	" << ufo.getVelocity().z;
+		//ss << "Aceleration: " << ufo.getAcceleration().x<<"	"<<ufo.getAcceleration().y << "	"<<ufo.getAcceleration().z;
 		//RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		//ss.str("");
+		ss << "Velocity: " << ufo.getVelocity().Length();
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f,0.2f,2.f, winWidth, winHeight);
+		ss.str("");
 	}
 
 }
