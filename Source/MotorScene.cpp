@@ -9,7 +9,13 @@
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
 
+#include "irrKlang.h"
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 extern double elapsedTime;
+
+using namespace irrklang;
+ISoundEngine* engine = createIrrKlangDevice();
 
 double MotorScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -115,6 +121,9 @@ void MotorScene::Init(){ //Init scene
 	showLightSphere = 0;
 	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
+
+	//play thru out the scene and loops
+	engine->play2D("Resources/Sound/bgm.mp3", true);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -128,6 +137,7 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	if(dynamic_cast<MotorScene*>(newScene) != this){
 		newScene->Init();
 	}
+	engine->drop();
 }
 
 void MotorScene::Update(double dt, float FOV){ //Update scene
@@ -183,6 +193,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	{
 		object[i].addRotation(1, 'y');
 	}
+
+	//!testing! if w is pressed, sound effects will be played
+	if (Application::IsKeyPressed('W'))
+		engine->play2D("Resources/Sound/bell.wav");
 
 	//if (!object[A].isClockwise)
 	//{
