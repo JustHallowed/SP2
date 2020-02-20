@@ -59,7 +59,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 
 	meshList[unsigned int(MESH::UFO)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO)]->textureID = LoadTGA("Resources/OBJs/ufo_1.tga");
+	meshList[unsigned int(MESH::UFO)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
 }
 void MotorScene::CreateInstances()
 {
@@ -231,6 +231,12 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
+		ss << "Aceleration: " << ufo.getAcceleration().x<<"	"<<ufo.getAcceleration().y << "	"<<ufo.getAcceleration().z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
+		//ss << "Velocity: " << ufo.getVelocity().x << "	" << ufo.getVelocity().y << "	" << ufo.getVelocity().z;
+		//RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		//ss.str("");
 	}
 
 }
@@ -313,44 +319,44 @@ void MotorScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, f
 }
 
 void MotorScene::RenderSkybox(bool lightSwitch){
-	modelStack.PushMatrix();
-		modelStack.Translate(-49.8f, 0.f, 0.f);
-		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
-		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-		modelStack.Scale(100.f, 100.f, 100.f);
-		RenderMesh(meshList[unsigned int(MESH::LEFT)], lightSwitch);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//	modelStack.Translate(-49.8f, 0.f, 0.f);
+	//	modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
+	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+	//	modelStack.Scale(100.f, 100.f, 100.f);
+	//	RenderMesh(meshList[unsigned int(MESH::LEFT)], lightSwitch);
+	//modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-		modelStack.Translate(49.8f, 0.f, 0.f);
-		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
-		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-		modelStack.Scale(100.f, 100.f, 100.f);
-		RenderMesh(meshList[unsigned int(MESH::RIGHT)], lightSwitch);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//	modelStack.Translate(49.8f, 0.f, 0.f);
+	//	modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
+	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+	//	modelStack.Scale(100.f, 100.f, 100.f);
+	//	RenderMesh(meshList[unsigned int(MESH::RIGHT)], lightSwitch);
+	//modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-		modelStack.Translate(0.f, 0.f, -49.8f);
-		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-		modelStack.Scale(100.f, 100.f, 100.f);
-		RenderMesh(meshList[unsigned int(MESH::FRONT)], lightSwitch);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//	modelStack.Translate(0.f, 0.f, -49.8f);
+	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+	//	modelStack.Scale(100.f, 100.f, 100.f);
+	//	RenderMesh(meshList[unsigned int(MESH::FRONT)], lightSwitch);
+	//modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-		modelStack.Translate(0.f, 0.f, 49.8f);
-		modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
-		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-		modelStack.Scale(100.f, 100.f, 100.f);
-		RenderMesh(meshList[unsigned int(MESH::BACK)], lightSwitch);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//	modelStack.Translate(0.f, 0.f, 49.8f);
+	//	modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
+	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+	//	modelStack.Scale(100.f, 100.f, 100.f);
+	//	RenderMesh(meshList[unsigned int(MESH::BACK)], lightSwitch);
+	//modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-		modelStack.Translate(0.f, 49.8f, 0.f);
-		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
-		modelStack.Rotate(270.f, 0.f, 0.f, 1.f);
-		modelStack.Scale(100.f, 100.f, 100.f);
-		RenderMesh(meshList[unsigned int(MESH::TOP)], lightSwitch);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//	modelStack.Translate(0.f, 49.8f, 0.f);
+	//	modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
+	//	modelStack.Rotate(270.f, 0.f, 0.f, 1.f);
+	//	modelStack.Scale(100.f, 100.f, 100.f);
+	//	RenderMesh(meshList[unsigned int(MESH::TOP)], lightSwitch);
+	//modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 		modelStack.Translate(0.f, -49.8f, 0.f);

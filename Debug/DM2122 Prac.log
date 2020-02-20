@@ -1,16 +1,9 @@
 ﻿  Vehicle.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(31,34): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(44,20): warning C4552: '-': result of expression not used
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(53,20): warning C4552: '+': result of expression not used
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(63,20): warning C4552: '-': result of expression not used
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(72,20): warning C4552: '+': result of expression not used
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(77,50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(81,50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(85,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(89,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(92,142): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(92,96): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(92,52): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(75,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(79,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(85,6): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(90,39): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Vehicle.cpp(115,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe

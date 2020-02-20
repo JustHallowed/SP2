@@ -2,8 +2,11 @@
 
 Vehicle::Vehicle()
 {
+	object = nullptr;
 	acceleration.SetZero();
 	velocity.SetZero();
+	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = false;
+	keyPress[4] = true;
 }
 Vector3 Vehicle::getVelocity()
 {
@@ -12,6 +15,10 @@ Vector3 Vehicle::getVelocity()
 Vector3 Vehicle::getAcceleration()
 {
 	return acceleration;
+}
+Object* Vehicle::getObject()
+{
+	return object;
 }
 void Vehicle::setObject(Object* object)
 {
@@ -28,66 +35,83 @@ void Vehicle::setAcceleration(Vector3 acceleration)
 void Vehicle::update(double dt)
 {
 	float accelerationConstant = 1;
-	float accelerationFriction = 0.1;
-	Vector3 front, up,right;
+	float maxVelocity = 3;
+	//float accelerationFriction = 0.1;
+	Vector3 front,movementDir;
 	front = Vector3(sin(Math::DegreeToRadian(object->getAngle().y)), 0, -cos(Math::DegreeToRadian(object->getAngle().y))).Normalize();
+	if (velocity != Vector3(0, 0, 0))
+		movementDir = velocity.Normalize();
+	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = false;
+	keyPress[4] = true;
+	acceleration.SetZero();
 
-	if (velocity.Length() != 0)
-	{
-		if (velocity.x > 0)
+
+		if (Application::IsKeyPressed('W'))
 		{
-			if ((velocity.x - acceleration.x - accelerationFriction*dt) <= 0)
-			{
-				velocity.x = 0;
-			}
-			else
-				acceleration.x - accelerationFriction;
+			keyPress[W_KEY] = true;
+			keyPress[NO_KEY] = false;
+
+		}
+		if (Application::IsKeyPressed('S'))
+		{
+			keyPress[S_KEY] = true;
+			keyPress[NO_KEY] = false;
+
+		}
+		if (Application::IsKeyPressed('A'))
+		{
+			keyPress[A_KEY] = true;
+			keyPress[NO_KEY] = false;
+
+		}
+		if (Application::IsKeyPressed('D'))
+		{
+			keyPress[D_KEY] = true;
+			keyPress[NO_KEY] = false;
+
+		}
+		if (keyPress[A_KEY])
+		{
+			object->addRotation(60 * dt, 'y');
+		}
+		if (keyPress[D_KEY])
+		{
+			object->addRotation(-60 * dt, 'y');
+		}
+		front = Vector3(sin(Math::DegreeToRadian(-object->getAngle().y)), 0, -cos(Math::DegreeToRadian(-object->getAngle().y))).Normalize();
+		if (velocity != Vector3(0, 0, 0))
+			movementDir = velocity.Normalize();
+
+		if ((velocity - (movementDir * 0.7 * accelerationConstant)).Length() < 0.1f)
+		{
+			velocity.SetZero();
 		}
 		else
+			acceleration -= (movementDir * 0.7 * accelerationConstant);
+		if (velocity.Length() <= maxVelocity)
 		{
-			if ((velocity.x + acceleration.x + accelerationFriction * dt) >= 0)
+
+			if (keyPress[W_KEY])
 			{
-				velocity.x = 0;
+				if ((front - movementDir).Length() > 0.5)
+					acceleration += front * 2 * accelerationConstant;
+				else
+				{
+					acceleration += front * accelerationConstant;
+				}
 			}
-			else
-				acceleration.x + accelerationFriction;
+			if (keyPress[S_KEY])
+			{
+				if ((-front - movementDir).Length() > 0.5)
+					acceleration -= front * 2 * accelerationConstant;
+				else
+				{
+					acceleration -= front * accelerationConstant;
+				}
+			}
 		}
 
-		if (velocity.z > 0)
-		{
-			if ((velocity.z - acceleration.z - accelerationFriction * dt) <= 0)
-			{
-				velocity.z = 0;
-			}
-			else
-				acceleration.z - accelerationFriction;
-		}
-		else
-		{
-			if ((velocity.z + acceleration.z + accelerationFriction * dt) >= 0)
-			{
-				velocity.z = 0;
-			}
-			else
-				acceleration.z + accelerationFriction;
-		}
-	}
-	if (Application::IsKeyPressed('W'))
-	{
-		acceleration += accelerationConstant * front * dt;
-	}
-	if (Application::IsKeyPressed('S'))
-	{
-		acceleration -= accelerationConstant * front * dt;
-	}
-	if (Application::IsKeyPressed('A'))
-	{
-		object->addRotation(30*dt,'y');
-	}
-	if (Application::IsKeyPressed('D'))
-	{
-		object->addRotation(-30 * dt, 'y');
-	}
+
 	velocity += acceleration;
-	object->setTranslation(object->getTranslation().x + velocity.x*dt, object->getTranslation().y + velocity.y * dt, object->getTranslation().z + velocity.z * dt);
+	object->setTranslation(object->getTranslation().x + velocity.x, object->getTranslation().y + velocity.y, object->getTranslation().z + velocity.z);
 }
