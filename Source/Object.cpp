@@ -202,3 +202,10 @@ void Object::unbind(Object* child)
 	child->setParent(nullptr);
 	}
 }
+
+float Object::checkDist(Vector3 playerpos)
+{
+	float x = pow(pos.x - playerpos.x, 2.0);
+	float z = pow(pos.z - playerpos.z, 2.0);
+	return sqrt(x + z);
+}

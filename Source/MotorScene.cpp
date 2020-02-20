@@ -9,7 +9,13 @@
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
 
+#include "irrKlang.h"
+#pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
+
 extern double elapsedTime;
+
+using namespace irrklang;
+ISoundEngine* engine = createIrrKlangDevice();
 
 double MotorScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -68,7 +74,45 @@ void MotorScene::CreateInstances()
 	object[UFO1].setScale(4);
 	object[UFO1].setInteractable(true);
 	ufo.setObject(&object[UFO1]);
+	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
+	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_PURPLE)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
+	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
+	meshList[unsigned int(MESH::UFO_BLUE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
+	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");
+
+	//base mesh
+	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
+	meshList[unsigned int(MESH::PLATFORM)]->textureID = LoadTGA("Resources/TGAs/platform.tga");
+
+	//base mesh
+	meshList[unsigned int(MESH::ROBOT_BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_body.obj");
+	meshList[unsigned int(MESH::ROBOT_BODY)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_arm.obj");
+	meshList[unsigned int(MESH::ROBOT_ARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_forearm.obj");
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_upperleg.obj");
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
 }
+void MotorScene::CreateInstances()
+{
+	//create instances for platforms
+	createPlatforms();
+
+	//create instances for ufos
+	createUFOs();
+
+	createRobot1();
+
+}
+
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
@@ -86,6 +130,10 @@ void MotorScene::Init(){ //Init scene
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	inRange[ROBOT_BODY1] = 0;
+
+	//play thru out the scene and loops
+	engine->play2D("Resources/Sound/bgm.mp3", true);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -99,6 +147,7 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	if(dynamic_cast<MotorScene*>(newScene) != this){
 		newScene->Init();
 	}
+	engine->drop();
 }
 
 void MotorScene::Update(double dt, float FOV){ //Update scene
@@ -150,6 +199,29 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		Camera::getCam().updateCollision(object[i]);
 	}
 	ufo.update(dt);
+
+	for (int i = 0; i < 5; i++)
+	{
+		object[i].addRotation(1, 'y');
+	}
+
+	//!testing! if w is pressed, sound effects will be played
+	if (Application::IsKeyPressed('W'))
+		engine->play2D("Resources/Sound/bell.wav");
+
+	//if (!object[A].isClockwise)
+	//{
+	//	//do animation
+	//	if (condition to turn clockwise)
+	//		object[A].setIsClockwise(true);
+	//}
+	//then vice versa for clockwise
+
+	if (object[ROBOT_BODY1].checkDist(Camera::getCam().pos) < 25.f)
+		inRange[ROBOT_BODY1] = true;
+	else
+		inRange[ROBOT_BODY1] = false;
+
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
@@ -178,6 +250,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 
 	delete shMan;
 	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
+	InitLight();
 	RenderLight();
 
 	modelStack.PushMatrix();
@@ -192,7 +265,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	for (int i = 0; i < NUM_INSTANCES; ++i)
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -202,18 +275,17 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
 		modelStack.PopMatrix();
 		}
-	}
+	}*/
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getParent() == nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(object[i]);
+			renderObject(&object[i]);
 			modelStack.PopMatrix();
 		}
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	std::ostringstream ss;
 	if(showDebugInfo){
@@ -238,7 +310,10 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f,0.2f,2.f, winWidth, winHeight);
 		ss.str("");
 	}
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
 
+	if (inRange[ROBOT_BODY1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 }
 
 void MotorScene::RenderLight(){
@@ -319,13 +394,14 @@ void MotorScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, f
 }
 
 void MotorScene::RenderSkybox(bool lightSwitch){
-	//modelStack.PushMatrix();
-	//	modelStack.Translate(-49.8f, 0.f, 0.f);
-	//	modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
-	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-	//	modelStack.Scale(100.f, 100.f, 100.f);
-	//	RenderMesh(meshList[unsigned int(MESH::LEFT)], lightSwitch);
-	//modelStack.PopMatrix();
+	lightSwitch = 1;
+	modelStack.PushMatrix();
+		modelStack.Translate(-49.8f, 0.f, 0.f);
+		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
+		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[unsigned int(MESH::LEFT)], lightSwitch);
+	modelStack.PopMatrix();
 
 	//modelStack.PushMatrix();
 	//	modelStack.Translate(49.8f, 0.f, 0.f);
@@ -412,6 +488,106 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	glEnable(GL_DEPTH_TEST);
 }
 
+void MotorScene::createPlatforms()
+{
+	//5 copies of platform
+	object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM1].setTranslation(0, 0.5, 0);
+	object[PLATFORM1].setScale(4);
+	object[PLATFORM1].setDimension(40, 40, 40);
+
+	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM2].setTranslation(70, 0.5, 70);
+	object[PLATFORM2].setScale(4);
+	object[PLATFORM2].setDimension(40, 40, 40);
+
+	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM3].setTranslation(-70, 0.5, 70);
+	object[PLATFORM3].setScale(4);
+	object[PLATFORM3].setDimension(40, 40, 40);
+
+	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM4].setTranslation(70, 0.5, -70);
+	object[PLATFORM4].setScale(4);
+	object[PLATFORM4].setDimension(40, 40, 40);
+
+	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM5].setTranslation(-70, 0.5, -70);
+	object[PLATFORM5].setScale(4);
+	object[PLATFORM5].setDimension(40, 40, 40);
+}
+
+void MotorScene::createUFOs()
+{
+	//5 copies of ufo in ref to individual platform
+	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BASE1].setTranslation(0, 0.6, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
+
+	object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
+	object[UFO_PURPLE1].setTranslation(0, 0.6, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
+
+	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
+	object[UFO_RED1].setTranslation(0, 0.6, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
+
+	object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
+	object[UFO_BLUE1].setTranslation(0, 0.6, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
+
+	object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
+	object[UFO_PINK1].setTranslation(0, 0.6, 0);
+	//ufo in ref to platform
+	Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
+}
+
+void MotorScene::createRobot1()
+{
+	//robot parts for 1 robot
+	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY1].setTranslation(50, 5.2, 50);
+	object[ROBOT_BODY1].setScale(2);
+	object[ROBOT_BODY1].setDimension(6, 15, 6);
+
+	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM1].setTranslation(-1, 2, 0);
+	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM1], true, true);
+
+	object[ROBOT_ARM2].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM2].setTranslation(1, 2, 0);
+	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM2], true, true);
+
+	object[ROBOT_FOREARM1].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM1].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM1], &object[ROBOT_FOREARM1], true, true);
+
+	object[ROBOT_FOREARM2].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM2].setRotation(190, 'y');
+	object[ROBOT_FOREARM2].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM2], &object[ROBOT_FOREARM2], true, true);
+
+	object[ROBOT_UPPERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG1].setTranslation(-0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG1], true, true);
+
+	object[ROBOT_UPPERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG2].setTranslation(0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG2], true, true);
+
+	object[ROBOT_LOWERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG1].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG1], &object[ROBOT_LOWERLEG1], true, true);
+
+	object[ROBOT_LOWERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG2].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG2], &object[ROBOT_LOWERLEG2], true, true);
+}
+
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
 	if(!mesh || mesh->textureID <= 0){ //Proper error check return
 		glDisable(GL_DEPTH_TEST);
@@ -450,39 +626,39 @@ void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, f
 	glEnable(GL_DEPTH_TEST);
 }
 
-void MotorScene::renderObject(Object obj)
+void MotorScene::renderObject(Object* obj)
 {
-	if (obj.isRender() && obj.getMesh() != nullptr)
+	if (obj->isRender() && obj->getMesh() != nullptr)
 	{
-		modelStack.Translate(obj.getTranslation().x, obj.getTranslation().y, obj.getTranslation().z);
-		if (obj.getChild().size() != 0)
+		modelStack.Translate(obj->getTranslation().x, obj->getTranslation().y, obj->getTranslation().z);
+		if (obj->getChild().size() != 0)
 		{
-			for (int i = 0; i < obj.getChild().size(); ++i)
+			for (int i = 0; i < obj->getChild().size(); ++i)
 			{
 				modelStack.PushMatrix();
-				if (obj.getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
+				if (obj->getChild()[i]->followParentRotation())//if obj follows parent's rotation (for joints etc)
 				{
-					if (obj.getAngle().x != 0)
-						modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
-					if (obj.getAngle().y != 0)
-						modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
-					if (obj.getAngle().z != 0)
-						modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+					if (obj->getAngle().x != 0)
+						modelStack.Rotate(obj->getAngle().x, 1, 0, 0);
+					if (obj->getAngle().y != 0)
+						modelStack.Rotate(obj->getAngle().y, 0, 1, 0);
+					if (obj->getAngle().z != 0)
+						modelStack.Rotate(obj->getAngle().z, 0, 0, 1);
 				}
-				if (obj.getChild()[i]->followParentScale())
-					modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
-				renderObject(*obj.getChild()[i]);
+				if (obj->getChild()[i]->followParentScale())
+					modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
+				renderObject(obj->getChild()[i]);
 				modelStack.PopMatrix();
 			}
 		}
-		if (obj.getAngle().x != 0)
-			modelStack.Rotate(obj.getAngle().x, 1, 0, 0);
-		if (obj.getAngle().y != 0)
-			modelStack.Rotate(obj.getAngle().y, 0, 1, 0);
-		if (obj.getAngle().z != 0)
-			modelStack.Rotate(obj.getAngle().z, 0, 0, 1);
+		if (obj->getAngle().x != 0)
+			modelStack.Rotate(obj->getAngle().x, 1, 0, 0);
+		if (obj->getAngle().y != 0)
+			modelStack.Rotate(obj->getAngle().y, 0, 1, 0);
+		if (obj->getAngle().z != 0)
+			modelStack.Rotate(obj->getAngle().z, 0, 0, 1);
 
-		modelStack.Scale(obj.getScale().x, obj.getScale().y, obj.getScale().z);
-		RenderMesh(obj.getMesh(), true);
+		modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
+		RenderMesh(obj->getMesh(), true);
 	}
 }
