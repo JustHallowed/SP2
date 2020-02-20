@@ -114,6 +114,7 @@ void MotorScene::Init(){ //Init scene
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	inRange[ROBOT_BODY1] = 0;
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -191,7 +192,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//}
 	//then vice versa for clockwise
 
-	
+	if (object[ROBOT_BODY1].checkDist(Camera::getCam().pos) < 25.f)
+		inRange[ROBOT_BODY1] = true;
+	else
+		inRange[ROBOT_BODY1] = false;
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -276,6 +280,9 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
+
+	if (inRange[ROBOT_BODY1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 }
 
 void MotorScene::RenderLight(){

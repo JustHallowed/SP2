@@ -60,5 +60,6 @@ public:
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);
 	//unbinds child from parent
 	static void unbind(Object* child);
+	float checkDist(Vector3 playerpos);
 };
 

@@ -38,6 +38,7 @@ class MotorScene final: public Scene{
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;
+	bool inRange[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
 	double bulletBounceTime, debugBounceTime, lightBounceTime;
 	double CalcFrameRate() const;
