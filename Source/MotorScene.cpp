@@ -65,16 +65,6 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
 
-	meshList[unsigned int(MESH::UFO)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
-}
-void MotorScene::CreateInstances()
-{
-	object[UFO1].setMesh(meshList[unsigned int(MESH::UFO)]);
-	object[UFO1].setTranslation(0, 5, 0);
-	object[UFO1].setScale(4);
-	object[UFO1].setInteractable(true);
-	ufo.setObject(&object[UFO1]);
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
 	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -102,8 +92,13 @@ void MotorScene::CreateInstances()
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
 }
+
 void MotorScene::CreateInstances()
 {
+	object[CAMERABOX].setMesh(meshList[unsigned int(MESH::HITBOX)]);
+	object[CAMERABOX].setDimension(1, 1, 1);
+	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z);
+
 	//create instances for platforms
 	createPlatforms();
 
@@ -135,7 +130,7 @@ void MotorScene::Init(){ //Init scene
 	interacted[ROBOT_BODY1] = 0;
 
 	//play thru out the scene and loops
-	engine->play2D("Resources/Sound/bgm.mp3", true);
+	//engine->play2D("Resources/Sound/bgm.mp3", true);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -194,19 +189,21 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getDimension().y == 0)
-			continue;
-		Camera::getCam().updateCollision(object[i]);
-	}
-	ufo.update(dt);
+
 
 	for (int i = 0; i < 5; i++)
 	{
 		object[i].addRotation(1, 'y');
 	}
-
+	
+	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z);
+	
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (i == CAMERABOX)
+			continue;
+	object[CAMERABOX].updateCollision(&object[i]);
+	}
 	//!testing! if w is pressed, sound effects will be played
 	//if (Application::IsKeyPressed('W'))
 	//	engine->play2D("Resources/Sound/bell.wav");
@@ -217,7 +214,13 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//	if (condition to turn clockwise)
 	//		object[A].setIsClockwise(true);
 	//}
-	//then vice versa for clockwise
+	//else if (object[A].isClockwise)
+	//{
+	//	//do animation
+	//	if (condition to turn anti-clockwise)
+	//		object[A].setIsClockwise(false);
+	//}
+
 
 	if (object[ROBOT_BODY1].checkDist(Camera::getCam().target) < 15.f)
 	{
@@ -279,17 +282,20 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
 		modelStack.PushMatrix();
 		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+		modelStack.Rotate(object[i].getAngle().z,0,0,1);
+		modelStack.Rotate(object[i].getAngle().y, 0,1,0);
+		modelStack.Rotate(object[i].getAngle().x, 1,0,0);
 		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
 		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
 		modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -316,12 +322,6 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-		//ss << "Aceleration: " << ufo.getAcceleration().x<<"	"<<ufo.getAcceleration().y << "	"<<ufo.getAcceleration().z;
-		//RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		//ss.str("");
-		ss << "Velocity: " << ufo.getVelocity().Length();
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f,0.2f,2.f, winWidth, winHeight);
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
@@ -547,27 +547,27 @@ void MotorScene::createUFOs()
 {
 	//5 copies of ufo in ref to individual platform
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(0, 0.6, 0);
+	object[UFO_BASE1].setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
 
 	object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
-	object[UFO_PURPLE1].setTranslation(0, 0.6, 0);
+	object[UFO_PURPLE1].setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
 
 	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(0, 0.6, 0);
+	object[UFO_RED1].setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
 
 	object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
-	object[UFO_BLUE1].setTranslation(0, 0.6, 0);
+	object[UFO_BLUE1].setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
 
 	object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
-	object[UFO_PINK1].setTranslation(0, 0.6, 0);
+	object[UFO_PINK1].setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
 	Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
 }
@@ -576,41 +576,42 @@ void MotorScene::createRobot1()
 {
 	//robot parts for 1 robot
 	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY1].setTranslation(50, 5.2, 50);
+	object[ROBOT_BODY1].setTranslation(50.f, 5.2f, 50.f);
 	object[ROBOT_BODY1].setScale(2);
-	object[ROBOT_BODY1].setDimension(6, 15, 6);
+	object[ROBOT_BODY1].setDimension(6.f, 15.f, 6.f);
+	object[ROBOT_BODY1].setRotation(45,'y');
 
 	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM1].setTranslation(-1, 2, 0);
+	object[ROBOT_ARM1].setTranslation(-1.f, 2.f, 0.f);
 	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM1], true, true);
 
 	object[ROBOT_ARM2].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM2].setTranslation(1, 2, 0);
+	object[ROBOT_ARM2].setTranslation(1.f, 2.f, 0.f);
 	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM2], true, true);
 
 	object[ROBOT_FOREARM1].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM1].setTranslation(0, -1, 0);
+	object[ROBOT_FOREARM1].setTranslation(0.f, -1.f, 0.f);
 	Object::bind(&object[ROBOT_ARM1], &object[ROBOT_FOREARM1], true, true);
 
 	object[ROBOT_FOREARM2].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
 	object[ROBOT_FOREARM2].setRotation(190, 'y');
-	object[ROBOT_FOREARM2].setTranslation(0, -1, 0);
+	object[ROBOT_FOREARM2].setTranslation(0.f, -1.f, 0.f);
 	Object::bind(&object[ROBOT_ARM2], &object[ROBOT_FOREARM2], true, true);
 
 	object[ROBOT_UPPERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG1].setTranslation(-0.45, -0.05, 0);
+	object[ROBOT_UPPERLEG1].setTranslation(-0.45f, -0.05f, 0.f);
 	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG1], true, true);
 
 	object[ROBOT_UPPERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG2].setTranslation(0.45, -0.05, 0);
+	object[ROBOT_UPPERLEG2].setTranslation(0.45f, -0.05f, 0.f);
 	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG2], true, true);
 
 	object[ROBOT_LOWERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG1].setTranslation(0, -1.15, 0);
+	object[ROBOT_LOWERLEG1].setTranslation(0.f, -1.15f, 0.f);
 	Object::bind(&object[ROBOT_UPPERLEG1], &object[ROBOT_LOWERLEG1], true, true);
 
 	object[ROBOT_LOWERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG2].setTranslation(0, -1.15, 0);
+	object[ROBOT_LOWERLEG2].setTranslation(0.f, -1.15f, 0.f);
 	Object::bind(&object[ROBOT_UPPERLEG2], &object[ROBOT_LOWERLEG2], true, true);
 }
 

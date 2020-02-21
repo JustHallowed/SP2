@@ -35,6 +35,7 @@ class MotorScene final: public Scene{
 		ROBOT_LOWERLEG1,
 		ROBOT_LOWERLEG2,
 
+		CAMERABOX,
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;

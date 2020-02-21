@@ -12,7 +12,7 @@ protected:
 	Vector3 translation;//translation relative to parent 
 	Vector3 angle; //angle of rotation for each axis
 	Vector3 scale;//scale of object
-	Vector3 dimension; //dimensions of object
+	Vector3 dimension;
 	Object* parent; // parent of object
 	std::vector<Object*> child;//list of children
 	bool clockwise;//controls rotation
@@ -53,10 +53,12 @@ public:
 	Vector3 getPos();
 	Vector3 getTranslation();
 	Vector3 getScale();
-	Mesh* getMesh(); //returns meshtype from meshlist
 	Vector3 getDimension();
+	Mesh* getMesh(); //returns meshtype from meshlist
+	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
 	void setInteractable(bool canInteract);
 	void unbindChild(Object* child);//removes child from child vector
+	void updateCollision(Object* b);	//check for collision
 	//binds two objects
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);
 	//unbinds child from parent

@@ -110,29 +110,31 @@ void Camera::Update(double dt){ //Update cam
 		}
 	}
 	//check for movement with collision
-	if (canMove[POSX] && displacement.x > 0)
-	{
-		pos.x += displacement.x;
-		target.x += displacement.x;
-	}
-	else
-		if (canMove[NEGX] && displacement.x < 0)
-		{
-			pos.x += displacement.x;
-			target.x += displacement.x;
-		}
-	if (canMove[POSZ] && displacement.z > 0)
-	{
-		pos.z += displacement.z;
-		target.z += displacement.z;
-	}
-	else
-		if (canMove[NEGZ] && displacement.z < 0)
-		{
-			pos.z += displacement.z;
-			target.z += displacement.z;
-		}
-	resetCollision();
+	//if (canMove[POSX] && displacement.x > 0)
+	//{
+	//	pos.x += displacement.x;
+	//	target.x += displacement.x;
+	//}
+	//else
+	//	if (canMove[NEGX] && displacement.x < 0)
+	//	{
+	//		pos.x += displacement.x;
+	//		target.x += displacement.x;
+	//	}
+	//if (canMove[POSZ] && displacement.z > 0)
+	//{
+	//	pos.z += displacement.z;
+	//	target.z += displacement.z;
+	//}
+	//else
+	//	if (canMove[NEGZ] && displacement.z < 0)
+	//	{
+	//		pos.z += displacement.z;
+	//		target.z += displacement.z;
+	//	}
+	//resetCollision();
+	target += displacement;
+	pos += displacement;
 }
 
 void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to mouse movement
@@ -155,44 +157,4 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 		target = pos + front*5;
 	}
 	up = right.Cross(front).Normalized();
-}
-
-void Camera::updateCollision(Object target)
-{
-	if (((abs(pos.x - target.getPos().x)) - 0.5) <= (target.getDimension().x / 2.f))
-	{
-		if ((abs(pos.z - target.getPos().z) - 1) <= (target.getDimension().z / 2.f))
-		{
-			if ((pos.z - target.getPos().z) > 0)
-			{
-				canMove[NEGZ] = false;
-			}
-			else
-			{
-				canMove[POSZ] = false;
-			}
-		}
-	}
-	if ((abs((pos.z - target.getPos().z)) - 0.5) <= (target.getDimension().z / 2.f))
-	{
-		if ((abs(pos.x - target.getPos().x) - 1) <= target.getDimension().x / 2.f)
-		{
-			if ((pos.x - target.getPos().x) > 0)
-			{
-				canMove[NEGX] = false;
-			}
-			else
-			{
-				canMove[POSX] = false;
-			}
-		}
-	}
-}
-
-void Camera::resetCollision()
-{
-	canMove[0] = true;
-	canMove[1] = true;
-	canMove[2] = true;
-	canMove[3] = true;
 }
