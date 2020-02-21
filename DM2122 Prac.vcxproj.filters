@@ -60,7 +60,10 @@
     <ClInclude Include="Source\MotorScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Object.h">
+    <ClInclude Include="Source\ScoreSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Crypto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,7 +104,10 @@
     <ClCompile Include="Source\MotorScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Object.cpp">
+    <ClCompile Include="Source\ScoreSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Crypto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

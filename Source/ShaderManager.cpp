@@ -4,14 +4,28 @@
 #include <vector>
 #include <GL/glew.h>
 
-ShaderManager::ShaderManager(const char* vsPath, const char* fsPath): progID(glCreateProgram()), vsID(glCreateShader(GL_VERTEX_SHADER)), fsID(glCreateShader(GL_FRAGMENT_SHADER)){
-	ParseShader(vsPath, vsID);
-	ParseShader(fsPath, fsID);
+ShaderManager::ShaderManager(): progID(glCreateProgram()){
+	for(short i = 0; i < 2; ++i){
+		vsID[i] = glCreateShader(GL_VERTEX_SHADER);
+		fsID[i] = glCreateShader(GL_FRAGMENT_SHADER);
+	}
+	ParseShader("Resources/Shaders/Regular.vs", vsID[0]);
+	ParseShader("Resources/Shaders/Regular.fs", fsID[0]);
+	ParseShader("Resources/Shaders/Particle.vs", vsID[1]);
+	ParseShader("Resources/Shaders/Particle.fs", fsID[1]);
+	glAttachShader(progID, vsID[0]);
+	glAttachShader(progID, fsID[0]);
 	LinkProg();
 	UseProg();
 }
 
 ShaderManager::~ShaderManager(){
+	for(short i = 0; i < 2; ++i){
+		glDetachShader(progID, vsID[i]);
+		glDetachShader(progID, fsID[i]);
+		glDeleteShader(vsID[i]);
+		glDeleteShader(fsID[i]);
+	}
 	glDeleteProgram(progID);
 }
 
@@ -33,9 +47,6 @@ void ShaderManager::LinkProg() const{
 		glGetProgramInfoLog(progID, infoLogLength, NULL, &errorMsg[0]);
 		printf("%s\n", &errorMsg[0]);
 	}
-
-	glDeleteShader(vsID);
-	glDeleteShader(fsID);
 }
 
 void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) const{
@@ -64,8 +75,15 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		glGetShaderInfoLog(shaderID, infoLogLength, &infoLogLength, errorMsg);
 		printf("Failed to compile \"%s\"!\n%s\n", filePath, errorMsg);
 	}
+}
 
-	glAttachShader(progID, shaderID);
+void ShaderManager::UseNewShaders(short currIndex, short newIndex) const{
+	glDetachShader(progID, vsID[currIndex]);
+	glDetachShader(progID, fsID[currIndex]);
+	glAttachShader(progID, vsID[newIndex]);
+	glAttachShader(progID, fsID[newIndex]);
+	LinkProg();
+	UseProg();
 }
 
 void ShaderManager::UseProg() const{

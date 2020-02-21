@@ -128,6 +128,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Camera.h" />
+    <ClInclude Include="Source\Crypto.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.hpp" />
     <ClInclude Include="Source\LoadTGA.hpp" />
@@ -135,10 +136,10 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\MotorScene.h" />
-    <ClInclude Include="Source\Object.h" />
     <ClInclude Include="Source\ParticleSystem.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneManager.h" />
+    <ClInclude Include="Source\ScoreSystem.h" />
     <ClInclude Include="Source\ShaderManager.hpp" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
@@ -146,15 +147,16 @@
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
+    <ClCompile Include="Source\Crypto.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\MotorScene.cpp" />
-    <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\ParticleSystem.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
+    <ClCompile Include="Source\ScoreSystem.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
