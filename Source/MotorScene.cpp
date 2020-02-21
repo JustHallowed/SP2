@@ -8,7 +8,6 @@
 #include "Utility.h"
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
-
 #include "irrKlang.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 

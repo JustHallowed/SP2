@@ -83,11 +83,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\irrklang\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\irrklang\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>glew32.lib;glfw3.lib;opengl32.lib;winmm.lib;Common.lib;%(AdditionalDependencies);irrklang.lib;</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\irrklang\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\irrklang\lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
