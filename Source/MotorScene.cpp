@@ -45,6 +45,7 @@ void MotorScene::InitLight() const{
 
 void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::CAMERABOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), 1.f, 1.f, 1.f);
 	meshList[unsigned int(MESH::HITSPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f),16,16,1);
 	meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
@@ -95,9 +96,14 @@ void MotorScene::InitMeshes(){
 
 void MotorScene::CreateInstances()
 {
-	object[CAMERABOX].setMesh(meshList[unsigned int(MESH::HITBOX)]);
+	object[CAMERABOX].setMesh(meshList[unsigned int(MESH::CAMERABOX)]);
 	object[CAMERABOX].setDimension(1, 1, 1);
-	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z);
+	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z-5);
+
+	object[TESTBOX].setMesh(meshList[unsigned int(MESH::CAMERABOX)]);
+	object[TESTBOX].setScale(10, 10, 10);
+	object[TESTBOX].setDimension(10, 10, 10);
+	object[TESTBOX].setTranslation(0,35,0);
 
 	//create instances for platforms
 	createPlatforms();
@@ -173,10 +179,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		showLightSphere = !showLightSphere;
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if(Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime){ //Show/Hide debug info
-		showDebugInfo = !showDebugInfo;
-		debugBounceTime = elapsedTime + 0.5;
-	}
+	//if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
+	//	showDebugInfo = !showDebugInfo;
+	//	debugBounceTime = elapsedTime + 0.5;
+	//}
 
 	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
 		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
@@ -191,19 +197,31 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 
 
 
-	for (int i = 0; i < 5; i++)
-	{
-		object[i].addRotation(1, 'y');
-	}
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	object[i].addRotation(1, 'y');
+	//}
 	
-	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z);
-	
+	object[CAMERABOX].setTranslation(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z+5);
+	std::cout << "\n";
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (i == CAMERABOX)
-			continue;
-	object[CAMERABOX].updateCollision(&object[i]);
+		object[i].resetCollision();
 	}
+	//for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	//{
+	//	for (int i = 0; i < NUM_INSTANCES; ++i)
+	//	{
+	//		if (i < j)
+	//			i = j+1;
+	//		object[j].updateCollision(&object[i]);
+	//	}
+	//}
+		for (int i = 0; i < NUM_INSTANCES; ++i)
+		{
+			object[CAMERABOX].updateCollision(&object[TESTBOX],dt);
+		}
+
 	//!testing! if w is pressed, sound effects will be played
 	//if (Application::IsKeyPressed('W'))
 	//	engine->play2D("Resources/Sound/bell.wav");
@@ -322,6 +340,24 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
+		ss << "PosX: " << object[CAMERABOX].collisionAt[0] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f,5,28, winWidth, winHeight);
+		ss.str("");
+		ss << "NegX: " << object[CAMERABOX].collisionAt[1] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, 5,27, winWidth, winHeight);
+		ss.str("");
+		ss << "PosY: " << object[CAMERABOX].collisionAt[2] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, 5, 26, winWidth, winHeight);
+		ss.str("");
+		ss << "NegY: " << object[CAMERABOX].collisionAt[3] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, 5, 25, winWidth, winHeight);
+		ss.str("");
+		ss << "PosZ: " << object[CAMERABOX].collisionAt[4] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, 5, 24, winWidth, winHeight);
+		ss.str("");
+		ss << "NegZ: " << object[CAMERABOX].collisionAt[5] << std::endl;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, 5, 23, winWidth, winHeight);
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
@@ -579,7 +615,7 @@ void MotorScene::createRobot1()
 	object[ROBOT_BODY1].setTranslation(50.f, 5.2f, 50.f);
 	object[ROBOT_BODY1].setScale(2);
 	object[ROBOT_BODY1].setDimension(6.f, 15.f, 6.f);
-	object[ROBOT_BODY1].setRotation(45,'y');
+	/*object[ROBOT_BODY1].setRotation(45,'y');*/
 
 	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM1].setTranslation(-1.f, 2.f, 0.f);

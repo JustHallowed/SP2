@@ -21,7 +21,7 @@ unsigned int ShaderManager::getProgID() const{
 
 void ShaderManager::LinkProg() const{
 	GLint result, infoLogLength;
-	printf("Linking programme...\n\n");
+	//printf("Linking programme...\n\n");
 	glLinkProgram(progID); //Vars in diff shaders are linked here too
 	glValidateProgram(progID);
 
@@ -53,7 +53,7 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		return;
 	}
 
-	printf("Compiling \"%s\"...\n", filePath);
+	//printf("Compiling \"%s\"...\n", filePath);
 	const char* shaderSrcPtr = shaderSrc.c_str();
 	glShaderSource(shaderID, 1, &shaderSrcPtr, NULL);
 	glCompileShader(shaderID);
