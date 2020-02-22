@@ -8,7 +8,9 @@
 #include "Utility.h"
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
+#include "MainChar.h"
 
+extern Camera camera;
 extern double elapsedTime;
 
 double MotorScene::CalcFrameRate() const{
@@ -61,6 +63,17 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 20, 20, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
+
+	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
+	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
+	meshList[unsigned int(MESH::FOREARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharBody.obj");
+	meshList[unsigned int(MESH::BODY)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::LOWER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharLowerLeg.obj");
+	meshList[unsigned int(MESH::LOWER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharUpperLeg.obj");
+	meshList[unsigned int(MESH::UPPER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 }
 
 void MotorScene::Init(){ //Init scene
@@ -74,13 +87,14 @@ void MotorScene::Init(){ //Init scene
 	scoreMan = new ScoreManager;
 	GetNameScoreData(0);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-	Camera::getCam().Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	bulletGenerator.InitParticles();
-	showDebugInfo = 1;
-	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	animateDir = showDebugInfo = 1;
+	state = showLightSphere = 0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = 0.0;
+	particleAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -140,25 +154,123 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	bulletGenerator.UpdateParticles(dt);
 
 	//Billboarding for particles
-	Vector3 particleFront = Vector3(Camera::getCam().pos.x, 0.f, Camera::getCam().pos.z);
+	Vector3 particleFront = Vector3(camera.pos.x, 0.f, camera.pos.z);
 	particleAngle = Math::RadianToDegree(acos(particleFront.Dot(Vector3(0.f, 0.f, 30.f)) / (particleFront.Length() * Vector3(0.f, 0.f, 30.f).Length())));
-	if(Camera::getCam().pos.x < 0.f){
+	if(camera.pos.x < 0.f){
 		particleAngle = 360.f - particleAngle;
 	}
+
+	UpdateMainChar(dt);
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
 }
 
+void MotorScene::UpdateMainChar(double dt){
+	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
+		if(timePressed == 0.0){
+			timePressed = elapsedTime;
+		}
+		if(swingBounceTime <= timePressed){
+			if(state){
+				leftArmAngle += (animateDir ? 1.25f : -1.25f);
+				rightArmAngle += (animateDir ? -1.25f : 1.25f);
+				leftUpperAngle = rightArmAngle;
+				rightUpperAngle = leftArmAngle;
+				//if(!animateDir){
+				//	if(leftUpperAngle < 0.f){
+				//		leftLowerAngle -= 2.f;
+				//	} else if(leftUpperAngle > 0.f){
+				//		leftLowerAngle += 2.f;
+				//	}
+				//} else{
+				//	if(rightUpperAngle < 0.f){
+				//		rightLowerAngle -= 2.f;
+				//	} else if(rightUpperAngle > 0.f){
+				//		rightLowerAngle += 2.f;
+				//	}
+				//}
+				if((animateDir && leftArmAngle == 20.f) || (!animateDir && leftArmAngle == -30.f)){
+					animateDir = !animateDir;
+				}
+			} else{
+				leftArmAngle += (animateDir ? -1.5f : 1.f);
+				rightArmAngle += (animateDir ? 1.f : -1.5f);
+				leftUpperAngle = rightArmAngle;
+				rightUpperAngle = leftArmAngle;
+				if(leftArmAngle == -30.f){
+					state = 1;
+					timePressed = elapsedTime;
+				}
+			}
+			swingBounceTime = timePressed + 0.015;
+		}
+		timePressed += dt;
+	} else{
+		timePressed = 0.0;
+		if(leftArmAngle){ //Go back to standing pos
+			leftArmAngle += (leftArmAngle < 0.f ? 1.25f : -1.25f);
+			rightArmAngle += (rightArmAngle > 0.f ? -1.25f : 1.25f);
+			leftUpperAngle = rightArmAngle;
+			rightUpperAngle = leftArmAngle;
+		}
+	}
+
+	//Move forward or backward
+	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
+		float moveVelocity = float(Application::IsKeyPressed(VK_UP) - Application::IsKeyPressed(VK_DOWN)) * 10.f * float(dt);
+		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
+		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
+		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
+	}
+
+	//Move left or right
+	if(Application::IsKeyPressed(VK_LEFT) ^ Application::IsKeyPressed(VK_RIGHT)){
+		float turnVelocity = float(Application::IsKeyPressed(VK_LEFT) - Application::IsKeyPressed(VK_RIGHT)) * 100.f * float(dt);
+		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
+		mainCharAngle += turnVelocity;
+		Mtx44 r;
+		r.SetToRotation(turnVelocity, 0.f, 1.f, 0.f);
+		front = r * front;
+		MainChar::getMainChar().setTarget(MainChar::getMainChar().getPos() + front);
+	}
+
+	//Jump, mini jump, double jump
+	if(Application::IsKeyPressed(VK_SPACE) && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
+		MainChar::getMainChar().setJumpHeight(1.3f);
+		MainChar::getMainChar().setJumping(1);
+		MainChar::getMainChar().setKeyReleased(0);
+		MainChar::getMainChar().reduceMaxJump();
+	}
+	if(!Application::IsKeyPressed(VK_SPACE)){
+		MainChar::getMainChar().setKeyReleased(1);
+		if(MainChar::getMainChar().isJumping() && MainChar::getMainChar().getJumpHeight() > 0.0f){
+			MainChar::getMainChar().setJumpHeight(0.f);
+		}
+	}
+	if(MainChar::getMainChar().isJumping()){
+		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + Vector3(0.f, MainChar::getMainChar().getJumpHeight(), 0.f));
+		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + Vector3(0.f, MainChar::getMainChar().getJumpHeight(), 0.f));
+		MainChar::getMainChar().setJumpHeight(MainChar::getMainChar().getJumpHeight() - MainChar::getMainChar().getGrav());
+	}
+	if(MainChar::getMainChar().getPos().y < 0.0f){
+		MainChar::getMainChar().setPos(Vector3(MainChar::getMainChar().getPos().x, 0.f, MainChar::getMainChar().getPos().z));
+		MainChar::getMainChar().setJumpHeight(0.f);
+		MainChar::getMainChar().setJumping(0);
+		MainChar::getMainChar().setMaxJump(2);
+	}
+}
+
 void MotorScene::Render(double dt, int winWidth, int winHeight){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	viewStack.LoadIdentity();
-	viewStack.LookAt(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
-		Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z,
-		Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z);
+	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
+		camera.target.x, camera.target.y, camera.target.z,
+		camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
 
+	RenderMainChar();
 	RenderLight();
 
 	modelStack.PushMatrix();
@@ -185,10 +297,10 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	std::ostringstream ss;
 	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
+		ss << "MainChar's target: " << MainChar::getMainChar().getTarget().x << ", " << MainChar::getMainChar().getTarget().y << ", " << MainChar::getMainChar().getTarget().z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
 		ss.str("");
-		ss << "Cam pos: " << Camera::getCam().pos.x << ", " << Camera::getCam().pos.y << ", " << Camera::getCam().pos.z;
+		ss << "MainChar's pos: " << MainChar::getMainChar().getPos().x << ", " << MainChar::getMainChar().getPos().y << ", " << MainChar::getMainChar().getPos().z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
@@ -200,6 +312,66 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+}
+
+void MotorScene::RenderMainChar(){
+	modelStack.PushMatrix();
+		modelStack.Translate(MainChar::getMainChar().getPos().x, MainChar::getMainChar().getPos().y + 5.15f, MainChar::getMainChar().getPos().z);
+		modelStack.Rotate(mainCharAngle, 0.f, 1.f, 0.f);
+		modelStack.Scale(2.f, 2.f, 2.f);
+		RenderMesh(meshList[unsigned int(MESH::BODY)], 1);
+
+		modelStack.PushMatrix();
+			modelStack.Translate(1.f, 2.f, 0.f);
+			modelStack.Rotate(leftArmAngle, 1.f, 0.f, 0.f);
+			RenderMesh(meshList[unsigned int(MESH::ARM)], 1);
+			modelStack.PushMatrix();
+				modelStack.Translate(0.f, -1.f, 0.f);
+				modelStack.Rotate(leftForearmAngle, 1.f, 0.f, 0.f);
+				modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
+				RenderMesh(meshList[unsigned int(MESH::FOREARM)], 1);
+			modelStack.PopMatrix();
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+			modelStack.Translate(-1.f, 2.f, 0.f);
+			modelStack.Rotate(rightArmAngle, 1.f, 0.f, 0.f);
+			RenderMesh(meshList[unsigned int(MESH::ARM)], 1);
+			modelStack.PushMatrix();
+				modelStack.Translate(0.f, -1.f, 0.f);
+				modelStack.Rotate(rightForearmAngle, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[unsigned int(MESH::FOREARM)], 1);
+			modelStack.PopMatrix();
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+			modelStack.Translate(0.45f, -0.05f, 0.f);
+			modelStack.Rotate(leftUpperAngle, 1.f, 0.f, 0.f);
+			modelStack.PushMatrix();
+				modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
+				RenderMesh(meshList[unsigned int(MESH::UPPER_LEG)], 1);
+			modelStack.PopMatrix();
+			modelStack.PushMatrix();
+				modelStack.Translate(0.f, -1.15f, 0.f);
+				modelStack.Rotate(leftLowerAngle, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[unsigned int(MESH::LOWER_LEG)], 1);
+			modelStack.PopMatrix();
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+			modelStack.Translate(-0.45f, -0.05f, 0.f);
+			modelStack.Rotate(rightUpperAngle, 1.f, 0.f, 0.f);
+			modelStack.PushMatrix();
+				RenderMesh(meshList[unsigned int(MESH::UPPER_LEG)], 1);
+			modelStack.PopMatrix();
+			modelStack.PushMatrix();
+				modelStack.Translate(0.f, -1.15f, 0.f);
+				modelStack.Rotate(rightLowerAngle, 1.f, 0.f, 0.f);
+				RenderMesh(meshList[unsigned int(MESH::LOWER_LEG)], 1);
+			modelStack.PopMatrix();
+		modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
 }
 
 void MotorScene::RenderLight(){

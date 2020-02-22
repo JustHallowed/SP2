@@ -6,11 +6,6 @@ double modeBounceTime = 0.0;
 extern double elapsedTime = 0.0;
 extern float FOV;
 
-Camera& Camera::getCam(){ //Static getter for Singleton
-	static Camera cam;
-	return cam;
-}
-
 Camera::Camera(): focusSpd(100.f), freeSpd(50.f){ //Default ctor
 	mode = MODE::FOCUS;
 	leftMouse = rightMouse = 0;

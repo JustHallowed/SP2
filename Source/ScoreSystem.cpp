@@ -37,7 +37,7 @@ ScoreManager::ScoreManager(): head(0), curr(0){
 	eDevice = new Encryptor;
 	dDevice = new Decryptor;
 	std::ifstream codes("LocalStorage/Codes.secret"), key("LocalStorage/Key.secret");
-	dType = (codes.peek() != std::ifstream::traits_type::eof() ? 1 : (key.peek() != std::ifstream::traits_type::eof() ? 2 : 0));
+	dType = (key.peek() != std::ifstream::traits_type::eof() ? 2 : (codes.peek() != std::ifstream::traits_type::eof() ? 1 : 0));
 	tapOnBackup(dType);
 	putData(dType);
 	codes.close();
@@ -142,7 +142,7 @@ void ScoreManager::tapOnBackup(int dType){
 			size_t commaPos = line.find(',');
 			std::string name = line.substr(0, commaPos);
 			int score = stoi(line.substr(commaPos + 2));
-			dDevice->Decrypt(score, dType);
+			dDevice->Decrypt(name, score, dType);
 			text += name + ", " + std::to_string(score) + '\n';
 		}
 		text.erase(text.begin() + text.length() - 1); //Remove extra '\n'
@@ -167,9 +167,10 @@ void ScoreManager::putData(int dType){
 				curr = newNode;
 			}
 			size_t commaPos = line.find(',');
-			newNode->setName(line.substr(0, commaPos));
+			std::string name = line.substr(0, commaPos);
 			int score = stoi(line.substr(commaPos + 2));
-			dDevice->Decrypt(score, dType);
+			dDevice->Decrypt(name, score, dType);
+			newNode->setName(name);
 			newNode->setScore(unsigned short(score));
 		}
 	}
@@ -185,8 +186,8 @@ void ScoreManager::createNewBackup(int dType){
 			size_t commaPos = line.find(',');
 			std::string name = line.substr(0, commaPos);
 			int score = stoi(line.substr(commaPos + 2));
-			dDevice->Decrypt(score, dType); //Decrypt currently encrypted data
-			eDevice->Encrypt(score, 3);
+			dDevice->Decrypt(name, score, dType); //Decrypt currently encrypted data
+			eDevice->Encrypt(name, score, 3);
 			text += name + ", " + std::to_string(score) + '\n';
 		}
 		std::ofstream newBackup("LocalStorage/NamesAndScores.backup");
@@ -207,7 +208,7 @@ void ScoreManager::storeNewData(){ //Store new data encrypted
 			while(curr != 0){
 				std::string name = curr->getNameScore().first;
 				int score = curr->getNameScore().second;
-				eDevice->Encrypt(score, 3);
+				eDevice->Encrypt(name, score, 3);
 				text += (text.empty() ? "" : "\n") + name + ", " + std::to_string(score);
 				curr = curr->getNext();
 			}

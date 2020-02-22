@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 
 extern bool hideCursor;
+Camera camera;
 extern const unsigned int frameTime;
 extern double elapsedTime;
 extern float FOV;
@@ -68,12 +69,12 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update curr
 		screenBounceTime = elapsedTime + 0.5;
 	}
 	if(Application::IsKeyPressed(VK_END)){ //Reset scene
-		Camera::getCam().pos = Camera::getCam().defaultPos;
-		Camera::getCam().target = Camera::getCam().defaultTarget;
-		Camera::getCam().up = Camera::getCam().defaultUp;
+		camera.pos = camera.defaultPos;
+		camera.target = camera.defaultTarget;
+		camera.up = camera.defaultUp;
 		FOV = 45.f;
 	}
-	Camera::getCam().Update(dt);
+	camera.Update(dt);
 	sceneStorage[currSceneID]->Update(dt, FOV);
 	sceneStorage[currSceneID]->Render(dt, int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4);
 	glfwSwapBuffers(m_window);

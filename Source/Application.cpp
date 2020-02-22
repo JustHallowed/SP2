@@ -7,6 +7,7 @@ bool firstMouse = 1;
 const unsigned char FPS = 90;
 extern const unsigned int frameTime = 1000 / FPS; //Time for each frame
 extern bool hideCursor = 1;
+extern Camera camera;
 extern double elapsedTime;
 extern float FOV = 45.f;
 GLFWwindow* m_window;
@@ -50,15 +51,15 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos){ //For 
 	xLast = GLfloat(xpos);
 	yLast = GLfloat(ypos);
 	if(hideCursor){
-		Camera::getCam().UpdateCamVectors(xOffset, yOffset);
+		camera.UpdateCamVectors(xOffset, yOffset);
 	}
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){ //For mouse buttons
 	if(action == GLFW_PRESS){
-		(button == GLFW_MOUSE_BUTTON_LEFT ? Camera::getCam().leftMouse : Camera::getCam().rightMouse) = 1;
+		(button == GLFW_MOUSE_BUTTON_LEFT ? camera.leftMouse : camera.rightMouse) = 1;
 	} else{
-		Camera::getCam().leftMouse = Camera::getCam().rightMouse = 0;
+		camera.leftMouse = camera.rightMouse = 0;
 	}
 }
 

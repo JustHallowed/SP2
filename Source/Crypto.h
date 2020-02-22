@@ -6,12 +6,12 @@ class Encryptor final{
 	unsigned int eCode[3];
 public:
 	Encryptor();
-	void Encrypt(int&, int);
+    void Encrypt(std::string&, int&, int);
 };
 
 class Decryptor final{
 	unsigned int dCode[3];
 public:
 	Decryptor();
-	void Decrypt(int&, int);
+	void Decrypt(std::string&, int&, int);
 };
