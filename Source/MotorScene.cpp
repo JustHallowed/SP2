@@ -256,6 +256,7 @@ void MotorScene::UpdateMainChar(double dt){
 	}
 	if(MainChar::getMainChar().getPos().y < 0.0f){
 		MainChar::getMainChar().setPos(Vector3(MainChar::getMainChar().getPos().x, 0.f, MainChar::getMainChar().getPos().z));
+		MainChar::getMainChar().setTarget(Vector3(MainChar::getMainChar().getTarget().x, 0.f, MainChar::getMainChar().getTarget().z));
 		MainChar::getMainChar().setJumpHeight(0.f);
 		MainChar::getMainChar().setJumping(0);
 		MainChar::getMainChar().setMaxJump(2);
