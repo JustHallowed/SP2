@@ -12,6 +12,8 @@
 
 extern Camera camera;
 extern double elapsedTime;
+std::vector<std::pair<bool, double>> jump;
+std::vector<std::pair<const char*, double>> upDown, leftRight;
 
 double MotorScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -91,6 +93,9 @@ void MotorScene::Init(){ //Init scene
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
+	jump.push_back(std::pair<bool, double>(0, 0.0));
+	upDown.push_back(std::pair<const char*, double>("none", 0.0));
+	leftRight.push_back(std::pair<const char*, double>("none", 0.0));
 	bulletGenerator.InitParticles();
 	animateDir = showDebugInfo = 1;
 	state = showLightSphere = 0;
@@ -130,7 +135,20 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 					glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].power"), light[0].power);
 					break;
 				}
-				case '0': SceneManager::getScMan()->SetNextScene(); //Change scene
+				case '0': { //Change scene
+					SceneManager::getScMan()->SetNextScene();
+					for(auto itr = upDown.begin(); itr != upDown.end(); ++itr){
+						std::cout << itr->first << '\t' << itr->second << '\n';
+					}
+					std::cout << std::endl;
+					for(auto itr = leftRight.begin(); itr != leftRight.end(); ++itr){
+						std::cout << itr->first << '\t' << itr->second << '\n';
+					}
+					std::cout << std::endl;
+					for(auto itr = jump.begin(); itr != jump.end(); ++itr){
+						std::cout << itr->first << '\t' << itr->second << '\n';
+					}
+				}
 			}
 		}
 	}
@@ -173,7 +191,21 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 }
 
 void MotorScene::UpdateMainChar(double dt){
+	UpdateMainTranslateXZ(dt);
+	UpdateMainRotateY(dt);
+	UpdateMainTranslateY(dt);
+}
+
+void MotorScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from target
 	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
+		float moveVelocity = float(Application::IsKeyPressed(VK_UP) - Application::IsKeyPressed(VK_DOWN)) * 10.f * float(dt);
+		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
+		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
+		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
+		const char* keyPressed = (Application::IsKeyPressed(VK_UP) ? "up" : "down");
+		if(keyPressed != upDown.back().first){
+			upDown.push_back(std::pair<const char*, double>(keyPressed, elapsedTime));
+		}
 		if(timePressed == 0.0){
 			timePressed = elapsedTime;
 		}
@@ -183,19 +215,6 @@ void MotorScene::UpdateMainChar(double dt){
 				rightArmAngle += (animateDir ? -1.25f : 1.25f);
 				leftUpperAngle = rightArmAngle;
 				rightUpperAngle = leftArmAngle;
-				//if(!animateDir){
-				//	if(leftUpperAngle < 0.f){
-				//		leftLowerAngle -= 2.f;
-				//	} else if(leftUpperAngle > 0.f){
-				//		leftLowerAngle += 2.f;
-				//	}
-				//} else{
-				//	if(rightUpperAngle < 0.f){
-				//		rightLowerAngle -= 2.f;
-				//	} else if(rightUpperAngle > 0.f){
-				//		rightLowerAngle += 2.f;
-				//	}
-				//}
 				if((animateDir && leftArmAngle == 20.f) || (!animateDir && leftArmAngle == -30.f)){
 					animateDir = !animateDir;
 				}
@@ -213,6 +232,9 @@ void MotorScene::UpdateMainChar(double dt){
 		}
 		timePressed += dt;
 	} else{
+		if(upDown.back().first != "none"){
+			upDown.push_back(std::pair<const char*, double>("none", elapsedTime));
+		}
 		timePressed = 0.0;
 		if(leftArmAngle){ //Go back to standing pos
 			leftArmAngle += (leftArmAngle < 0.f ? 1.25f : -1.25f);
@@ -221,37 +243,44 @@ void MotorScene::UpdateMainChar(double dt){
 			rightUpperAngle = leftArmAngle;
 		}
 	}
+}
 
-	//Move forward or backward
-	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
-		float moveVelocity = float(Application::IsKeyPressed(VK_UP) - Application::IsKeyPressed(VK_DOWN)) * 10.f * float(dt);
-		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
-		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
-		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
-	}
-
-	//Move left or right
-	if(Application::IsKeyPressed(VK_LEFT) ^ Application::IsKeyPressed(VK_RIGHT)){
+void MotorScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing and hence target
+	if(Application::IsKeyPressed(VK_LEFT) ^ Application::IsKeyPressed(VK_RIGHT)){ //Move left or right
 		float turnVelocity = float(Application::IsKeyPressed(VK_LEFT) - Application::IsKeyPressed(VK_RIGHT)) * 100.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
-		mainCharAngle += turnVelocity;
 		Mtx44 r;
 		r.SetToRotation(turnVelocity, 0.f, 1.f, 0.f);
 		front = r * front;
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getPos() + front);
+		const char* keyPressed = (Application::IsKeyPressed(VK_LEFT) ? "left" : "right");
+		if(keyPressed != leftRight.back().first){
+			leftRight.push_back(std::pair<const char*, double>(keyPressed, elapsedTime));
+		}
+		mainCharAngle += turnVelocity;
+	} else if(leftRight.back().first != "none"){
+		leftRight.push_back(std::pair<const char*, double>("none", elapsedTime));
 	}
+}
 
-	//Jump, mini jump, double jump
+void MotorScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
 	if(Application::IsKeyPressed(VK_SPACE) && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
-		MainChar::getMainChar().setJumpHeight(1.3f);
+		MainChar::getMainChar().setGrav(5.f * float(dt));
+		MainChar::getMainChar().setJumpHeight(80.f * float(dt));
 		MainChar::getMainChar().setJumping(1);
 		MainChar::getMainChar().setKeyReleased(0);
 		MainChar::getMainChar().reduceMaxJump();
+		if(jump.back().first != 1){
+			jump.push_back(std::pair<bool, double>(1, elapsedTime));
+		}
 	}
 	if(!Application::IsKeyPressed(VK_SPACE)){
 		MainChar::getMainChar().setKeyReleased(1);
 		if(MainChar::getMainChar().isJumping() && MainChar::getMainChar().getJumpHeight() > 0.0f){
 			MainChar::getMainChar().setJumpHeight(0.f);
+		}
+		if(jump.back().first != 0){
+			jump.push_back(std::pair<bool, double>(0, elapsedTime));
 		}
 	}
 	if(MainChar::getMainChar().isJumping()){
@@ -306,7 +335,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
-		ss << "Elapsed: " << elapsedTime;
+		ss << "Elapsed time: " << elapsedTime;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;

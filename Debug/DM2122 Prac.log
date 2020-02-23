@@ -1,17 +1,9 @@
 ﻿  Application.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\SRHD\Desktop\Framework\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-  Camera.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\SRHD\Desktop\Framework\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
   GhostScene.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\SRHD\Desktop\Framework\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-  MotorScene.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\SRHD\Desktop\Framework\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-  SceneManager.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\SRHD\Desktop\Framework\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
   Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
   DM2122 Prac.vcxproj -> C:\Users\SRHD\Desktop\Framework\Debug\DM2122 Prac.exe

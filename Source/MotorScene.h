@@ -23,7 +23,7 @@ class MotorScene final: public Scene{
 	ShaderManager* shaderMan;
 	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
-	void InitMeshes(), UpdateMainChar(double), RenderMainChar(), RenderLight();
+	void InitMeshes(), UpdateMainChar(double), UpdateMainTranslateXZ(double), UpdateMainRotateY(double), UpdateMainTranslateY(double), RenderMainChar(), RenderLight();
 	void RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void GetNameScoreData(bool) const, InitLight() const;
 	void RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const;

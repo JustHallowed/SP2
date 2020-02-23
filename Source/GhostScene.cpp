@@ -12,6 +12,8 @@
 
 extern Camera camera;
 extern double elapsedTime;
+extern std::vector<std::pair<bool, double>> jump;
+extern std::vector<std::pair<const char*, double>> upDown, leftRight;
 
 double GhostScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -81,12 +83,13 @@ void GhostScene::Init(){ //Init scene
 	shaderMan = new ShaderManager;
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	MainChar::getMainChar().Init(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 0.f, 1.f));
 	InitLight();
 	InitMeshes();
+	state = showLightSphere = indexUpDown = indexLeftRight = indexJump = 0;
 	bulletGenerator.InitParticles();
 	animateDir = showDebugInfo = 1;
-	state = showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = 0.0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = timeInScene = 0.0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 }
 
@@ -164,7 +167,18 @@ void GhostScene::Update(double dt, float FOV){ //Update scene
 }
 
 void GhostScene::UpdateMainChar(double dt){
-	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
+	timeInScene += dt;
+	UpdateMainTranslateXZ(dt);
+	UpdateMainRotateY(dt);
+	UpdateMainTranslateY(dt);
+}
+
+void GhostScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from target
+	if(upDown[indexUpDown].first != "none" && timeInScene >= upDown[indexUpDown].second){
+		float moveVelocity = (upDown[indexUpDown].first == "up" ? 1.f : -1.f) * 10.f * float(dt);
+		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
+		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
+		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
 		if(timePressed == 0.0){
 			timePressed = elapsedTime;
 		}
@@ -174,19 +188,6 @@ void GhostScene::UpdateMainChar(double dt){
 				rightArmAngle += (animateDir ? -1.25f : 1.25f);
 				leftUpperAngle = rightArmAngle;
 				rightUpperAngle = leftArmAngle;
-				//if(!animateDir){
-				//	if(leftUpperAngle < 0.f){
-				//		leftLowerAngle -= 2.f;
-				//	} else if(leftUpperAngle > 0.f){
-				//		leftLowerAngle += 2.f;
-				//	}
-				//} else{
-				//	if(rightUpperAngle < 0.f){
-				//		rightLowerAngle -= 2.f;
-				//	} else if(rightUpperAngle > 0.f){
-				//		rightLowerAngle += 2.f;
-				//	}
-				//}
 				if((animateDir && leftArmAngle == 20.f) || (!animateDir && leftArmAngle == -30.f)){
 					animateDir = !animateDir;
 				}
@@ -212,38 +213,42 @@ void GhostScene::UpdateMainChar(double dt){
 			rightUpperAngle = leftArmAngle;
 		}
 	}
-
-	//Move forward or backward
-	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
-		float moveVelocity = float(Application::IsKeyPressed(VK_UP) - Application::IsKeyPressed(VK_DOWN)) * 10.f * float(dt);
-		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
-		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
-		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
+	if(unsigned(indexUpDown) < upDown.size() - 1 && timeInScene >= upDown[indexUpDown + 1].second){
+		++indexUpDown;
 	}
+}
 
-	//Move left or right
-	if(Application::IsKeyPressed(VK_LEFT) ^ Application::IsKeyPressed(VK_RIGHT)){
-		float turnVelocity = float(Application::IsKeyPressed(VK_LEFT) - Application::IsKeyPressed(VK_RIGHT)) * 100.f * float(dt);
+void GhostScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing and hence target
+	if(leftRight[indexLeftRight].first != "none" && timeInScene >= leftRight[indexLeftRight].second){
+		float turnVelocity = (leftRight[indexLeftRight].first == "left" ? 1.f : -1.f) * 100.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
-		mainCharAngle += turnVelocity;
 		Mtx44 r;
 		r.SetToRotation(turnVelocity, 0.f, 1.f, 0.f);
 		front = r * front;
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getPos() + front);
+		mainCharAngle += turnVelocity;
 	}
+	if(unsigned(indexLeftRight) < leftRight.size() - 1 && timeInScene >= leftRight[indexLeftRight + 1].second){
+		++indexLeftRight;
+	}
+}
 
-	//Jump, mini jump, double jump
-	if(Application::IsKeyPressed(VK_SPACE) && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
-		MainChar::getMainChar().setJumpHeight(1.3f);
+void GhostScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
+	if(jump[indexJump].first == 1 && timeInScene >= jump[indexJump].second && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
+		MainChar::getMainChar().setGrav(5.f * float(dt));
+		MainChar::getMainChar().setJumpHeight(80.f * float(dt));
 		MainChar::getMainChar().setJumping(1);
 		MainChar::getMainChar().setKeyReleased(0);
 		MainChar::getMainChar().reduceMaxJump();
 	}
-	if(!Application::IsKeyPressed(VK_SPACE)){
+	if(jump[indexJump].first == 0 && timeInScene >= jump[indexJump].second){
 		MainChar::getMainChar().setKeyReleased(1);
 		if(MainChar::getMainChar().isJumping() && MainChar::getMainChar().getJumpHeight() > 0.0f){
 			MainChar::getMainChar().setJumpHeight(0.f);
 		}
+	}
+	if(unsigned(indexJump) < jump.size() - 1 && timeInScene >= jump[indexJump + 1].second){
+		++indexJump;
 	}
 	if(MainChar::getMainChar().isJumping()){
 		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + Vector3(0.f, MainChar::getMainChar().getJumpHeight(), 0.f));
@@ -267,7 +272,9 @@ void GhostScene::Render(double dt, int winWidth, int winHeight){
 		camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
 
+	glBlendFunc(GL_SRC_ALPHA, GL_SRC_ALPHA);
 	RenderMainChar();
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	RenderLight();
 
 	modelStack.PushMatrix();
@@ -289,22 +296,10 @@ void GhostScene::Render(double dt, int winWidth, int winHeight){
 
 	std::ostringstream ss;
 	if(showDebugInfo){
-		ss << std::fixed << std::setprecision(2);
-		ss << "MainChar's target: " << MainChar::getMainChar().getTarget().x << ", " << MainChar::getMainChar().getTarget().y << ", " << MainChar::getMainChar().getTarget().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "MainChar's pos: " << MainChar::getMainChar().getPos().x << ", " << MainChar::getMainChar().getPos().y << ", " << MainChar::getMainChar().getPos().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << std::setprecision(3);
-		ss << "Elapsed: " << elapsedTime;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
-		ss.str("");
-		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
+		ss << std::fixed << std::setprecision(5);
+		ss << "Replay time: " << timeInScene;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 }
 
 void GhostScene::RenderMainChar(){

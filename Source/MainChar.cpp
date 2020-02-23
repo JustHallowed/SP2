@@ -7,9 +7,13 @@ MainChar& MainChar::getMainChar(){ //Static getter for Singleton
 
 MainChar::MainChar(): pos(Vector3(0.f, 0.f, 0.f)), target(Vector3(0.f, 0.f, 1.f)){
 	jumping = keyReleased = 0;
-	jumpHeight = 0.f;
-	grav = .1f;
+	grav = jumpHeight = 0.f;
 	maxJump = 2;
+}
+
+void MainChar::Init(Vector3 pos, Vector3 target){
+	this->pos = pos;
+	this->target = target;
 }
 
 bool MainChar::isJumping() const{
@@ -50,6 +54,10 @@ void MainChar::setPos(Vector3 newPos){
 
 void MainChar::setTarget(Vector3 newTarget){
 	target = newTarget;
+}
+
+void MainChar::setGrav(float newGrav){
+	grav = newGrav;
 }
 
 void MainChar::setJumpHeight(float newHeight){

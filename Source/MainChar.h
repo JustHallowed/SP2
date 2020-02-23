@@ -17,5 +17,5 @@ public:
 	MainChar& operator=(MainChar&&) = delete; //Delete move assignment operator
 	static MainChar& getMainChar();
 	Vector3 getPos() const, getTarget() const;
-	void reduceMaxJump(), setPos(Vector3), setTarget(Vector3), setJumpHeight(float), setJumping(bool), setKeyReleased(bool), setMaxJump(int);
+	void Init(Vector3, Vector3), reduceMaxJump(), setPos(Vector3), setTarget(Vector3), setGrav(float), setJumpHeight(float), setJumping(bool), setKeyReleased(bool), setMaxJump(int);
 };
