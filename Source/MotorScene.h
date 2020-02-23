@@ -9,7 +9,7 @@
 #include "Vehicle.h"
 class MotorScene final: public Scene{
 	enum class MESH {
-		CAMERABOX, HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+		HITBOXWHITE, HITBOXRED, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 	};
 	enum OBJECT_INSTANCES
 	{
@@ -35,8 +35,8 @@ class MotorScene final: public Scene{
 		ROBOT_LOWERLEG1,
 		ROBOT_LOWERLEG2,
 
-		CAMERABOX,
 		TESTBOX,
+		TESTBOX2,
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;
@@ -45,6 +45,7 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
+	Vehicle testVehicle;
 	Light light[1]{Light(0.f, 192.f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;

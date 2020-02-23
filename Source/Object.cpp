@@ -14,6 +14,12 @@ Object::Object()
 	parentScale = false;
 	interactable = false;
 	movable = false;
+	collisionAt[0] = false;
+	collisionAt[1] = false;
+	collisionAt[2] = false;
+	collisionAt[3] = false;
+	collisionAt[4] = false;
+	collisionAt[5] = false;
 }
 
 Object::~Object()
@@ -247,7 +253,7 @@ void Object::setInteractable(bool canInteract)
 void Object::updateCollision(Object* b,double dt)
 {
 	Vector3 displacementA,displacementB;//magnitude of displacement the two object will be applied if there is collision 
-	Vector3 T = pos - b->pos;//displacement between the two object's centre
+	Vector3 T = b->pos - pos;//displacement between the two object's centre
 	float Wa, Ha, Da;// half dimensions of A (Width, Height, Depth)
 	float Wb, Hb, Db;// half dimensions of B (Width, Height, Depth)
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
@@ -293,274 +299,281 @@ void Object::updateCollision(Object* b,double dt)
 		Bz = rBx * rBy * rBz * Bz;
 	}
 
-	//Checking by A
-
-	float LHS = projPlane(T,Ax).Length(); //Projection of T onto plane with normal Ax
-	float RHS = projPlane(Ax * Wa, Ax).Length() + projPlane(Ay * Ha, Ax).Length() + projPlane(Az * Da, Ax).Length() + 
-				projPlane(Bx * Wb, Ax).Length() + projPlane(By * Hb, Ax).Length() + projPlane(Bz * Db, Ax).Length();
-	if (LHS <= RHS)//Collision
+	while (1)
 	{
-		if (abs(LHS - RHS) < 1)
+
+		//Checking by A
+		float LHS = projPlane(T, Ax).Length(); //Projection of T onto plane with normal Ax
+		float RHS = projPlane(Ax * Wa, Ax).Length() + projPlane(Ay * Ha, Ax).Length() + projPlane(Az * Da, Ax).Length() +
+			projPlane(Bx * Wb, Ax).Length() + projPlane(By * Hb, Ax).Length() + projPlane(Bz * Db, Ax).Length();
+		if (LHS <= RHS)//Collision
 		{
-			if (T.x >= 0)
+			if (abs(LHS) < 1)
 			{
-				collisionAt[POSX] = true;
-			}
-			else
-			{
-				collisionAt[NEGX] = true;
+				if (T.x >= 0)
+				{
+					collisionAt[POSX] = true;
+				}
+				else
+				{
+					collisionAt[NEGX] = true;
+				}
 			}
 		}
-	}
-	else
-	{
-		return;
-	}
+		else
+		{
+			break;
+		}
 
-	 LHS = projPlane(T, Ay).Length(); //Projection of T onto plane with normal Ay
-	 RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
-	if (LHS <= RHS)//Collision
-	{
-		if (abs(LHS - RHS) < 1)
+		LHS = projPlane(T, Ay).Length(); //Projection of T onto plane with normal Ay
+		RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
+			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+		if (LHS <= RHS)//Collision
+		{
+			if (abs(LHS) < 1)
+			{
+				if (T.y >= 0)
+				{
+					collisionAt[POSY] = true;
+				}
+				else
+				{
+					collisionAt[NEGY] = true;
+				}
+			}
+		}
+		else
+		{
+			break;
+		}
+
+		LHS = projPlane(T, Az).Length(); //Projection of T onto plane with normal Az
+		RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
+			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+		if (LHS <= RHS)//Collision
+		{
+			if (abs(LHS) < 1)
+			{
+				if (T.z >= 0)
+				{
+					collisionAt[POSZ] = true;
+				}
+				else
+				{
+					collisionAt[NEGZ] = true;
+				}
+			}
+		}
+		else
+		{
+			break;
+		}
+
+		//Checking by B
+
+		LHS = projPlane(T, Bx).Length(); //Projection of T onto plane with normal Bx
+		RHS = projPlane(Ax * Wa, Bx).Length() + projPlane(Ay * Ha, Bx).Length() + projPlane(Az * Da, Bx).Length() +
+			projPlane(Bx * Wb, Bx).Length() + projPlane(By * Hb, Bx).Length() + projPlane(Bz * Db, Bx).Length();
+		if (LHS <= RHS)//Collision
+		{
+			if (abs(LHS - RHS) < 3)
+			{
+				if (T.x >= 0)
+				{
+					b->collisionAt[POSX] = true;
+				}
+				else
+				{
+					b->collisionAt[NEGX] = true;
+				}
+			}
+		}
+		else
+		{
+			break;
+		}
+
+		LHS = projPlane(T, By).Length(); //Projection of T onto plane with normal By
+		RHS = projPlane(Ax * Wa, By).Length() + projPlane(By * Ha, By).Length() + projPlane(Az * Da, By).Length() +
+			projPlane(Bx * Wb, By).Length() + projPlane(By * Hb, By).Length() + projPlane(Bz * Db, By).Length();
+		if (LHS <= RHS)//Collision
 		{
 			if (T.y >= 0)
 			{
-				collisionAt[POSY] = true;
+				b->collisionAt[POSY] = true;
 			}
 			else
 			{
-				collisionAt[NEGY] = true;
+				b->collisionAt[NEGY] = true;
 			}
 		}
-	}
-	else
-	{
-		return;
-	}
+		else
+		{
+			break;
+		}
 
-	 LHS = projPlane(T, Az).Length(); //Projection of T onto plane with normal Az
-	 RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
-	if (LHS <= RHS)//Collision
-	{
-		if (abs(LHS - RHS) < 1)
+		LHS = projPlane(T, Bz).Length(); //Projection of T onto plane with normal Bz
+		RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Bz * Da, Ay).Length() +
+			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+		if (LHS <= RHS)//Collision
 		{
 			if (T.z >= 0)
 			{
-				collisionAt[POSZ] = true;
+				b->collisionAt[POSZ] = true;
 			}
 			else
 			{
-				collisionAt[NEGZ] = true;
+				b->collisionAt[NEGZ] = true;
 			}
-		}
-	}
-	else
-	{
-		return;
-	}
-
-	//Checking by B
-
-	 LHS = projPlane(T, Bx).Length(); //Projection of T onto plane with normal Bx
-	 RHS = projPlane(Ax * Wa, Bx).Length() + projPlane(Ay * Ha, Bx).Length() + projPlane(Az * Da, Bx).Length() +
-		projPlane(Bx * Wb, Bx).Length() + projPlane(By * Hb, Bx).Length() + projPlane(Bz * Db, Bx).Length();
-	if (LHS <= RHS)//Collision
-	{
-		if (abs(LHS - RHS) < 3)
-		{
-			if (T.x >= 0)
-			{
-				b->collisionAt[POSX] = true;
-			}
-			else
-			{
-				b->collisionAt[NEGX] = true;
-			}
-		}
-	}
-	else
-	{
-		return;
-	}
-
-	 LHS = projPlane(T, By).Length(); //Projection of T onto plane with normal By
-	 RHS = projPlane(Ax * Wa, By).Length() + projPlane(By * Ha, By).Length() + projPlane(Az * Da, By).Length() +
-		projPlane(Bx * Wb, By).Length() + projPlane(By * Hb, By).Length() + projPlane(Bz * Db, By).Length();
-	if (LHS <= RHS)//Collision
-	{
-		if (T.y >= 0)
-		{
-			b->collisionAt[POSY] = true;
 		}
 		else
 		{
-			b->collisionAt[NEGY] = true;
+			break;
 		}
-	}
-	else
-	{
-		return;
-	}
 
-	 LHS = projPlane(T, Bz).Length(); //Projection of T onto plane with normal Bz
-	 RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Bz * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
-	if (LHS <= RHS)//Collision
-	{
-		if (T.z >= 0)
+		//Edges
+
+		Vector3 L = Ax.Cross(Bx); //Normal of separating plane
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
 		{
-			b->collisionAt[POSZ] = true;
 		}
 		else
 		{
-			b->collisionAt[NEGZ] = true;
+			break;
 		}
-	}
-	else
-	{
-		return;
-	}
 
-	//Edges
-
-	Vector3 L = Ax.Cross(Bx); //Normal of separating plane
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Ax.Cross(By);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Ax.Cross(Bz);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Ay.Cross(Bx); //Normal of separating plane
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Ay.Cross(By);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Ay.Cross(Bz);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Az.Cross(Bx); //Normal of separating plane
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Az.Cross(By);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	L = Az.Cross(Bz);
-	LHS = projPlane(T, L).Length();
-	RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
-		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
-	if (LHS <= RHS)//Collision
-	{
-	}
-	else
-	{
-		return;
-	}
-
-	if (!b->isMovable())
-	{
-		if (collisionAt[POSX])
+		L = Ax.Cross(By);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
 		{
-			velocity -= Vector3(Ax.x * velocity.x, Ax.y * velocity.y, Ax.z * velocity.z);
 		}
-		if (collisionAt[POSY])
+		else
 		{
-			velocity -= Vector3(Ay.x * velocity.x, Ay.y * velocity.y, Ay.z * velocity.z);
+			break;
 		}
-		if (collisionAt[POSZ])
+
+		L = Ax.Cross(Bz);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
 		{
-			velocity -= Vector3(Az.x * velocity.x, Az.y * velocity.y, Az.z * velocity.z);
 		}
-		if (collisionAt[NEGX])
+		else
 		{
-			velocity -= Vector3(-Ax.x * velocity.x, -Ax.y * velocity.y, -Ax.z * velocity.z);
+			break;
 		}
-		if (collisionAt[NEGY])
+
+		L = Ay.Cross(Bx); //Normal of separating plane
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
 		{
-			velocity -= Vector3(-Ay.x * velocity.x, -Ay.y * velocity.y, -Ay.z * velocity.z);
 		}
-		if (collisionAt[NEGZ])
+		else
 		{
-			velocity -= Vector3(-Az.x * velocity.x, -Az.y * velocity.y, -Az.z * velocity.z);
+			break;
 		}
+
+		L = Ay.Cross(By);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
+		{
+		}
+		else
+		{
+			break;
+		}
+
+		L = Ay.Cross(Bz);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
+		{
+		}
+		else
+		{
+			break;
+		}
+
+		L = Az.Cross(Bx); //Normal of separating plane
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
+		{
+		}
+		else
+		{
+			break;
+		}
+
+		L = Az.Cross(By);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
+		{
+		}
+		else
+		{
+			break;
+		}
+
+		L = Az.Cross(Bz);
+		LHS = projPlane(T, L).Length();
+		RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
+			projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
+		if (LHS <= RHS)//Collision
+		{
+		}
+		else
+		{
+			break;
+		}
+
+		if (!b->isMovable())
+		{
+			Vector3 temp;
+
+			if (collisionAt[POSX])
+			{
+				temp -= Ax;
+			}
+			if (collisionAt[POSY])
+			{
+				temp -= Ay;
+			}
+			if (collisionAt[POSZ])
+			{
+				temp -= Az;
+			}
+			if (collisionAt[NEGX])
+			{
+				temp += Ax;
+			}
+			if (collisionAt[NEGY])
+			{
+				temp += Ay;
+			}
+			if (collisionAt[NEGZ])
+			{
+				temp += Az;
+			}
+			velocity -= Vector3(temp.x * velocity.x, temp.y * velocity.y, temp.z * velocity.z);
+		}
+		break;
 	}
-	moveBy(velocity.x, velocity.z, velocity.z);
+	moveBy(velocity.x, velocity.y, velocity.z);
 }
 void updatePhysics()
 {

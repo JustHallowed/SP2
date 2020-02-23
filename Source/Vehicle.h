@@ -6,10 +6,10 @@
 class Vehicle
 {
 	Object* object;
-	bool keyPress[5];
+	bool keyPress[6];
 	enum KEYPRESS
 	{
-		W_KEY, A_KEY, S_KEY, D_KEY,NO_KEY,
+		W_KEY, A_KEY, S_KEY, D_KEY,SHIFT_KEY,SPACE_KEY,
 	};
 public:
 	Vehicle();
