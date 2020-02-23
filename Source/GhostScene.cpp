@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include "MotorScene.h"
+#include "GhostScene.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "MeshBuilder.h"
@@ -13,7 +13,7 @@
 extern Camera camera;
 extern double elapsedTime;
 
-double MotorScene::CalcFrameRate() const{
+double GhostScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
 	double valueFPS, currTime = GetTickCount64() * 0.001;
 	++FramesPerSecond;
@@ -26,13 +26,7 @@ double MotorScene::CalcFrameRate() const{
 	return valueFPS;
 }
 
-void MotorScene::GetNameScoreData(bool showType) const{
-	//scoreMan->addNameScore(std::make_pair("Sabin", 0));
-	scoreMan->sortNameScoreData();
-	scoreMan->showNameScoreData(showType);
-}
-
-void MotorScene::InitLight() const{
+void GhostScene::InitLight() const{
 	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lights[0].type"), GLint(light[0].type));
 	glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].color"), 1, &light[0].color.R);
 	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].power"), light[0].power);
@@ -46,7 +40,7 @@ void MotorScene::InitLight() const{
 	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "numLights"), 1);
 }
 
-void MotorScene::InitMeshes(){
+void GhostScene::InitMeshes(){
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/Wood.tga");
 	meshList[unsigned int(MESH::RIGHT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
@@ -77,7 +71,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::UPPER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 }
 
-void MotorScene::Init(){ //Init scene
+void GhostScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
 	glEnable(GL_CULL_FACE); //Enable back-face culling
@@ -85,8 +79,6 @@ void MotorScene::Init(){ //Init scene
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	shaderMan = new ShaderManager;
-	scoreMan = new ScoreManager;
-	GetNameScoreData(0);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
@@ -98,7 +90,7 @@ void MotorScene::Init(){ //Init scene
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 }
 
-void MotorScene::Exit(Scene* newScene){ //Exit scene
+void GhostScene::Exit(Scene* newScene){ //Exit scene
 	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
 		if(meshList[i] != 0){
 			delete meshList[i];
@@ -106,13 +98,12 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	delete shaderMan;
-	delete scoreMan;
-	if(dynamic_cast<MotorScene*>(newScene) != this){
+	if(dynamic_cast<GhostScene*>(newScene) != this){
 		newScene->Init();
 	}
 }
 
-void MotorScene::Update(double dt, float FOV){ //Update scene
+void GhostScene::Update(double dt, float FOV){ //Update scene
 	for(int i = 0; i < 7; ++i){
 		if(Application::IsKeyPressed(keys[i])){
 			switch(keys[i]){
@@ -172,7 +163,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	projectionStack.LoadMatrix(projection);
 }
 
-void MotorScene::UpdateMainChar(double dt){
+void GhostScene::UpdateMainChar(double dt){
 	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
 		if(timePressed == 0.0){
 			timePressed = elapsedTime;
@@ -268,7 +259,7 @@ void MotorScene::UpdateMainChar(double dt){
 	}
 }
 
-void MotorScene::Render(double dt, int winWidth, int winHeight){
+void GhostScene::Render(double dt, int winWidth, int winHeight){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
@@ -316,7 +307,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 }
 
-void MotorScene::RenderMainChar(){
+void GhostScene::RenderMainChar(){
 	modelStack.PushMatrix();
 		modelStack.Translate(MainChar::getMainChar().getPos().x, MainChar::getMainChar().getPos().y + 5.15f, MainChar::getMainChar().getPos().z);
 		modelStack.Rotate(mainCharAngle, 0.f, 1.f, 0.f);
@@ -376,7 +367,7 @@ void MotorScene::RenderMainChar(){
 	modelStack.PopMatrix();
 }
 
-void MotorScene::RenderLight(){
+void GhostScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
@@ -399,7 +390,7 @@ void MotorScene::RenderLight(){
 	}
 }
 
-void MotorScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
+void GhostScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
@@ -428,7 +419,7 @@ void MotorScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
 	mesh->Render(); //Shld only be called once in the whole function
 }
 
-void MotorScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, float sizeY, int winWidth, int winHeight){
+void GhostScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, float sizeY, int winWidth, int winHeight){
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
 	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10);
@@ -447,7 +438,7 @@ void MotorScene::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, f
 	glEnable(GL_DEPTH_TEST);
 }
 
-void MotorScene::RenderSkybox(bool lightSwitch){
+void GhostScene::RenderSkybox(bool lightSwitch){
 	modelStack.PushMatrix();
 		modelStack.Translate(-49.8f, 0.f, 0.f);
 		modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
@@ -498,7 +489,7 @@ void MotorScene::RenderSkybox(bool lightSwitch){
 	modelStack.PopMatrix();
 }
 
-void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) const{
+void GhostScene::RenderAnimation(Mesh* mesh, std::string text, Color color) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
@@ -518,7 +509,7 @@ void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) cons
 	glEnable(GL_DEPTH_TEST);
 }
 
-void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
+void GhostScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
@@ -541,7 +532,7 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	glEnable(GL_DEPTH_TEST);
 }
 
-void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
+void GhostScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
 	if(!mesh || mesh->textureID <= 0){ //Proper error check return
 		glDisable(GL_DEPTH_TEST);
 	}

@@ -38,9 +38,10 @@ uniform Light lights[MAX_LIGHTS];
 uniform Material material;
 uniform sampler2D colorTexture;
 uniform vec3 textColor;
+uniform float alpha;
 
 void main(){
-	vec4 materialColor = (colorTextureEnabled ? texture2D(colorTexture, texCoord) : vec4(fragmentColor, 1.0));
+	vec4 materialColor = (colorTextureEnabled ? texture2D(colorTexture, texCoord) : vec4(fragmentColor, alpha));
 	if(lightEnabled){
 		vec3 eyeDirection_cameraspace = -vertexPosition_cameraspace, E = normalize(eyeDirection_cameraspace), N = normalize(vertexNormal_cameraspace);
 		color = materialColor * vec4(material.kAmbient, 1); //Ambient (simulates indirect lighting)

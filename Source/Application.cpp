@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "Application.h"
 #include "SceneManager.h"
+#include "GhostScene.h"
 #include "MotorScene.h"
 
 bool firstMouse = 1;
@@ -117,6 +118,7 @@ Application::Application(){
 	glfwSetScrollCallback(m_window, scroll_callback);
 
 	SceneManager::getScMan()->AddScene(new MotorScene);
+	SceneManager::getScMan()->AddScene(new GhostScene);
 }
 
 Application::~Application(){

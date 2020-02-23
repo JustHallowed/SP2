@@ -11,7 +11,7 @@ Camera::Camera(): focusSpd(100.f), freeSpd(50.f){ //Default ctor
 	leftMouse = rightMouse = 0;
 }
 
-void Camera::Init(const Vector3 &pos, const Vector3 &target, const Vector3 &up){ //Init cam
+void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up){ //Init cam
 	this->pos = defaultPos = pos;
 	this->target = defaultTarget = target;
 	this->up = defaultUp = up;

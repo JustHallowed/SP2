@@ -11,6 +11,7 @@ struct Particle final{
 };
 
 class ParticleEmitter final{
+	friend class GhostScene;
 	friend class MotorScene;
 	GLuint currAmt, maxAmt, oldest;
 	std::vector<Particle*> particlePool;

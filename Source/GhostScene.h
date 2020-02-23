@@ -5,9 +5,8 @@
 #include "Light.h"
 #include "ShaderManager.hpp"
 #include "ParticleSystem.h"
-#include "ScoreSystem.h"
 
-class MotorScene final: public Scene{
+class GhostScene final: public Scene{
 	enum class MESH{
 		LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, SMOKE, TEXT_ON_SCREEN, ARM, FOREARM, BODY, LOWER_LEG, UPPER_LEG, NUM_GEOMETRY
 	};
@@ -21,13 +20,11 @@ class MotorScene final: public Scene{
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
 	ShaderManager* shaderMan;
-	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), UpdateMainChar(double), RenderMainChar(), RenderLight();
 	void RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
-	void GetNameScoreData(bool) const, InitLight() const;
-	void RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const;
+	void InitLight() const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const;
 public:
-	~MotorScene() override{}
+	~GhostScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
 };
