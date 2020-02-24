@@ -64,6 +64,8 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
+	meshList[unsigned int(MESH::SPRITE1)] = MeshBuilder::GenerateText(5, 5);
+	meshList[unsigned int(MESH::SPRITE1)]->textureID = LoadTGA("Resources/TGAs/sprite1.tga");
 
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
@@ -126,6 +128,7 @@ void MotorScene::Init(){ //Init scene
 	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
+	Ani1 = 0;
 
 
 	//play thru out the scene and loops
@@ -219,8 +222,19 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//then vice versa for clockwise
 
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
-	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
+	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
+
+	static float lastTime = 0.0f;
+	float currentTime = GetTickCount() * 0.001f;
+	if (currentTime - lastTime > 0.02f)
+	{
+		if (Ani1 < 25)
+			Ani1++;
+		else if (Ani1 == 25)
+			Ani1 = 0;
+		lastTime = currentTime;
+	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -363,6 +377,12 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 4.f, winWidth, winHeight);
 		ss.str("");
 	}
+	modelStack.PushMatrix();
+	modelStack.Translate(8, 15, 0);
+	modelStack.Scale(15, 15, 15);
+	modelStack.Rotate(180, 0, 1, 0);
+	RenderAnimation(meshList[unsigned int(MESH::SPRITE1)], Ani1);
+	modelStack.PopMatrix();
 }
 
 void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
@@ -444,8 +464,7 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
-	//if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1]);
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
@@ -616,11 +635,11 @@ void MotorScene::RenderSkybox(bool lightSwitch){
 	modelStack.PopMatrix();
 }
 
-void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) const{
+void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 1);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
 	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lightEnabled"), 0);
 	glUniform1i(glGetUniformLocation(shMan->getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
@@ -629,7 +648,7 @@ void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) cons
 
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(shMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-	mesh->Render();
+	mesh->Render(frame * 6, 6);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
