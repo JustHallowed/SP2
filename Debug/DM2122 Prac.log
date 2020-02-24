@@ -1,5 +1,8 @@
 ﻿  Object.cpp
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(588,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(616,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(617,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(79,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(85,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(90,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(746,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(774,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(775,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe

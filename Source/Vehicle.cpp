@@ -17,7 +17,7 @@ void Vehicle::setObject(Object* object)
 
 void Vehicle::update(double dt)
 {
-	float accelerationConstant = 8;	//acceleration multiplier
+	float accelerationConstant = 5;	//acceleration multiplier
 	float maxVelocity = 3;	//maximum velocity vehicle can travel
 	Vector3 front,movementDir;	//vehicle fromt, direction of movement
 	if (object->getVelocity() != Vector3(0, 0, 0))
@@ -95,7 +95,7 @@ void Vehicle::update(double dt)
 			if (keyPress[SPACE_KEY])//accelerate UP
 			{
 				if ((Vector3(0, 1, 0) - movementDir).Length() > 0.5)
-					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 1. * dt));
+					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 1.5 * dt));
 				else
 				{
 					object->setAcceleration(object->getAcceleration() + (Vector3(0, 1, 0) * accelerationConstant * dt));
@@ -111,8 +111,5 @@ void Vehicle::update(double dt)
 				}
 			}
 		}
-
-
-
 		object->setVelocity(object->getVelocity() + object->getAcceleration());
 }

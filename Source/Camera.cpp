@@ -71,14 +71,14 @@ void Camera::Update(double dt){ //Update cam
 		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
 		right.y = 0;
 		if(mode == MODE::FOCUS){
-			float pitch = -float(float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * focusSpd * dt);
-			Mtx44 rotation;
-			rotation.SetToRotation(pitch, right.x, right.y, right.z);
-			front = rotation * (target - pos);
-			pos = target - front;
-			right = front.Cross(up);
-			right.y = 0;
-			up = right.Cross(front).Normalized();
+			//float pitch = -float(float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * focusSpd * dt);
+			//Mtx44 rotation;
+			//rotation.SetToRotation(pitch, right.x, right.y, right.z);
+			//front = rotation * (target - pos);
+			//pos = target - front;
+			//right = front.Cross(up);
+			//right.y = 0;
+			//up = right.Cross(front).Normalized();
 		} else if(mode == MODE::FREE){
 			pos += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0,1,0);
 			target += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0, 1, 0);

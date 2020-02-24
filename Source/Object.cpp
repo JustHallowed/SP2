@@ -36,7 +36,7 @@ void Object::setTranslation(float x, float y, float z)
 	translation.Set(x, y, z);
 	if (parent != nullptr)
 	{
-		pos = parent->getPos()+ translation;
+		pos = parent->getPos() + translation;
 	}
 	else
 		pos = translation;
@@ -76,17 +76,18 @@ void Object::setRotation(float angle, char axis)
 	Mtx44 rotation;
 	if (axis == 'x')
 	{
-		this->angle.x = angle;
+		this->angle.x = std::fmod(angle, 360);
+
 	}
 	else
 		if (axis == 'y')
 		{
-			this->angle.y = angle;
+			this->angle.y = std::fmod(angle, 360);
 		}
 		else
 			if (axis == 'z')
 			{
-				this->angle.z = angle;
+				this->angle.z = std::fmod(angle, 360);
 			}
 }
 void Object::addRotation(float angle, char axis)
@@ -94,25 +95,25 @@ void Object::addRotation(float angle, char axis)
 	Mtx44 rotation;
 	if (axis == 'x')
 	{
-		this->angle.x += angle;
+		setRotation(this->angle.x + angle, 'x');
 	}
 	else
 		if (axis == 'y')
 		{
-			this->angle.y += angle;
+			setRotation(this->angle.y + angle, 'y');
 		}
 		else
 			if (axis == 'z')
 			{
-				this->angle.z += angle;
+				setRotation(this->angle.z + angle, 'z');
 			}
-	}
+}
 void Object::setScale(float x, float y, float z)
 {
 	if (parent == nullptr)
-	scale.Set(x, y, z);
+		scale.Set(x, y, z);
 	else
-	scale.Set(x, y, z);
+		scale.Set(x, y, z);
 }
 void Object::setScale(float scale)
 {
@@ -121,7 +122,7 @@ void Object::setScale(float scale)
 		this->scale.Set(scale, scale, scale);
 	}
 	else
-	this->scale.Set(scale, scale, scale);
+		this->scale.Set(scale, scale, scale);
 }
 void Object::setParent(Object* parent)
 {
@@ -250,15 +251,15 @@ void Object::setInteractable(bool canInteract)
 {
 	interactable = canInteract;
 }
-void Object::updateCollision(Object* b,double dt)
+void Object::updateCollision(Object* b, double dt)
 {
-	Vector3 displacementA,displacementB;//magnitude of displacement the two object will be applied if there is collision 
+	Vector3 displacementA, displacementB;//magnitude of displacement the two object will be applied if there is collision 
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
 	float Wa, Ha, Da;// half dimensions of A (Width, Height, Depth)
 	float Wb, Hb, Db;// half dimensions of B (Width, Height, Depth)
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
 	Vector3 Bx, By, Bz;// unit vector of the axes of B
-	Mtx44 rAx,rAy,rAz,rBx,rBy,rBz;
+	Mtx44 rAx, rAy, rAz, rBx, rBy, rBz;
 	if (angle != Vector3(0, 0, 0))
 	{
 		rAx.SetToRotation(angle.x, 1, 0, 0);
@@ -271,13 +272,15 @@ void Object::updateCollision(Object* b,double dt)
 		rBy.SetToRotation(b->angle.y, 0, 1, 0);
 		rBz.SetToRotation(b->angle.z, 0, 0, 1);
 	}
-	Wa = dimension.x / 2;
-	Ha = dimension.y / 2;
-	Da = dimension.z / 2;
+	Wa = dimension.x / 4;
+	Ha = dimension.y / 4;
+	Da = dimension.z / 4;
 
-	Wb = b->dimension.x / 2;
-	Hb = b->dimension.y / 2;
-	Db = b->dimension.z / 2;
+	Wb = b->dimension.x / 4;
+	Hb = b->dimension.y / 4;
+	Db = b->dimension.z / 4;
+
+	Vector3 penetration = Vector3(abs(T.x), abs(T.y), abs(T.z));
 
 	Ax = Vector3(1, 0, 0);
 	Ay = Vector3(0, 1, 0);
@@ -299,6 +302,8 @@ void Object::updateCollision(Object* b,double dt)
 		Bz = rBx * rBy * rBz * Bz;
 	}
 
+	float biggestIntersect;
+	Vector3 collidingAxis;
 	while (1)
 	{
 
@@ -306,18 +311,29 @@ void Object::updateCollision(Object* b,double dt)
 		float LHS = projPlane(T, Ax).Length(); //Projection of T onto plane with normal Ax
 		float RHS = projPlane(Ax * Wa, Ax).Length() + projPlane(Ay * Ha, Ax).Length() + projPlane(Az * Da, Ax).Length() +
 			projPlane(Bx * Wb, Ax).Length() + projPlane(By * Hb, Ax).Length() + projPlane(Bz * Db, Ax).Length();
-		if (LHS <= RHS)//Collision
+		if (LHS <= RHS)//intersection at X plane
 		{
-			if (abs(LHS) < 1)
+			if (RHS-LHS < 3)	//*Note: RHS-LHS is distance
 			{
 				if (T.x >= 0)
 				{
-					collisionAt[POSX] = true;
+					if (angle.y < 180.f)
+						collisionAt[POSX] = true;
+					else
+					{
+						collisionAt[NEGX] = true;
+					}
 				}
 				else
 				{
-					collisionAt[NEGX] = true;
+					if (angle.y < 180.f)
+						collisionAt[NEGX] = true;
+					else
+					{
+						collisionAt[POSX] = true;
+					}
 				}
+				penetration.x -= dimension.x / 2;
 			}
 		}
 		else
@@ -330,16 +346,23 @@ void Object::updateCollision(Object* b,double dt)
 			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
 		if (LHS <= RHS)//Collision
 		{
-			if (abs(LHS) < 1)
+			if (RHS - LHS < 3)
 			{
 				if (T.y >= 0)
 				{
-					collisionAt[POSY] = true;
+					if (angle.z < 180.f && angle.x < 180.f)
+						collisionAt[POSY] = true;
+					else
+						collisionAt[NEGY] = true;
 				}
 				else
 				{
-					collisionAt[NEGY] = true;
+					if (angle.z < 180.f && angle.x < 180.f)
+						collisionAt[NEGY] = true;
+					else
+						collisionAt[POSY] = true;
 				}
+				penetration.y -= dimension.y / 2;
 			}
 		}
 		else
@@ -350,18 +373,27 @@ void Object::updateCollision(Object* b,double dt)
 		LHS = projPlane(T, Az).Length(); //Projection of T onto plane with normal Az
 		RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
 			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
-		if (LHS <= RHS)//Collision
+		if (LHS <= RHS)//if collision
 		{
-			if (abs(LHS) < 1)
+			if (RHS - LHS < 3)
 			{
 				if (T.z >= 0)
 				{
-					collisionAt[POSZ] = true;
+					if (angle.y < 180.f)
+						collisionAt[POSZ] = true;
+					else
+					{
+						collisionAt[NEGZ] = true;
+					}
 				}
 				else
 				{
-					collisionAt[NEGZ] = true;
+					if (angle.y < 180.f)
+						collisionAt[NEGZ] = true;
+					else
+						collisionAt[POSZ] = true;
 				}
+				penetration.z -= dimension.z / 2;
 			}
 		}
 		else
@@ -376,16 +408,27 @@ void Object::updateCollision(Object* b,double dt)
 			projPlane(Bx * Wb, Bx).Length() + projPlane(By * Hb, Bx).Length() + projPlane(Bz * Db, Bx).Length();
 		if (LHS <= RHS)//Collision
 		{
-			if (abs(LHS - RHS) < 3)
+			if (RHS - LHS < 3)
 			{
-				if (T.x >= 0)
+				if (T.x <= 0)
 				{
-					b->collisionAt[POSX] = true;
+					if (b->angle.y < 180.f)
+						b->collisionAt[POSX] = true;
+					else
+					{
+						b->collisionAt[NEGX] = true;
+					}
 				}
 				else
 				{
-					b->collisionAt[NEGX] = true;
+					if (b->angle.y < 180.f)
+						b->collisionAt[NEGX] = true;
+					else
+					{
+						b->collisionAt[POSX] = true;
+					}
 				}
+				penetration.x -= b->dimension.x / 2;
 			}
 		}
 		else
@@ -398,13 +441,27 @@ void Object::updateCollision(Object* b,double dt)
 			projPlane(Bx * Wb, By).Length() + projPlane(By * Hb, By).Length() + projPlane(Bz * Db, By).Length();
 		if (LHS <= RHS)//Collision
 		{
-			if (T.y >= 0)
+			if (RHS - LHS < 3)
 			{
-				b->collisionAt[POSY] = true;
-			}
-			else
-			{
-				b->collisionAt[NEGY] = true;
+				if (T.y <= 0)
+				{
+					if (b->angle.y < 180.f)
+						b->collisionAt[POSY] = true;
+					else
+					{
+						b->collisionAt[NEGY] = true;
+					}
+				}
+				else
+				{
+					if (b->angle.y < 180.f)
+						b->collisionAt[NEGY] = true;
+					else
+					{
+						b->collisionAt[POSY] = true;
+					}
+				}
+				penetration.y -= b->dimension.y / 2;
 			}
 		}
 		else
@@ -417,13 +474,27 @@ void Object::updateCollision(Object* b,double dt)
 			projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
 		if (LHS <= RHS)//Collision
 		{
-			if (T.z >= 0)
+			if (RHS - LHS < 3)
 			{
-				b->collisionAt[POSZ] = true;
-			}
-			else
-			{
-				b->collisionAt[NEGZ] = true;
+				if (T.z <= 0)
+				{
+					if (b->angle.y < 180.f)
+						b->collisionAt[POSZ] = true;
+					else
+					{
+						b->collisionAt[NEGZ] = true;
+					}
+				}
+				else
+				{
+					if (b->angle.y < 180.f)
+						b->collisionAt[NEGZ] = true;
+					else
+					{
+						b->collisionAt[POSZ] = true;
+					}
+				}
+				penetration.z -= b->dimension.z / 2;
 			}
 		}
 		else
@@ -431,6 +502,7 @@ void Object::updateCollision(Object* b,double dt)
 			break;
 		}
 
+	{
 		//Edges
 
 		Vector3 L = Ax.Cross(Bx); //Normal of separating plane
@@ -540,37 +612,125 @@ void Object::updateCollision(Object* b,double dt)
 		{
 			break;
 		}
-
+	}
+		
 		if (!b->isMovable())
 		{
 			Vector3 temp;
+			Vector3 front, movementDir;	//vehicle fromt, direction of movement
+			if (velocity != Vector3(0, 0, 0))
+				movementDir = velocity.Normalized();
 
-			if (collisionAt[POSX])
+			if (b->collisionAt[POSX])
 			{
-				temp -= Ax;
+				temp += Bx;
 			}
-			if (collisionAt[POSY])
+			if (b->collisionAt[POSY])
 			{
-				temp -= Ay;
+				temp += By;
 			}
-			if (collisionAt[POSZ])
+			if (b->collisionAt[POSZ])
 			{
-				temp -= Az;
+				temp += Bz;
 			}
-			if (collisionAt[NEGX])
+			if (b->collisionAt[NEGX])
 			{
-				temp += Ax;
+				temp -= Bx;
 			}
-			if (collisionAt[NEGY])
+			if (b->collisionAt[NEGY])
 			{
-				temp += Ay;
+				temp -= By;
 			}
-			if (collisionAt[NEGZ])
+			if (b->collisionAt[NEGZ])
 			{
-				temp += Az;
+				temp -= Bz;
 			}
-			velocity -= Vector3(temp.x * velocity.x, temp.y * velocity.y, temp.z * velocity.z);
+
+			if (temp.x < 0)
+			{
+				if (velocity.x > 0)
+					velocity.x += temp.x * velocity.x;
+			}
+			else if (temp.x > 0)
+			{
+				if (velocity.x < 0)
+					velocity.x -= temp.x * velocity.x;
+			}
+
+			if (temp.y < 0)
+			{
+				if (velocity.y > 0)
+					velocity.y += temp.y * velocity.y;
+			}
+			else if (temp.y > 0)
+			{
+				if (velocity.y < 0)
+					velocity.y -= temp.y * velocity.y;
+			}
+
+			if (temp.z < 0)
+			{
+				if (velocity.z > 0)
+					velocity.z += temp.z * velocity.z;
+			}
+			else if (temp.z > 0)
+			{
+				if (velocity.z < 0)
+					velocity.z -= temp.z * velocity.z;
+			}
+
+			//if (penetration.x < 0)
+			//{
+			//	translation.x -= penetration.x;
+			//}
+			//if (penetration.y > 0)
+			//{
+			//	translation.y -= penetration.y;
+			//}
+			if (penetration.x < penetration.y)
+			{
+				if (penetration.y < penetration.z)
+				{
+					if (penetration.z < 0)
+					{
+						if (collisionAt[POSZ])
+							translation.z += penetration.z;
+						else if (collisionAt[NEGZ])
+							translation.z -= penetration.z;
+					}
+				}
+				else
+				{
+					if (penetration.y < 0)
+					{
+						if (collisionAt[POSY])
+							translation.y += penetration.y;
+						else if (collisionAt[NEGY])
+							translation.y -= penetration.y;
+					}
+				}
+			}
+			else if (penetration.x < penetration.z)
+			{
+				if (penetration.z < 0)
+				{
+					if (collisionAt[POSZ])
+						translation.z += penetration.z;
+					else if (collisionAt[NEGZ])
+						translation.z -= penetration.z;
+				}
+			}
+			else
+			{
+				if (collisionAt[POSX])
+					translation.x += penetration.x;
+				else if (collisionAt[NEGX])
+					translation.x -= penetration.x;
+			}
+
+			
 		}
+		std::cout << "COLLISION\n";
 		break;
 	}
 	moveBy(velocity.x, velocity.y, velocity.z);
@@ -594,7 +754,7 @@ void Object::unbindChild(Object* child)
 		}
 	}
 }
-void Object::bind(Object* parent, Object* child,bool followParentRotation,bool followParentScale)
+void Object::bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale)
 {
 	parent->setChild(child);
 	child->setParent(parent);
@@ -606,8 +766,8 @@ void Object::unbind(Object* child)
 {
 	if (child->getParent() != nullptr)
 	{
-	child->getParent()->unbindChild(child);
-	child->setParent(nullptr);
+		child->getParent()->unbindChild(child);
+		child->setParent(nullptr);
 	}
 }
 
