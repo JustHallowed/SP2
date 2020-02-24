@@ -8,7 +8,6 @@
 #include "Utility.h"
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
-
 #include "irrKlang.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
@@ -63,6 +62,8 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
+	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
+	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
 
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
@@ -119,8 +120,9 @@ void MotorScene::Init(){ //Init scene
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
+	interacted[ROBOT_BODY1] = 0;
 
 	//play thru out the scene and loops
 	engine->play2D("Resources/Sound/bgm.mp3", true);
@@ -195,8 +197,8 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	}
 
 	//!testing! if w is pressed, sound effects will be played
-	if (Application::IsKeyPressed('W'))
-		engine->play2D("Resources/Sound/bell.wav");
+	//if (Application::IsKeyPressed('W'))
+	//	engine->play2D("Resources/Sound/bell.wav");
 
 	//if (!object[A].isClockwise)
 	//{
@@ -206,10 +208,22 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//}
 	//then vice versa for clockwise
 
-	if (object[ROBOT_BODY1].checkDist(Camera::getCam().pos) < 25.f)
+	if (object[ROBOT_BODY1].checkDist(Camera::getCam().target) < 15.f)
+	{
 		inRange[ROBOT_BODY1] = true;
+		if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+		{
+			interacted[ROBOT_BODY1] = !interacted[ROBOT_BODY1];
+			interactBounceTime = elapsedTime + 0.4;
+			if (interacted[ROBOT_BODY1])
+				engine->play2D("Resources/Sound/robot1.wav");
+		}
+	}
 	else
-		inRange[ROBOT_BODY1] = false;
+	{
+		inRange[ROBOT_BODY1] = 0;
+		interacted[ROBOT_BODY1] = 0;
+	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -295,8 +309,20 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
 
-	if (inRange[ROBOT_BODY1])
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "Wow! These cars! ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "They're awesome!";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+	}
 }
 
 void MotorScene::RenderLight(){
