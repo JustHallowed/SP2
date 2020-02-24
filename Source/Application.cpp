@@ -27,8 +27,8 @@ bool Application::IsKeyPressed(unsigned short key){
 	return (GetAsyncKeyState(key) & 0x8001) != 0;
 }
 
-void Application::IRun(){
-	return getApp()->Run();
+void Application::Run(){
+	return getApp()->IRun();
 }
 
 static void error_callback(int error, const char* description){ //Define an error callback
@@ -127,7 +127,7 @@ Application::~Application(){
 	delete SceneManager::getScMan();
 }
 
-void Application::Run(){
+void Application::IRun(){
 	m_timer.startTimer(); //Start timer to calculate how long it takes to render this frame
 	while(!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE)){ //Main Loop
 		SceneManager::getScMan()->Update(*this, m_window); //Update current scene

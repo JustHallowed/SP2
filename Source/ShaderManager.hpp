@@ -1,10 +1,10 @@
 #pragma once
 
 class ShaderManager final{
-    unsigned int progID, vsID[2], fsID[2];
+    unsigned int vsID[2], fsID[2];
 public:
     ShaderManager();
     ~ShaderManager();
-    unsigned int getProgID() const;
+    static unsigned int getProgID();
     void LinkProg() const, ParseShader(const char*, unsigned int&) const, UseNewShaders(short, short) const, UseProg() const;
 };

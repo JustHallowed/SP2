@@ -12,8 +12,8 @@
 
 extern Camera camera;
 extern double elapsedTime;
-extern std::vector<std::pair<bool, double>> jump;
-extern std::vector<std::pair<const char*, double>> upDown, leftRight;
+extern std::vector<std::pair<bool, double>>* jump;
+extern std::vector<std::pair<const char*, double>> *upDown, *leftRight;
 
 double GhostScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -103,6 +103,16 @@ void GhostScene::Exit(Scene* newScene){ //Exit scene
 	delete shaderMan;
 	if(dynamic_cast<GhostScene*>(newScene) != this){
 		newScene->Init();
+	} else{
+		if(jump != 0){
+			delete jump;
+		}
+		if(upDown != 0){
+			delete upDown;
+		}
+		if(leftRight != 0){
+			delete leftRight;
+		}
 	}
 }
 
@@ -174,8 +184,8 @@ void GhostScene::UpdateMainChar(double dt){
 }
 
 void GhostScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from target
-	if(upDown[indexUpDown].first != "none" && timeInScene >= upDown[indexUpDown].second){
-		float moveVelocity = (upDown[indexUpDown].first == "up" ? 1.f : -1.f) * 10.f * float(dt);
+	if((*upDown)[indexUpDown].first != "none" && timeInScene >= (*upDown)[indexUpDown].second){
+		float moveVelocity = ((*upDown)[indexUpDown].first == "up" ? 1.f : -1.f) * 10.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
 		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
@@ -213,14 +223,14 @@ void GhostScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from t
 			rightUpperAngle = leftArmAngle;
 		}
 	}
-	if(unsigned(indexUpDown) < upDown.size() - 1 && timeInScene >= upDown[indexUpDown + 1].second){
+	if(unsigned(indexUpDown) < upDown->size() - 1 && timeInScene >= (*upDown)[indexUpDown + 1].second){
 		++indexUpDown;
 	}
 }
 
 void GhostScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing and hence target
-	if(leftRight[indexLeftRight].first != "none" && timeInScene >= leftRight[indexLeftRight].second){
-		float turnVelocity = (leftRight[indexLeftRight].first == "left" ? 1.f : -1.f) * 100.f * float(dt);
+	if((*leftRight)[indexLeftRight].first != "none" && timeInScene >= (*leftRight)[indexLeftRight].second){
+		float turnVelocity = ((*leftRight)[indexLeftRight].first == "left" ? 1.f : -1.f) * 100.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
 		Mtx44 r;
 		r.SetToRotation(turnVelocity, 0.f, 1.f, 0.f);
@@ -228,26 +238,26 @@ void GhostScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing an
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getPos() + front);
 		mainCharAngle += turnVelocity;
 	}
-	if(unsigned(indexLeftRight) < leftRight.size() - 1 && timeInScene >= leftRight[indexLeftRight + 1].second){
+	if(unsigned(indexLeftRight) < leftRight->size() - 1 && timeInScene >= (*leftRight)[indexLeftRight + 1].second){
 		++indexLeftRight;
 	}
 }
 
 void GhostScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
-	if(jump[indexJump].first == 1 && timeInScene >= jump[indexJump].second && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
+	if((*jump)[indexJump].first == 1 && timeInScene >= (*jump)[indexJump].second && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
 		MainChar::getMainChar().setGrav(5.f * float(dt));
 		MainChar::getMainChar().setJumpHeight(80.f * float(dt));
 		MainChar::getMainChar().setJumping(1);
 		MainChar::getMainChar().setKeyReleased(0);
 		MainChar::getMainChar().reduceMaxJump();
 	}
-	if(jump[indexJump].first == 0 && timeInScene >= jump[indexJump].second){
+	if((*jump)[indexJump].first == 0 && timeInScene >= (*jump)[indexJump].second){
 		MainChar::getMainChar().setKeyReleased(1);
 		if(MainChar::getMainChar().isJumping() && MainChar::getMainChar().getJumpHeight() > 0.0f){
 			MainChar::getMainChar().setJumpHeight(0.f);
 		}
 	}
-	if(unsigned(indexJump) < jump.size() - 1 && timeInScene >= jump[indexJump + 1].second){
+	if(unsigned(indexJump) < jump->size() - 1 && timeInScene >= (*jump)[indexJump + 1].second){
 		++indexJump;
 	}
 	if(MainChar::getMainChar().isJumping()){
