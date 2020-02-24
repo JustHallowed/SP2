@@ -9,7 +9,7 @@
 
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 	};
 	enum OBJECT_INSTANCES
 	{
@@ -18,12 +18,21 @@ class MotorScene final: public Scene{
 		PLATFORM3, 
 		PLATFORM4, 
 		PLATFORM5,
+		PLATFORM6,
+		PLATFORM7,
+		PLATFORM8, 
+		PLATFORM9,
 
 		UFO_BASE1,
 		UFO_PURPLE1,
 		UFO_RED1, 
 		UFO_BLUE1, 
 		UFO_PINK1,
+
+		GY_CAR1,
+		EH_CAR1,
+		LF_CAR1,
+		YW_CAR1,
 
 		ROBOT_BODY1,
 		ROBOT_ARM1,
@@ -43,7 +52,10 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
-	Light light[1]{Light(0.f, 192.f, 0.f)};
+	Light light[3]{
+		Light('d', 0.f, 192.f, 0.f), //ceilling light
+		Light('s', 66.f, 8.f, -10.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)), //eh car
+		Light('s', 74.f, 8.f, -10.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)) };//eh car
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
@@ -51,7 +63,7 @@ class MotorScene final: public Scene{
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1();
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles();
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;

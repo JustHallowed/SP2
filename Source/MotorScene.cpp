@@ -40,7 +40,30 @@ void MotorScene::InitLight() const{
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].cosInner"), light[0].cosInner);
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].exponent"), light[0].exponent);
-	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 1);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[1].type"), GLint(light[1].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].color"), 1, &light[1].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].power"), light[1].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kC"), light[1].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kL"), light[1].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kQ"), light[1].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].spotDirection"), 1, &light[1].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].cosCutoff"), light[1].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].cosInner"), light[1].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].exponent"), light[1].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[2].type"), GLint(light[2].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].color"), 1, &light[2].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].power"), light[2].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kC"), light[2].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kL"), light[2].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kQ"), light[2].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].spotDirection"), 1, &light[2].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].cosCutoff"), light[2].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].cosInner"), light[2].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].exponent"), light[2].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 3);
 }
 
 void MotorScene::InitMeshes(){
@@ -65,6 +88,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
 
+	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
 	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -75,6 +99,16 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
 	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");
+
+	//normal vehicles
+	meshList[unsigned int(MESH::GY_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/guanyu_car.obj");
+	meshList[unsigned int(MESH::GY_CAR)]->textureID = LoadTGA("Resources/TGAs/guanyu_car.tga");
+	meshList[unsigned int(MESH::EH_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/enhui_car.obj");
+	meshList[unsigned int(MESH::EH_CAR)]->textureID = LoadTGA("Resources/TGAs/enhui_car.tga");
+	meshList[unsigned int(MESH::LF_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/loopy_vehicle.obj");
+	meshList[unsigned int(MESH::LF_CAR)]->textureID = LoadTGA("Resources/TGAs/loopy_vehicle.tga");
+	meshList[unsigned int(MESH::YW_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/yuwei_car.obj");
+	meshList[unsigned int(MESH::YW_CAR)]->textureID = LoadTGA("Resources/TGAs/yuwei_car.tga");
 
 	//base mesh
 	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
@@ -102,6 +136,7 @@ void MotorScene::CreateInstances()
 
 	createRobot1();
 
+	createVehicles();
 }
 
 void MotorScene::Init(){ //Init scene
@@ -121,11 +156,12 @@ void MotorScene::Init(){ //Init scene
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = 0.0;
+	inRange[EH_CAR1] = false;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
-
+	light[0].power = 1.f;
 	//play thru out the scene and loops
-	engine->play2D("Resources/Sound/bgm.mp3", true);
+	//engine->play2D("Resources/Sound/bgm.mp3", true);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -191,10 +227,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		Camera::getCam().updateCollision(object[i]);
 	}
 
-	for (int i = 0; i < 5; i++)
-	{
-		object[i].addRotation(1, 'y');
-	}
+	object[PLATFORM1].addRotation(1, 'y');
 
 	//!testing! if w is pressed, sound effects will be played
 	//if (Application::IsKeyPressed('W'))
@@ -224,6 +257,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		inRange[ROBOT_BODY1] = 0;
 		interacted[ROBOT_BODY1] = 0;
 	}
+	
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -311,6 +345,8 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 
 	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+	if (inRange[EH_CAR1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "inRange", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -326,24 +362,39 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 }
 
 void MotorScene::RenderLight(){
+
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
-	} else if(light[0].type == Light::LIGHT_TYPE::SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
-	} else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 	}
+	if (light[1].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[2].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	
 	if(showLightSphere){
 		modelStack.PushMatrix();
 			modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 			modelStack.Scale(2.f, 2.f, 2.f);
 			RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(light[1].position.x, light[1].position.y, light[1].position.z);
+		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(light[2].position.x, light[2].position.y, light[2].position.z);
+		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
 		modelStack.PopMatrix();
 	}
 }
@@ -507,23 +558,49 @@ void MotorScene::createPlatforms()
 
 	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM2].setTranslation(70, 0.5, 70);
+	object[PLATFORM2].setRotation(45, 'y');
 	object[PLATFORM2].setScale(4);
 	object[PLATFORM2].setDimension(40, 40, 40);
 
 	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM3].setTranslation(-70, 0.5, 70);
+	object[PLATFORM3].setRotation(-45, 'y');
 	object[PLATFORM3].setScale(4);
 	object[PLATFORM3].setDimension(40, 40, 40);
 
 	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM4].setTranslation(70, 0.5, -70);
+	object[PLATFORM4].setRotation(-45, 'y');
 	object[PLATFORM4].setScale(4);
 	object[PLATFORM4].setDimension(40, 40, 40);
 
 	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM5].setTranslation(-70, 0.5, -70);
+	object[PLATFORM5].setRotation(45, 'y');
 	object[PLATFORM5].setScale(4);
 	object[PLATFORM5].setDimension(40, 40, 40);
+
+	object[PLATFORM6].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM6].setTranslation(0, 0.5, -70);
+	object[PLATFORM6].setScale(4);
+	object[PLATFORM6].setDimension(40, 40, 40);
+
+	object[PLATFORM7].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM7].setTranslation(70, 0.5, 0);
+	object[PLATFORM7].setRotation(90, 'y');
+	object[PLATFORM7].setScale(4);
+	object[PLATFORM7].setDimension(40, 40, 40);
+
+	object[PLATFORM8].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM8].setTranslation(0, 0.5, 70);
+	object[PLATFORM8].setScale(4);
+	object[PLATFORM8].setDimension(40, 40, 40);
+
+	object[PLATFORM9].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM9].setTranslation(-70, 0.5, 0);
+	object[PLATFORM9].setRotation(90, 'y');
+	object[PLATFORM9].setScale(4);
+	object[PLATFORM9].setDimension(40, 40, 40);
 }
 
 void MotorScene::createUFOs()
@@ -595,6 +672,29 @@ void MotorScene::createRobot1()
 	object[ROBOT_LOWERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
 	object[ROBOT_LOWERLEG2].setTranslation(0, -1.15, 0);
 	Object::bind(&object[ROBOT_UPPERLEG2], &object[ROBOT_LOWERLEG2], true, true);
+}
+
+void MotorScene::createVehicles()
+{
+	//GY CAR
+	object[GY_CAR1].setMesh(meshList[unsigned int(MESH::GY_CAR)]);
+	object[GY_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM6], &object[GY_CAR1], true, true);
+
+	//EH CAR
+	object[EH_CAR1].setMesh(meshList[unsigned int(MESH::EH_CAR)]);
+	object[EH_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM7], &object[EH_CAR1], true, true);
+
+	//LF CAR
+	object[LF_CAR1].setMesh(meshList[unsigned int(MESH::LF_CAR)]);
+	object[LF_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM8], &object[LF_CAR1], true, true);
+
+	//YW CAR
+	object[YW_CAR1].setMesh(meshList[unsigned int(MESH::YW_CAR)]);
+	object[YW_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM9], &object[YW_CAR1], true, true);
 }
 
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
