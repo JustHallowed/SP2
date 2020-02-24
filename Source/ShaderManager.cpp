@@ -4,6 +4,11 @@
 #include <vector>
 #include <GL/glew.h>
 
+ShaderManager& ShaderManager::getMainChar(){
+	static ShaderManager shaderMan;
+	return shaderMan;
+}
+
 unsigned int ShaderManager::getProgID(){
 	static unsigned int progID = glCreateProgram();
 	return progID;
@@ -36,7 +41,7 @@ ShaderManager::~ShaderManager(){
 
 void ShaderManager::LinkProg() const{
 	GLint result, infoLogLength;
-	printf("Linking programme...\n\n");
+	printf("Linking programme...");
 	glLinkProgram(getProgID()); //Vars in diff shaders are linked here too
 	glValidateProgram(getProgID());
 

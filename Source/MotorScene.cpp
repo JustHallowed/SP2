@@ -1,14 +1,5 @@
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include "MotorScene.h"
-#include "GL\glew.h"
-#include "Application.h"
-#include "MeshBuilder.h"
-#include "Utility.h"
-#include "LoadTGA.hpp"
 #include "SceneManager.h"
-#include "MainChar.h"
 
 extern Camera camera;
 extern double elapsedTime;
@@ -35,17 +26,17 @@ void MotorScene::GetNameScoreData(bool showType) const{
 }
 
 void MotorScene::InitLight() const{
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lights[0].type"), GLint(light[0].type));
-	glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].color"), 1, &light[0].color.R);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].power"), light[0].power);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].kC"), light[0].kC);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].kL"), light[0].kL);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].kQ"), light[0].kQ);
-	glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].spotDirection"), 1, &light[0].spotDirection.x);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].cosInner"), light[0].cosInner);
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].exponent"), light[0].exponent);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "numLights"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].type"), GLint(light[0].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].color"), 1, &light[0].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].power"), light[0].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].kC"), light[0].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].kL"), light[0].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].kQ"), light[0].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].spotDirection"), 1, &light[0].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].cosInner"), light[0].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].exponent"), light[0].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "numLights"), 1);
 }
 
 void MotorScene::InitMeshes(){
@@ -86,7 +77,6 @@ void MotorScene::Init(){ //Init scene
 	glEnable(GL_BLEND); //Enable blend
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //Enable depth test
-	shaderMan = new ShaderManager;
 	scoreMan = new ScoreManager;
 	GetNameScoreData(0);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
@@ -110,7 +100,6 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
-	delete shaderMan;
 	delete scoreMan;
 	if(dynamic_cast<MotorScene*>(newScene) != this){
 		newScene->Init();
@@ -137,16 +126,17 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 				case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
 				case '8': { //Off the light
 					light[0].power = 0.f;
-					glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].power"), light[0].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].power"), light[0].power);
 					break;
 				}
 				case '9': { //On the light
 					light[0].power = 1.f;
-					glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "lights[0].power"), light[0].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].power"), light[0].power);
 					break;
 				}
 				case '0': { //Change scene
 					SceneManager::getScMan()->SetNextScene();
+					printf("\n\n");
 					for(auto itr = upDown->begin(); itr != upDown->end(); ++itr){
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
@@ -419,15 +409,15 @@ void MotorScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
 	} else if(light[0].type == Light::LIGHT_TYPE::SPOT){
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
 	} else{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 	}
 	if(showLightSphere){
 		modelStack.PushMatrix();
@@ -441,29 +431,29 @@ void MotorScene::RenderLight(){
 void MotorScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MV"), 1, GL_FALSE, &modelView.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MV"), 1, GL_FALSE, &modelView.a[0]);
 	if(enableLight){
-		glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lightEnabled"), 1);
+		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 1);
 		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MV_inverse_transpose"), 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "material.kAmbient"), 1, &mesh->material.kAmbient.r);
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "material.kDiffuse"), 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "material.kSpecular"), 1, &mesh->material.kSpecular.r);
-		glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "material.kShininess"), mesh->material.kShininess);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MV_inverse_transpose"), 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kAmbient"), 1, &mesh->material.kAmbient.r);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kDiffuse"), 1, &mesh->material.kDiffuse.r);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kSpecular"), 1, &mesh->material.kSpecular.r);
+		glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kShininess"), mesh->material.kShininess);
 	} else{
-		glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lightEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
 	}
 	if(mesh->textureID > 0){
-		glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTextureEnabled"), 1);
+		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTexture"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
 	} else{
-		glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTextureEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 0);
 	}
-	glUniform1f(glGetUniformLocation(shaderMan->getProgID(), "alpha"), alpha);
+	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "alpha"), alpha);
 	mesh->Render(); //Shld only be called once in the whole function
 }
 
@@ -541,19 +531,19 @@ void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) cons
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 1);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
 
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 	mesh->Render();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -561,22 +551,22 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 1);
-	glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "textColor"), 1, &color.R);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textColor"), 1, &color.R);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
 	for(unsigned i = 0; i < text.length(); ++i){
 		Mtx44 characterSpacing;
 		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -594,24 +584,24 @@ void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, f
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 1);
-	glUniform3fv(glGetUniformLocation(shaderMan->getProgID(), "textColor"), 1, &color.R);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textColor"), 1, &color.R);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	if(mesh != 0){
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	}
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
 	for(unsigned i = 0; i < text.length(); ++i){
 		Mtx44 characterSpacing;
 		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(glGetUniformLocation(shaderMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(shaderMan->getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();

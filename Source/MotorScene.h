@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ShaderManager.hpp"
 #include "ParticleSystem.h"
 #include "ScoreSystem.h"
 
@@ -20,7 +19,6 @@ class MotorScene final: public Scene{
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
-	ShaderManager* shaderMan;
 	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), UpdateMainChar(double), UpdateMainTranslateXZ(double), UpdateMainRotateY(double), UpdateMainTranslateY(double), RenderMainChar(), RenderLight();

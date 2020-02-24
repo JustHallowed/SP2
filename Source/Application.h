@@ -1,6 +1,12 @@
 #pragma once
+#include <MatrixStack.h>
+#include "Mesh.h"
+#include <GL/glew.h>
+#include "ShaderManager.hpp"
 #include <GLFW/glfw3.h>
 #include "timer.h"
+#include "MeshBuilder.h"
+#include "LoadTGA.hpp"
 
 class Application final{ //Singleton
 	Application();

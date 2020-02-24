@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ShaderManager.hpp"
 #include "ParticleSystem.h"
 
 class GhostScene final: public Scene{
@@ -20,7 +19,6 @@ class GhostScene final: public Scene{
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
-	ShaderManager* shaderMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), UpdateMainChar(double), UpdateMainTranslateXZ(double), UpdateMainRotateY(double), UpdateMainTranslateY(double), RenderMainChar(), RenderLight();
 	void RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
