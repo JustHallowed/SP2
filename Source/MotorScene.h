@@ -44,12 +44,32 @@ class MotorScene final: public Scene{
 		ROBOT_LOWERLEG1,
 		ROBOT_LOWERLEG2,
 
+		ROBOT_BODY2,
+		ROBOT_ARM3,
+		ROBOT_ARM4,
+		ROBOT_FOREARM3,
+		ROBOT_FOREARM4,
+		ROBOT_UPPERLEG3,
+		ROBOT_UPPERLEG4,
+		ROBOT_LOWERLEG3,
+		ROBOT_LOWERLEG4,
+
+		ROBOT_BODY3,
+		ROBOT_ARM5,
+		ROBOT_ARM6,
+		ROBOT_FOREARM5,
+		ROBOT_FOREARM6,
+		ROBOT_UPPERLEG5,
+		ROBOT_UPPERLEG6,
+		ROBOT_LOWERLEG5,
+		ROBOT_LOWERLEG6,
+
 		NUM_INSTANCES,
 	};
-	bool showDebugInfo, showLightSphere;
+	bool showDebugInfo, showLightSphere, splitScreen;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime;
+	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime, splitBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
 	Light light[3]{
@@ -63,8 +83,10 @@ class MotorScene final: public Scene{
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1(), createVehicles();
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(); createRobot2(), createRobot3();
+	void npcCheck(OBJECT_INSTANCES instance, const char* audioFileName);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
+	void RenderScreen1(double, int, int), RenderScreen2(double, int, int);
 };
