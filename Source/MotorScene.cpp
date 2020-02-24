@@ -55,8 +55,6 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 20, 20, 1.f);
 	meshList[unsigned int(MESH::SMOKE)] = MeshBuilder::GenerateQuad(Color(1.f, 0.f, 0.f), 5.f, 5.f);
 	meshList[unsigned int(MESH::SMOKE)]->textureID = LoadTGA("Resources/TGAs/Smoke.tga");
-	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
-	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
@@ -86,10 +84,10 @@ void MotorScene::Init(){ //Init scene
 	jump->push_back(std::pair<bool, double>(0, 0.0));
 	upDown->push_back(std::pair<const char*, double>("none", 0.0));
 	leftRight->push_back(std::pair<const char*, double>("none", 0.0));
-	bulletGenerator.InitParticles();
+	smokeGenerator.InitParticles();
 	animateDir = showDebugInfo = 1;
 	state = showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = 0.0;
+	smokeBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = 0.0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 }
 
@@ -161,16 +159,16 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		debugBounceTime = elapsedTime + 0.5;
 	}
 
-	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
-		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
+	if(smokeBounceTime <= elapsedTime && smokeGenerator.currAmt < smokeGenerator.maxAmt){
+		Particle* p = smokeGenerator.particlePool[smokeGenerator.GetIndex()];
 		p->color = Color(1.f, 0.f, 0.f);
 		p->dir = Vector3(0, 1, 0);
 		p->life = 1.f;
 		p->pos = Vector3(0, 0, 0) + p->dir * 2.5f + Vector3(0.f, 7.5f, 0.f);
-		++bulletGenerator.currAmt;
-		bulletBounceTime = elapsedTime + 0.2;
+		++smokeGenerator.currAmt;
+		smokeBounceTime = elapsedTime + 0.2;
 	}
-	bulletGenerator.UpdateParticles(dt);
+	smokeGenerator.UpdateParticles(dt);
 
 	//Billboarding for particles
 	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
@@ -314,7 +312,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
-	for(Particle* p: bulletGenerator.particlePool){
+	for(Particle* p: smokeGenerator.particlePool){
 		if(p->life > 0.0f){
 			modelStack.PushMatrix();
 				modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
@@ -326,20 +324,26 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 
 	std::ostringstream ss;
+	ss << "Typed: ";
+	for(short i = 0; i < 10; ++i){
+		ss << Scene::getTyped()[i];
+	}
+	RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 15.f, winWidth, winHeight);
+	ss.str("");
 	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
 		ss << "MainChar's target: " << MainChar::getMainChar().getTarget().x << ", " << MainChar::getMainChar().getTarget().y << ", " << MainChar::getMainChar().getTarget().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
 		ss.str("");
 		ss << "MainChar's pos: " << MainChar::getMainChar().getPos().x << ", " << MainChar::getMainChar().getPos().y << ", " << MainChar::getMainChar().getPos().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
 		ss << "Elapsed time: " << elapsedTime;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);

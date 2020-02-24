@@ -49,8 +49,6 @@ void GhostScene::InitMeshes(){
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 20, 20, 1.f);
 	meshList[unsigned int(MESH::SMOKE)] = MeshBuilder::GenerateQuad(Color(1.f, 0.f, 0.f), 5.f, 5.f);
 	meshList[unsigned int(MESH::SMOKE)]->textureID = LoadTGA("Resources/TGAs/Smoke.tga");
-	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
-	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
@@ -67,19 +65,14 @@ void GhostScene::InitMeshes(){
 void GhostScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
-	glEnable(GL_CULL_FACE); //Enable back-face culling
-	glEnable(GL_BLEND); //Enable blend
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST); //Enable depth test
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	MainChar::getMainChar().Init(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 0.f, 1.f));
 	InitLight();
 	InitMeshes();
 	state = showLightSphere = indexUpDown = indexLeftRight = indexJump = 0;
-	bulletGenerator.InitParticles();
+	smokeGenerator.InitParticles();
 	animateDir = showDebugInfo = 1;
-	bulletBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = timeInScene = 0.0;
+	smokeBounceTime = debugBounceTime = lightBounceTime = swingBounceTime = timePressed = timeInScene = 0.0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 }
 
@@ -136,16 +129,16 @@ void GhostScene::Update(double dt, float FOV){ //Update scene
 		debugBounceTime = elapsedTime + 0.5;
 	}
 
-	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
-		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
+	if(smokeBounceTime <= elapsedTime && smokeGenerator.currAmt < smokeGenerator.maxAmt){
+		Particle* p = smokeGenerator.particlePool[smokeGenerator.GetIndex()];
 		p->color = Color(1.f, 0.f, 0.f);
 		p->dir = Vector3(0, 1, 0);
 		p->life = 1.f;
 		p->pos = Vector3(0, 0, 0) + p->dir * 2.5f + Vector3(0.f, 7.5f, 0.f);
-		++bulletGenerator.currAmt;
-		bulletBounceTime = elapsedTime + 0.2;
+		++smokeGenerator.currAmt;
+		smokeBounceTime = elapsedTime + 0.2;
 	}
-	bulletGenerator.UpdateParticles(dt);
+	smokeGenerator.UpdateParticles(dt);
 
 	//Billboarding for particles
 	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
@@ -282,7 +275,7 @@ void GhostScene::Render(double dt, int winWidth, int winHeight){
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
-	for(Particle* p: bulletGenerator.particlePool){
+	for(Particle* p: smokeGenerator.particlePool){
 		if(p->life > 0.0f){
 			modelStack.PushMatrix();
 				modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
@@ -297,7 +290,7 @@ void GhostScene::Render(double dt, int winWidth, int winHeight){
 	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(5);
 		ss << "Replay time: " << timeInScene;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 	}
 }
 

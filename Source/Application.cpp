@@ -13,6 +13,8 @@ extern double elapsedTime;
 extern float FOV = 45.f;
 GLFWwindow* m_window;
 GLfloat xLast = 0, yLast = 0;
+char* Scene::typed = new char[10];
+double typeBounceTime = 0.0;
 
 Application* Application::app = 0;
 
@@ -39,6 +41,26 @@ static void error_callback(int error, const char* description){ //Define an erro
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){ //Define the key input callback
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+	if(typeBounceTime <= elapsedTime){
+		if(key == GLFW_KEY_BACKSPACE){
+			for(short i = 9; i >= 0; --i){
+				if(Scene::getTyped()[i] != (char)0){
+					Scene::getTyped()[i] = (char)0;
+					break;
+				}
+			}
+			typeBounceTime = elapsedTime + 0.1;
+		} else{
+			for(short i = 0; i < 10; ++i){
+				if(Scene::getTyped()[i] == char(0) && char(key) > 64 && char(key) < 90){
+					Scene::getTyped()[i] = char(key);
+					break;
+				}
+
+			}
+			typeBounceTime = elapsedTime + 0.2;
+		}
 	}
 }
 
@@ -101,7 +123,7 @@ Application::Application(){
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(m_window); //Makes the context of the specified window current on the calling thread
-	//glfwSetKeyCallback(m_window, key_callback); //Sets the key callback
+	glfwSetKeyCallback(m_window, key_callback); //Sets the key callback
 	glewExperimental = 1; //For core profile
 	GLenum err = glewInit(); //Init GLEW
 	if(err != GLEW_OK){ //If GLEW is not initialised...
@@ -124,12 +146,13 @@ Application::Application(){
 Application::~Application(){
 	glfwDestroyWindow(m_window); //Close OpenGL window and terminate GLFW
 	glfwTerminate(); //Finalise and clean up GLFW
+	delete[] Scene::getTyped();
 	delete SceneManager::getScMan();
 }
 
 void Application::IRun(){
 	m_timer.startTimer(); //Start timer to calculate how long it takes to render this frame
-	while(!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE)){ //Main Loop
+	while(!glfwWindowShouldClose(m_window)){ //Main Loop
 		SceneManager::getScMan()->Update(*this, m_window); //Update current scene
 	}
 }

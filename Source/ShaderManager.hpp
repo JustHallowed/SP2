@@ -1,6 +1,6 @@
 #pragma once
 
-class ShaderManager final{
+class ShaderManager final{ //Singleton
     ShaderManager();
     ShaderManager(const ShaderManager&); //Private copy ctor
     ShaderManager(ShaderManager&&); //Private move ctor
