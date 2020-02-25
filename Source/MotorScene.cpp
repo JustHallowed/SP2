@@ -264,18 +264,56 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 			{
 				if (menuR[0] <= 1.f)
 				{
-					menuR[0] += 0.08f;
-					menuG[0] += 0.02f;
-					menuWordSize[0] += 0.2f;
+					menuR[0] += 0.16f;
+					menuG[0] += 0.04f;
+					menuWordSize[0] += 0.1f;
 				}
 			}
 			else
 			{
 				if (menuR[0] >= 0.2f)
 				{
-					menuR[0] -= 0.08f;
-					menuG[0] -= 0.02f;
-					menuWordSize[0] -= 0.2f;
+					menuR[0] -= 0.16f;
+					menuG[0] -= 0.04f;
+					menuWordSize[0] -= 0.1f;
+				}
+			}
+			//67,789 , 447,826
+			if (p.x > 67 && p.x < 447 && p.y > 789 && p.y < 826)
+			{
+				if (menuR[1] <= 1.f)
+				{
+					menuR[1] += 0.16f;
+					menuG[1] += 0.04f;
+					menuWordSize[1] += 0.1f;
+				}
+			}
+			else
+			{
+				if (menuR[1] >= 0.2f)
+				{
+					menuR[1] -= 0.16f;
+					menuG[1] -= 0.04f;
+					menuWordSize[1] -= 0.1f;
+				}
+			}
+			//67, 854, 268, 884
+			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
+			{
+				if (menuR[2] <= 1.f)
+				{
+					menuR[2] += 0.16f;
+					menuG[2] += 0.04f;
+					menuWordSize[2] += 0.1f;
+				}
+			}
+			else
+			{
+				if (menuR[2] >= 0.2f)
+				{
+					menuR[2] -= 0.16f;
+					menuG[2] -= 0.04f;
+					menuWordSize[2] -= 0.1f;
 				}
 			}
 		}
@@ -365,7 +403,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	}
 
 	std::ostringstream ss;
-	if (showDebugInfo) {
+	if (showDebugInfo && !menuActive) {
 		ss << std::fixed << std::setprecision(2);
 		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
