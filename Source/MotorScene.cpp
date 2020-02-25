@@ -102,7 +102,7 @@ void MotorScene::CreateInstances()
 	object[TESTBOX].setTranslation(0,35,0);
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	object[TESTBOX2].setScale(100, 10, 10);
+	object[TESTBOX2].setScale(50, 10, 10);
 	object[TESTBOX2].setDimension(100, 10, 10);
 	object[TESTBOX2].setTranslation(0, 35, -40);
 
