@@ -21,7 +21,7 @@ unsigned int ShaderManager::getProgID() const{
 
 void ShaderManager::LinkProg() const{
 	GLint result, infoLogLength;
-	printf("Linking programme...\n\n");
+//	printf("Linking programme...\n\n");
 	glLinkProgram(progID); //Vars in diff shaders are linked here too
 	glValidateProgram(progID);
 
@@ -31,7 +31,7 @@ void ShaderManager::LinkProg() const{
 	if(infoLogLength > 0){
 		std::vector<char> errorMsg(infoLogLength + 1);
 		glGetProgramInfoLog(progID, infoLogLength, NULL, &errorMsg[0]);
-		printf("%s\n", &errorMsg[0]);
+		//printf("%s\n", &errorMsg[0]);
 	}
 
 	glDeleteShader(vsID);
@@ -49,11 +49,11 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		}
 		stream.close();
 	} else{
-		printf("Failed to open and read \"%s\"\n", filePath);
+		//printf("Failed to open and read \"%s\"\n", filePath);
 		return;
 	}
 
-	printf("Compiling \"%s\"...\n", filePath);
+	//printf("Compiling \"%s\"...\n", filePath);
 	const char* shaderSrcPtr = shaderSrc.c_str();
 	glShaderSource(shaderID, 1, &shaderSrcPtr, NULL);
 	glCompileShader(shaderID);
@@ -62,7 +62,7 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &infoLogLength);
 		char* errorMsg = (char*)_malloca(infoLogLength * sizeof(char)); //Allocate memory on the stack dynamically
 		glGetShaderInfoLog(shaderID, infoLogLength, &infoLogLength, errorMsg);
-		printf("Failed to compile \"%s\"!\n%s\n", filePath, errorMsg);
+		//printf("Failed to compile \"%s\"!\n%s\n", filePath, errorMsg);
 	}
 
 	glAttachShader(progID, shaderID);

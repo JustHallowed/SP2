@@ -63,7 +63,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
-	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
+	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/textbox.tga");
 	meshList[unsigned int(MESH::SPRITE1)] = MeshBuilder::GenerateText(5, 5);
 	meshList[unsigned int(MESH::SPRITE1)]->textureID = LoadTGA("Resources/TGAs/sprite1.tga");
 	meshList[unsigned int(MESH::SPRITE2)] = MeshBuilder::GenerateText(3, 5);
@@ -127,10 +127,18 @@ void MotorScene::Init(){ //Init scene
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	splitScreen = 0;
+	menuActive = 1;
 	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
 	Ani1 = Ani2 = 0;
+	for (int i = 0; i < 3; ++i)
+	{
+		menuR[i] = 0.2f;
+		menuG[i] = 0.8f;
+		menuWordSize[i] = 6.f;
+		menuLimit[i] = 0;
+	}
 
 
 	//play thru out the scene and loops
@@ -228,7 +236,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
 
 	static float lastTime = 0.0f;
-	float currentTime = GetTickCount() * 0.001f;
+	float currentTime = GetTickCount64() * 0.001f;
 	if (currentTime - lastTime > 0.02f)
 	{
 		if (Ani1 < 25)
@@ -240,6 +248,37 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		else if (Ani2 == 11)
 			Ani2 = 0;
 		lastTime = currentTime;
+	}
+
+	POINT p;
+	if (GetCursorPos(&p))
+	{
+		system("cls");
+		std::cout << p.x << std::endl << p.y << std::endl;
+		HWND hwnd = ::GetActiveWindow();
+		if (ScreenToClient(hwnd, &p)) 
+		{
+			std::cout << p.x << std::endl << p.y << std::endl;
+			//65,730 265/766
+			if (p.x > 65 && p.x < 265 && p.y > 730 && p.y < 766)
+			{
+				if (menuR[0] <= 1.f)
+				{
+					menuR[0] += 0.08f;
+					menuG[0] += 0.02f;
+					menuWordSize[0] += 0.2f;
+				}
+			}
+			else
+			{
+				if (menuR[0] >= 0.2f)
+				{
+					menuR[0] -= 0.08f;
+					menuG[0] -= 0.02f;
+					menuWordSize[0] -= 0.2f;
+				}
+			}
+		}
 	}
 
 	Mtx44 projection;
@@ -261,6 +300,8 @@ void MotorScene::Render(double dt, int winWidth, int winHeight) {
 		glViewport(0, 0, winWidth, winHeight);
 		RenderScreen1(dt, winWidth, winHeight);
 	}
+	if (menuActive)
+		RenderMenu(dt,winWidth,winHeight);
 }
 
 void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
@@ -389,7 +430,6 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	modelStack.Rotate(180, 0, 1, 0);
 	RenderAnimation(meshList[unsigned int(MESH::SPRITE2)], Ani2);
 	modelStack.PopMatrix();
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 15, 10, 10, winWidth, winHeight);
 }
 
 void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
@@ -512,6 +552,23 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 4.f, winWidth, winHeight);
 		ss.str("");
 	}
+}
+void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
+{
+	std::ostringstream ss;
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
+	ss << "PLAY";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[0], menuG[0], 1.f), menuWordSize[0], 1.f, 3.f, winWidth, winHeight);
+	ss.str("");
+	ss << "OPTIONS";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[1], menuG[1], 1.f), menuWordSize[1], 1.f, 2.f, winWidth, winHeight);
+	ss.str("");
+	ss << "QUIT";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[2], menuG[2], 1.f), menuWordSize[2], 1.f, 1.f, winWidth, winHeight);
+	ss.str("");
 }
 void MotorScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){

@@ -57,12 +57,14 @@ class MotorScene final: public Scene{
 
 		NUM_INSTANCES,
 	};
-	bool showDebugInfo, showLightSphere, splitScreen;
+	bool showDebugInfo, showLightSphere, splitScreen, menuActive;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
 	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime, splitBounceTime;
 	double CalcFrameRate() const;
 	int Ani1, Ani2;
+	float menuR[3], menuG[3], menuWordSize[3];
+	bool menuLimit[3];
 	Object object[NUM_INSTANCES];
 	Light light[1]{Light(0.f, 192.f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
@@ -77,5 +79,5 @@ class MotorScene final: public Scene{
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
-	void RenderScreen1(double, int, int), RenderScreen2(double, int, int);
+	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(double, int, int);
 };
