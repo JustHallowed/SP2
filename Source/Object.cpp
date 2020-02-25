@@ -402,7 +402,7 @@ void Object::updateCollision(Object* b, double dt)
 							translation.z -= penetration.z;
 					}
 				}
-				else
+				else if (penetration.x < 0)
 				{
 					if (collidingFaceAxisA.x>0)
 						translation.x += penetration.x;
@@ -464,13 +464,13 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	float Wa, Ha, Da;// half dimensions of A (Width, Height, Depth)
 	float Wb, Hb, Db;// half dimensions of B (Width, Height, Depth)
 
-	Wa = dimension.x / 4;
-	Ha = dimension.y / 4;
-	Da = dimension.z / 4;
+	Wa = dimension.x / 2;
+	Ha = dimension.y / 2;
+	Da = dimension.z / 2;
 
-	Wb = b->dimension.x / 4;
-	Hb = b->dimension.y / 4;
-	Db = b->dimension.z / 4;
+	Wb = b->dimension.x / 2;
+	Hb = b->dimension.y / 2;
+	Db = b->dimension.z / 2;
 	//Checking by A
 	float LHS = projPlane(T, Ax).Length(); //Projection of T onto plane with normal Ax
 	float RHS = projPlane(Ax * Wa, Ax).Length() + projPlane(Ay * Ha, Ax).Length() + projPlane(Az * Da, Ax).Length() +
@@ -496,7 +496,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Ay;
 		}
-		penetration->y -= dimension.y / 2;
+		penetration->y -= dimension.y ;
 	}
 	else
 	{
@@ -513,7 +513,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Az;
 		}
-		penetration->z -= dimension.z / 2;
+		penetration->z -= dimension.z ;
 	}
 	else
 	{
@@ -529,7 +529,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	{
 		*greatestFaceIntersectionB = RHS - LHS;
 		*collidingFaceAxisB = Bx;
-		penetration->x -= b->dimension.x / 2;
+		penetration->x -= b->dimension.x ;
 	}
 	else
 	{
@@ -546,7 +546,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = By;
 		}
-		penetration->y -= b->dimension.y / 2;
+		penetration->y -= b->dimension.y ;
 	}
 	else
 	{
@@ -564,7 +564,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = Bz;
 		}
-		penetration->z -= b->dimension.z / 2;
+		penetration->z -= b->dimension.z ;
 	}
 	else
 	{

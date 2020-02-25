@@ -97,7 +97,7 @@ void MotorScene::InitMeshes(){
 void MotorScene::CreateInstances()
 {
 	object[TESTBOX].setMesh(meshList[unsigned int(MESH::HITBOXRED)]);
-	object[TESTBOX].setScale(10, 10, 10);
+	//object[TESTBOX].setScale(10, 10, 10);
 	object[TESTBOX].setDimension(10, 10, 10);
 	object[TESTBOX].setTranslation(0,35,0);
 
