@@ -103,7 +103,7 @@ void MotorScene::CreateInstances()
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
 	/*object[TESTBOX2].setRotation(90, 'y');*/
-	object[TESTBOX2].setDimension(30, 20, 20);
+	object[TESTBOX2].setDimension(10, 10, 10);
 	object[TESTBOX2].setTranslation(0, 35, 40);
 
 	//object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);

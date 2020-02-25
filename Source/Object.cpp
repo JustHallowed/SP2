@@ -385,9 +385,9 @@ void Object::updateCollision(Object* b, double dt)
 					{
 						if (penetration.y < 0)
 						{
-							if (collisionAt[POSY])
+							if (collidingFaceAxisA.y>0)
 								translation.y += penetration.y;
-							else if (collisionAt[NEGY])
+							else if (collidingFaceAxisA.y<0)
 								translation.y -= penetration.y;
 						}
 					}
@@ -396,9 +396,9 @@ void Object::updateCollision(Object* b, double dt)
 				{
 					if (penetration.z < 0)
 					{
-						if (collisionAt[POSZ])
+						if (collidingFaceAxisA.z>0)
 							translation.z += penetration.z;
-						else if (collisionAt[NEGZ])
+						else if (collidingFaceAxisA.z < 0)
 							translation.z -= penetration.z;
 					}
 				}
@@ -486,12 +486,12 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 		return false;
 	}
 
-	LHS = projPlane(T, Ay).Length(); //Projection of T onto plane with normal Ay
+	LHS = projPlane(T, Ay).Length(); //Projection of T onto plane with normal Ax
 	RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
 		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
-	if (LHS <= RHS)//Collision
+	if (LHS <= RHS)
 	{
-		if (RHS - LHS > *greatestFaceIntersectionA)
+		if (RHS - LHS > * greatestFaceIntersectionA)
 		{
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Ay;
