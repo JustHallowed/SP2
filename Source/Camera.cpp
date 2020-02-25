@@ -6,18 +6,13 @@ double modeBounceTime = 0.0;
 extern double elapsedTime = 0.0;
 extern float FOV;
 
-Camera& Camera::getCam(){ //Static getter for Singleton
-	static Camera cam;
-	return cam;
-}
-
 Camera::Camera(): focusSpd(100.f), freeSpd(50.f){ //Default ctor
 	mode = MODE::FOCUS;
 	leftMouse = rightMouse = 0;
 	canMove[0] = canMove[1] = canMove[2] = canMove[3] = false;
 }
 
-void Camera::Init(const Vector3 &pos, const Vector3 &target, const Vector3 &up){ //Init cam
+void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up){ //Init cam
 	this->pos = defaultPos = pos;
 	this->target = defaultTarget = target;
 	this->up = defaultUp = up;
@@ -67,7 +62,7 @@ void Camera::Update(double dt){ //Update cam
 		}
 	}
 
-	if(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)){ //Move cam up or down
+	if(Application::IsKeyPressed('Q') - Application::IsKeyPressed('E')){ //Move cam up or down
 		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
 		right.y = 0;
 		if(mode == MODE::FOCUS){

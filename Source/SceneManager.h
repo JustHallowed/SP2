@@ -11,8 +11,8 @@ class SceneManager final{ //Singleton
 	SceneManager& operator=(SceneManager&&) noexcept{}; //Private move assignment operator
 	double screenBounceTime, switchBounceTime;
 	int currSceneID, nextSceneID;
-	static SceneManager* scMan;
-	std::vector<Scene*> scStorage;
+	static SceneManager* sceneMan;
+	std::vector<Scene*> sceneStorage;
 public:
 	~SceneManager();
 	static SceneManager* getScMan();

@@ -4,38 +4,53 @@
 #include <vector>
 #include <GL/glew.h>
 
-ShaderManager::ShaderManager(const char* vsPath, const char* fsPath): progID(glCreateProgram()), vsID(glCreateShader(GL_VERTEX_SHADER)), fsID(glCreateShader(GL_FRAGMENT_SHADER)){
-	ParseShader(vsPath, vsID);
-	ParseShader(fsPath, fsID);
+ShaderManager& ShaderManager::getMainChar(){
+	static ShaderManager shaderMan;
+	return shaderMan;
+}
+
+unsigned int ShaderManager::getProgID(){
+	static unsigned int progID = glCreateProgram();
+	return progID;
+}
+
+ShaderManager::ShaderManager(){
+	for(short i = 0; i < 1; ++i){
+		vsID[i] = glCreateShader(GL_VERTEX_SHADER);
+		fsID[i] = glCreateShader(GL_FRAGMENT_SHADER);
+	}
+	ParseShader("Resources/Shaders/Regular.vs", vsID[0]);
+	ParseShader("Resources/Shaders/Regular.fs", fsID[0]);
+	glAttachShader(getProgID(), vsID[0]);
+	glAttachShader(getProgID(), fsID[0]);
 	LinkProg();
 	UseProg();
 }
 
 ShaderManager::~ShaderManager(){
-	glDeleteProgram(progID);
-}
-
-unsigned int ShaderManager::getProgID() const{
-	return progID;
+	for(short i = 0; i < 1; ++i){
+		glDetachShader(getProgID(), vsID[i]);
+		glDetachShader(getProgID(), fsID[i]);
+		glDeleteShader(vsID[i]);
+		glDeleteShader(fsID[i]);
+	}
+	glDeleteProgram(getProgID());
 }
 
 void ShaderManager::LinkProg() const{
 	GLint result, infoLogLength;
-	printf("Linking programme...\n\n");
-	glLinkProgram(progID); //Vars in diff shaders are linked here too
-	glValidateProgram(progID);
+	printf("Linking programme...");
+	glLinkProgram(getProgID()); //Vars in diff shaders are linked here too
+	glValidateProgram(getProgID());
 
 	//Check the programme
-	glGetProgramiv(progID, GL_LINK_STATUS, &result);
-	glGetProgramiv(progID, GL_INFO_LOG_LENGTH, &infoLogLength);
+	glGetProgramiv(getProgID(), GL_LINK_STATUS, &result);
+	glGetProgramiv(getProgID(), GL_INFO_LOG_LENGTH, &infoLogLength);
 	if(infoLogLength > 0){
 		std::vector<char> errorMsg(infoLogLength + 1);
-		glGetProgramInfoLog(progID, infoLogLength, NULL, &errorMsg[0]);
+		glGetProgramInfoLog(getProgID(), infoLogLength, NULL, &errorMsg[0]);
 		printf("%s\n", &errorMsg[0]);
 	}
-
-	glDeleteShader(vsID);
-	glDeleteShader(fsID);
 }
 
 void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) const{
@@ -64,10 +79,17 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		glGetShaderInfoLog(shaderID, infoLogLength, &infoLogLength, errorMsg);
 		printf("Failed to compile \"%s\"!\n%s\n", filePath, errorMsg);
 	}
+}
 
-	glAttachShader(progID, shaderID);
+void ShaderManager::UseNewShaders(short currIndex, short newIndex) const{
+	glDetachShader(getProgID(), vsID[currIndex]);
+	glDetachShader(getProgID(), fsID[currIndex]);
+	glAttachShader(getProgID(), vsID[newIndex]);
+	glAttachShader(getProgID(), fsID[newIndex]);
+	LinkProg();
+	UseProg();
 }
 
 void ShaderManager::UseProg() const{
-	glUseProgram(progID);
+	glUseProgram(getProgID());
 }

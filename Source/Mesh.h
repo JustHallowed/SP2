@@ -8,7 +8,7 @@ public:
 		DRAW_TRIANGLES, DRAW_TRIANGLE_STRIP, DRAW_LINES, DRAW_FAN, DRAW_MODE_LAST
 	};
 	Mesh(), ~Mesh();
-	void Render(), Render(float), Render(unsigned, unsigned);
+	void Render(), Render(unsigned, unsigned);
 	DRAW_MODE mode;
 	unsigned vertexBuffer, colorBuffer, indexBuffer, textureID;
 	Material material;

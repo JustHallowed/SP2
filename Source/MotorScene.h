@@ -3,16 +3,17 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ShaderManager.hpp"
 #include "ParticleSystem.h"
+#include "ScoreSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
+
 class MotorScene final: public Scene{
-	enum class MESH {
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+	enum class MESH{
+		HITBOX, HITSPHERE, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, SMOKE, ARM, FOREARM, BODY, LOWER_LEG, UPPER_LEG,
+		UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, NUM_GEOMETRY,
 	};
-	enum OBJECT_INSTANCES
-	{
+	enum OBJECT_INSTANCES{
 		PLATFORM1,
 		PLATFORM2, 
 		PLATFORM3, 
@@ -37,21 +38,22 @@ class MotorScene final: public Scene{
 
 		NUM_INSTANCES,
 	};
-	bool showDebugInfo, showLightSphere;
+	bool animateDir, showDebugInfo, showLightSphere, state;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime;
+	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed;
 	double CalcFrameRate() const;
+	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	Object object[NUM_INSTANCES];
-	Light light[1]{Light(0.f, 192.f, 0.f)};
+	Light light[1]{Light(0.f, 10.f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
-	ParticleEmitter bulletGenerator;
-	ShaderManager* shMan;
+	ParticleEmitter smokeGenerator;
+	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
-	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1();
+	void InitLight() const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, GetNameScoreData(bool) const;
+	void createPlatforms(), createUFOs(), createRobot1(), UpdateMainChar(double), UpdateMainTranslateXZ(double), UpdateMainRotateY(double), UpdateMainTranslateY(double), RenderMainChar(), renderObject(Object* obj);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;

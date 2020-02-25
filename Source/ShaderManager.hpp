@@ -1,10 +1,15 @@
 #pragma once
 
-class ShaderManager final{
-    unsigned int progID, vsID, fsID;
+class ShaderManager final{ //Singleton
+    ShaderManager();
+    ShaderManager(const ShaderManager&); //Private copy ctor
+    ShaderManager(ShaderManager&&); //Private move ctor
+    ShaderManager& operator=(const ShaderManager&){}; //Private copy assignment operator
+    ShaderManager& operator=(ShaderManager&&) noexcept{}; //Private move assignment operator
+    unsigned int vsID[2], fsID[2];
 public:
-    ShaderManager(const char*, const char*);
     ~ShaderManager();
-    unsigned int getProgID() const;
-    void LinkProg() const, ParseShader(const char*, unsigned int&) const, UseProg() const;
+    static ShaderManager& getMainChar();
+    static unsigned int getProgID();
+    void LinkProg() const, ParseShader(const char*, unsigned int&) const, UseNewShaders(short, short) const, UseProg() const;
 };

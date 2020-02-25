@@ -1,16 +1,20 @@
 #include <GL/glew.h>
 #include "Application.h"
 #include "SceneManager.h"
+#include "GhostScene.h"
 #include "MotorScene.h"
 
 bool firstMouse = 1;
 const unsigned char FPS = 90;
 extern const unsigned int frameTime = 1000 / FPS; //Time for each frame
 extern bool hideCursor = 1;
+extern Camera camera;
 extern double elapsedTime;
 extern float FOV = 45.f;
 GLFWwindow* m_window;
 GLfloat xLast = 0, yLast = 0;
+char* Scene::typed = new char[10];
+double typeBounceTime = 0.0;
 
 Application* Application::app = 0;
 
@@ -25,8 +29,8 @@ bool Application::IsKeyPressed(unsigned short key){
 	return (GetAsyncKeyState(key) & 0x8001) != 0;
 }
 
-void Application::IRun(){
-	return getApp()->Run();
+void Application::Run(){
+	return getApp()->IRun();
 }
 
 static void error_callback(int error, const char* description){ //Define an error callback
@@ -38,6 +42,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+	if(typeBounceTime <= elapsedTime){
+		if(key == GLFW_KEY_BACKSPACE){
+			for(short i = 9; i >= 0; --i){
+				if(Scene::getTyped()[i] != (char)0){
+					Scene::getTyped()[i] = (char)0;
+					break;
+				}
+			}
+			typeBounceTime = elapsedTime + 0.1;
+		} else{
+			for(short i = 0; i < 10; ++i){
+				if(Scene::getTyped()[i] == char(0) && char(key) > 64 && char(key) < 90){
+					Scene::getTyped()[i] = char(key);
+					break;
+				}
+
+			}
+			typeBounceTime = elapsedTime + 0.2;
+		}
+	}
 }
 
 static void mouse_callback(GLFWwindow* window, double xpos, double ypos){ //For mouse movement
@@ -46,21 +70,19 @@ static void mouse_callback(GLFWwindow* window, double xpos, double ypos){ //For 
 		yLast = GLfloat(ypos);
 		firstMouse = 0;
 	}
-	float mouseSensitivity = 0.06f;
-	float xOffset = (GLfloat(xpos) - xLast) * mouseSensitivity;
-	float yOffset = (GLfloat(ypos) - yLast) * mouseSensitivity;
+	float SENS = 0.03f, xOffset = (GLfloat(xpos) - xLast) * SENS, yOffset = (GLfloat(ypos) - yLast) * SENS;
 	xLast = GLfloat(xpos);
 	yLast = GLfloat(ypos);
 	if(hideCursor){
-		Camera::getCam().UpdateCamVectors(xOffset, yOffset);
+		camera.UpdateCamVectors(xOffset, yOffset);
 	}
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){ //For mouse buttons
 	if(action == GLFW_PRESS){
-		(button == GLFW_MOUSE_BUTTON_LEFT ? Camera::getCam().leftMouse : Camera::getCam().rightMouse) = 1;
+		(button == GLFW_MOUSE_BUTTON_LEFT ? camera.leftMouse : camera.rightMouse) = 1;
 	} else{
-		Camera::getCam().leftMouse = Camera::getCam().rightMouse = 0;
+		camera.leftMouse = camera.rightMouse = 0;
 	}
 }
 
@@ -101,7 +123,7 @@ Application::Application(){
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(m_window); //Makes the context of the specified window current on the calling thread
-	//glfwSetKeyCallback(m_window, key_callback); //Sets the key callback
+	glfwSetKeyCallback(m_window, key_callback); //Sets the key callback
 	glewExperimental = 1; //For core profile
 	GLenum err = glewInit(); //Init GLEW
 	if(err != GLEW_OK){ //If GLEW is not initialised...
@@ -118,17 +140,19 @@ Application::Application(){
 	glfwSetScrollCallback(m_window, scroll_callback);
 
 	SceneManager::getScMan()->AddScene(new MotorScene);
+	SceneManager::getScMan()->AddScene(new GhostScene);
 }
 
 Application::~Application(){
 	glfwDestroyWindow(m_window); //Close OpenGL window and terminate GLFW
 	glfwTerminate(); //Finalise and clean up GLFW
+	delete[] Scene::getTyped();
 	delete SceneManager::getScMan();
 }
 
-void Application::Run(){
+void Application::IRun(){
 	m_timer.startTimer(); //Start timer to calculate how long it takes to render this frame
-	while(!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE)){ //Main Loop
+	while(!glfwWindowShouldClose(m_window)){ //Main Loop
 		SceneManager::getScMan()->Update(*this, m_window); //Update current scene
 	}
 }
