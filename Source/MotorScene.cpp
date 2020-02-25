@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <sstream>
 #include "MotorScene.h"
+#include "GameScene.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include "MeshBuilder.h"
@@ -63,7 +64,73 @@ void MotorScene::InitLight() const{
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].cosInner"), light[2].cosInner);
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].exponent"), light[2].exponent);
 
-	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 3);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[3].type"), GLint(light[3].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[3].color"), 1, &light[3].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].power"), light[3].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].kC"), light[3].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].kL"), light[3].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].kQ"), light[3].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[3].spotDirection"), 1, &light[3].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].cosCutoff"), light[3].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].cosInner"), light[3].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[3].exponent"), light[3].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[4].type"), GLint(light[4].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[4].color"), 1, &light[4].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].power"), light[4].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].kC"), light[4].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].kL"), light[4].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].kQ"), light[4].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[4].spotDirection"), 1, &light[4].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].cosCutoff"), light[4].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].cosInner"), light[4].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[4].exponent"), light[4].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[5].type"), GLint(light[5].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[5].color"), 1, &light[5].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].power"), light[5].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].kC"), light[5].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].kL"), light[5].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].kQ"), light[5].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[5].spotDirection"), 1, &light[5].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].cosCutoff"), light[5].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].cosInner"), light[5].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[5].exponent"), light[5].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[6].type"), GLint(light[6].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[6].color"), 1, &light[6].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].power"), light[6].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].kC"), light[6].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].kL"), light[6].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].kQ"), light[6].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[6].spotDirection"), 1, &light[6].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].cosCutoff"), light[6].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].cosInner"), light[6].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[6].exponent"), light[6].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[7].type"), GLint(light[7].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[7].color"), 1, &light[7].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].power"), light[7].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].kC"), light[7].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].kL"), light[7].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].kQ"), light[7].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[7].spotDirection"), 1, &light[7].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].cosCutoff"), light[7].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].cosInner"), light[7].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[7].exponent"), light[7].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[8].type"), GLint(light[8].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[8].color"), 1, &light[8].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].power"), light[8].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].kC"), light[8].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].kL"), light[8].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].kQ"), light[8].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[8].spotDirection"), 1, &light[8].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].cosCutoff"), light[8].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].cosInner"), light[8].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[8].exponent"), light[8].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 9);
 }
 
 void MotorScene::InitMeshes(){
@@ -163,7 +230,7 @@ void MotorScene::Init(){ //Init scene
 	inRange[EH_CAR1] = false;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
-	light[0].power = 1.f;
+	//light[0].power = 1.f;
 
 	//play thru out the scene and loops
 	//engine->play2D("Resources/Sound/bgm.mp3", true);
@@ -238,6 +305,11 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	{
 		splitScreen = !splitScreen;
 		splitBounceTime = elapsedTime + 0.4;
+	}
+
+	if (Application::IsKeyPressed('E'))
+	{
+		SceneManager::getScMan()->AddScene(new GameScene);
 	}
 
 	//!testing! if w is pressed, sound effects will be played
@@ -542,7 +614,44 @@ void MotorScene::RenderLight(){
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
 		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
-	
+	if (light[3].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[3].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[3].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[3].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[4].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[4].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[4].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[4].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[4].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[5].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[5].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[5].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[5].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[5].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[6].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[6].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[6].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[6].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[6].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[7].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[7].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[7].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[7].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[7].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[8].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[8].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[8].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[8].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[8].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+
+
 	if(showLightSphere){
 		modelStack.PushMatrix();
 			modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
@@ -550,14 +659,14 @@ void MotorScene::RenderLight(){
 			RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
 		modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		modelStack.Translate(light[1].position.x, light[1].position.y, light[1].position.z);
+	/*	modelStack.PushMatrix();
+		modelStack.Translate(light[7].position.x, light[7].position.y, light[7].position.z);
 		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
 		modelStack.PopMatrix();
 		modelStack.PushMatrix();
-		modelStack.Translate(light[2].position.x, light[2].position.y, light[2].position.z);
+		modelStack.Translate(light[8].position.x, light[8].position.y, light[8].position.z);
 		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
-		modelStack.PopMatrix();
+		modelStack.PopMatrix();*/
 	}
 }
 
@@ -714,54 +823,54 @@ void MotorScene::createPlatforms()
 {
 	//5 copies of platform
 	object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM1].setTranslation(0, 0.5, 0);
-	object[PLATFORM1].setScale(4);
+	object[PLATFORM1].setTranslation(-35, 0.5, 0);
+	object[PLATFORM1].setScale(3);
 	object[PLATFORM1].setDimension(40, 40, 40);
 
 	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM2].setTranslation(70, 0.5, 70);
+	object[PLATFORM2].setTranslation(10, 0.5, 70);
 	object[PLATFORM2].setRotation(45, 'y');
-	object[PLATFORM2].setScale(4);
+	object[PLATFORM2].setScale(3);
 	object[PLATFORM2].setDimension(40, 40, 40);
 
 	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM3].setTranslation(-70, 0.5, 70);
+	object[PLATFORM3].setTranslation(-80, 0.5, 70);
 	object[PLATFORM3].setRotation(-45, 'y');
-	object[PLATFORM3].setScale(4);
+	object[PLATFORM3].setScale(3);
 	object[PLATFORM3].setDimension(40, 40, 40);
 
 	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM4].setTranslation(70, 0.5, -70);
+	object[PLATFORM4].setTranslation(10, 0.5, -70);
 	object[PLATFORM4].setRotation(-45, 'y');
-	object[PLATFORM4].setScale(4);
+	object[PLATFORM4].setScale(3);
 	object[PLATFORM4].setDimension(40, 40, 40);
 
 	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM5].setTranslation(-70, 0.5, -70);
+	object[PLATFORM5].setTranslation(-80, 0.5, -70);
 	object[PLATFORM5].setRotation(45, 'y');
-	object[PLATFORM5].setScale(4);
+	object[PLATFORM5].setScale(3);
 	object[PLATFORM5].setDimension(40, 40, 40);
 
 	object[PLATFORM6].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM6].setTranslation(0, 0.5, -70);
-	object[PLATFORM6].setScale(4);
+	object[PLATFORM6].setTranslation(-35, 0.5, -70);
+	object[PLATFORM6].setScale(3);
 	object[PLATFORM6].setDimension(40, 40, 40);
 
 	object[PLATFORM7].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM7].setTranslation(70, 0.5, 0);
+	object[PLATFORM7].setTranslation(10, 0.5, 0);
 	object[PLATFORM7].setRotation(90, 'y');
-	object[PLATFORM7].setScale(4);
+	object[PLATFORM7].setScale(3);
 	object[PLATFORM7].setDimension(40, 40, 40);
 
 	object[PLATFORM8].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM8].setTranslation(0, 0.5, 70);
-	object[PLATFORM8].setScale(4);
+	object[PLATFORM8].setTranslation(-35, 0.5, 70);
+	object[PLATFORM8].setScale(3);
 	object[PLATFORM8].setDimension(40, 40, 40);
 
 	object[PLATFORM9].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM9].setTranslation(-70, 0.5, 0);
+	object[PLATFORM9].setTranslation(-80, 0.5, 0);
 	object[PLATFORM9].setRotation(90, 'y');
-	object[PLATFORM9].setScale(4);
+	object[PLATFORM9].setScale(3);
 	object[PLATFORM9].setDimension(40, 40, 40);
 }
 
