@@ -66,6 +66,8 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
 	meshList[unsigned int(MESH::SPRITE1)] = MeshBuilder::GenerateText(5, 5);
 	meshList[unsigned int(MESH::SPRITE1)]->textureID = LoadTGA("Resources/TGAs/sprite1.tga");
+	meshList[unsigned int(MESH::SPRITE2)] = MeshBuilder::GenerateText(3, 5);
+	meshList[unsigned int(MESH::SPRITE2)]->textureID = LoadTGA("Resources/TGAs/sprite2.tga");
 
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
@@ -128,7 +130,7 @@ void MotorScene::Init(){ //Init scene
 	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
-	Ani1 = 0;
+	Ani1 = Ani2 = 0;
 
 
 	//play thru out the scene and loops
@@ -233,6 +235,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 			Ani1++;
 		else if (Ani1 == 25)
 			Ani1 = 0;
+		if (Ani2 < 11)
+			Ani2++;
+		else if (Ani2 == 11)
+			Ani2 = 0;
 		lastTime = currentTime;
 	}
 
@@ -381,8 +387,9 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	modelStack.Translate(8, 15, 0);
 	modelStack.Scale(15, 15, 15);
 	modelStack.Rotate(180, 0, 1, 0);
-	RenderAnimation(meshList[unsigned int(MESH::SPRITE1)], Ani1);
+	RenderAnimation(meshList[unsigned int(MESH::SPRITE2)], Ani2);
 	modelStack.PopMatrix();
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 15, 10, 10, winWidth, winHeight);
 }
 
 void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
@@ -673,6 +680,39 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 		glUniformMatrix4fv(glGetUniformLocation(shMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+
+void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, float x, float y, int winWidth, int winHeight)
+{
+	if (!mesh || mesh->textureID < 0) {
+		return;
+	}
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, 1);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "colorTextureEnabled"), 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "colorTexture"), 0);
+
+	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(glGetUniformLocation(shMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	mesh->Render(frame * 6, 6);
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
 	glEnable(GL_DEPTH_TEST);
