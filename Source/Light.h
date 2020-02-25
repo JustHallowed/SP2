@@ -13,7 +13,7 @@ struct Light final{
 
 		position.Set(x, y, z);
 		color.Set(r, g, b);
-		power = 1.f;
+		power = 0.f;
 		kC = 1.f;
 		kL = .01f;
 		kQ = .001f;

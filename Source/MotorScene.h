@@ -72,16 +72,14 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime, splitBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
-	Light light[9]{
+	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
 		Light('s', 13.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)), //eh car
 		Light('s', 7.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)),//eh car
 		Light('s', -48.f, 6.f, 72.f, 1.f, 0.6f, 0.f, Vector3(1, 0, 0)), //lf car
 		Light('s', -48.f, 6.f, 68.f, 1.f, 0.6f, 0.f, Vector3(1, 0, 0)), //lf car
-		Light('s', -84.f, 6.f, 11.f, 1.f, 0.6f, 0.f, Vector3(0, 0, -1)), //yw car front
-		Light('s', -76.f, 6.f, 11.f, 1.f, 0.6f, 0.f, Vector3(0, 0, -1)), //yw car front
-		Light('s', -84.f, 6.f, -11.f, 1.f, 0.1f, 0.f, Vector3(0, 0, 1)), //yw car back
-		Light('s', -76.f, 6.f, -11.f, 1.f, 0.1f, 0.f, Vector3(0, 0, 1))	//yw car back
+		Light('s', -84.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
+		Light('s', -76.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
 	}; 
 
 
@@ -94,6 +92,7 @@ class MotorScene final: public Scene{
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
 	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3();
 	void npcCheck(OBJECT_INSTANCES instance, const char* audioFileName);
+	void carCheck(OBJECT_INSTANCES instance, const char* audioFileName);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
