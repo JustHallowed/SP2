@@ -1,9 +1,5 @@
-﻿  Object.cpp
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(79,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(85,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(90,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(878,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(906,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(907,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(632): warning C4715: 'Object::hasFaceIntersection': not all control paths return a value
+﻿  MotorScene.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(711,22): warning C4018: '<': signed/unsigned mismatch
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe

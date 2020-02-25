@@ -276,13 +276,13 @@ void Object::updateCollision(Object* b, double dt)
 		rBz.SetToRotation(b->angle.z, 0, 0, 1);
 	}
 
-	Wa = dimension.x / 4;
-	Ha = dimension.y / 4;
-	Da = dimension.z / 4;
+	Wa = dimension.x / 2;
+	Ha = dimension.y / 2;
+	Da = dimension.z / 2;
 
-	Wb = b->dimension.x / 4;
-	Hb = b->dimension.y / 4;
-	Db = b->dimension.z / 4;
+	Wb = b->dimension.x / 2;
+	Hb = b->dimension.y / 2;
+	Db = b->dimension.z / 2;
 
 	Vector3 penetration = Vector3(abs(T.x), abs(T.y), abs(T.z));
 
@@ -322,117 +322,77 @@ void Object::updateCollision(Object* b, double dt)
 
 	if (faceCollision)//find if face collision is at positive or negative axis
 	{
+		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
 
-		if (collidingFaceAxisA == Ax)
+		if (faceCollision || edgeCollision)
 		{
-			if (T.x >= 0)
-			{
-				if (angle.y < 180.f)
-					collisionAt[POSX] = true;
-				else
-				{
-					collisionAt[NEGX] = true;
-				}
-			}
-			else
-			{
-				if (angle.y < 180.f)
-					collisionAt[NEGX] = true;
-				else
-				{
-					collisionAt[POSX] = true;
-				}
-			}
-		}
-		else if (collidingFaceAxisA == Ay)
-		{
-			if (T.y >= 0)
-			{
-				if (angle.z < 180.f && angle.x < 180.f)
-					collisionAt[POSY] = true;
-				else
-					collisionAt[NEGY] = true;
-			}
-			else
-			{
-				if (angle.z < 180.f && angle.x < 180.f)
-					collisionAt[NEGY] = true;
-				else
-					collisionAt[POSY] = true;
-			}
-		}
-		else if (collidingFaceAxisA == Az)
-		{
-			if (T.z >= 0)
-			{
-				if (angle.y < 180.f)
-					collisionAt[POSZ] = true;
-				else
-				{
-					collisionAt[NEGZ] = true;
-				}
-			}
-			else
-			{
-				if (angle.y < 180.f)
-					collisionAt[NEGZ] = true;
-				else
-					collisionAt[POSZ] = true;
-			}
-		}
-	}
-	if (faceCollision || edgeCollision)
-	{
 
-		if (!b->isMovable())
-		{
-			Vector3 temp;
-			Vector3 front, movementDir;	//vehicle fromt, direction of movement
-			if (velocity != Vector3(0, 0, 0))
-				movementDir = velocity.Normalized();
-			if (velocity.x != 0)
+			if (!b->isMovable())
 			{
-				if (collidingFaceAxisB.x < 0)
+				if (velocity.x != 0)//changes velocity towards object b to 0
 				{
-					if (velocity.x > 0)
-						velocity.x += collidingFaceAxisB.x * velocity.x;
+					if (collidingFaceAxisB.x < 0)
+					{
+						if (velocity.x > 0)
+							velocity.x += collidingFaceAxisB.x * velocity.x;
+					}
+					else if (collidingFaceAxisB.x > 0)
+					{
+						if (velocity.x < 0)
+							velocity.x -= collidingFaceAxisB.x * velocity.x;
+					}
 				}
-				else if (collidingFaceAxisB.x > 0)
+				if (velocity.y != 0)
 				{
-					if (velocity.x < 0)
-						velocity.x -= collidingFaceAxisB.x * velocity.x;
+					if (collidingFaceAxisB.y < 0)
+					{
+						if (velocity.y > 0)
+							velocity.y += collidingFaceAxisB.y * velocity.y;
+					}
+					else if (collidingFaceAxisB.y > 0)
+					{
+						if (velocity.y < 0)
+							velocity.y -= collidingFaceAxisB.y * velocity.y;
+					}
 				}
-			}
-			if (velocity.y != 0)
-			{
-				if (collidingFaceAxisB.y < 0)
+				if (velocity.z != 0)
 				{
-					if (velocity.y > 0)
-						velocity.y += collidingFaceAxisB.y * velocity.y;
+					if (collidingFaceAxisB.z < 0)
+					{
+						if (velocity.z > 0)
+							velocity.z += collidingFaceAxisB.z * velocity.z;
+					}
+					else if (collidingFaceAxisB.z > 0)
+					{
+						if (velocity.z < 0)
+							velocity.z -= collidingFaceAxisB.z * velocity.z;
+					}
 				}
-				else if (collidingFaceAxisB.y > 0)
-				{
-					if (velocity.y < 0)
-						velocity.y -= collidingFaceAxisB.y * velocity.y;
-				}
-			}
-			if (velocity.z != 0)
-			{
-				if (collidingFaceAxisB.z < 0)
-				{
-					if (velocity.z > 0)
-						velocity.z += collidingFaceAxisB.z * velocity.z;
-				}
-				else if (collidingFaceAxisB.z > 0)
-				{
-					if (velocity.z < 0)
-						velocity.z -= collidingFaceAxisB.z * velocity.z;
-				}
-			}
 
-			if (penetration.x < penetration.y) //find lowest penetration among the axis
-			{
-				if (penetration.y < penetration.z)
+				if (penetration.x < penetration.y) //find lowest penetration among the axis
+				{
+					if (penetration.y < penetration.z)
+					{
+						if (penetration.z < 0)
+						{
+							if (collidingFaceAxisA.z > 0)
+								translation.z -= penetration.z;
+							else if (collidingFaceAxisA.z < 0)
+								translation.z += penetration.z;
+						}
+					}
+					else
+					{
+						if (penetration.y < 0)
+						{
+							if (collisionAt[POSY])
+								translation.y += penetration.y;
+							else if (collisionAt[NEGY])
+								translation.y -= penetration.y;
+						}
+					}
+				}
+				else if (penetration.x < penetration.z)
 				{
 					if (penetration.z < 0)
 					{
@@ -444,45 +404,25 @@ void Object::updateCollision(Object* b, double dt)
 				}
 				else
 				{
-					if (penetration.y < 0)
-					{
-						if (collisionAt[POSY])
-							translation.y += penetration.y;
-						else if (collisionAt[NEGY])
-							translation.y -= penetration.y;
-					}
+					if (collidingFaceAxisA.x>0)
+						translation.x += penetration.x;
+					else if (collidingFaceAxisA.x < 0)
+						translation.x -= penetration.x;
 				}
 			}
-			else if (penetration.x < penetration.z)
-			{
-				if (penetration.z < 0)
-				{
-					if (collisionAt[POSZ])
-						translation.z += penetration.z;
-					else if (collisionAt[NEGZ])
-						translation.z -= penetration.z;
-				}
-			}
-			else
-			{
-				if (collisionAt[POSX])
-					translation.x += penetration.x;
-				else if (collisionAt[NEGX])
-					translation.x -= penetration.x;
-			}
+			//if(edgeCollision)
+			//std::cout << "EDGE COLLISION\n";
+
+			//if (faceCollision)
+
+				std::cout << collidingFaceAxisB.x << "," << collidingFaceAxisB.y << "," << collidingFaceAxisB.z;
 		}
-		//if(edgeCollision)
-		//std::cout << "EDGE COLLISION\n";
-
-		if (faceCollision)
-			std::cout << collidingFaceAxisA.x << "," << collidingFaceAxisA.y << "," << collidingFaceAxisA.z;
-
 	}
-
 	moveBy(velocity.x, velocity.y, velocity.z);
 }
-bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA,Vector3* collidingFaceAxisA,
-										 float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB,Vector3* penetration)
+
+bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
+	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration)
 {
 	Vector3 T = b->pos - pos;
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
@@ -507,6 +447,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA,Vec
 	Bx = Vector3(1, 0, 0);
 	By = Vector3(0, 1, 0);
 	Bz = Vector3(0, 0, 1);
+
 	if (angle != Vector3(0, 0, 0))
 	{
 		Ax = rAx * rAy * rAz * Ax;
@@ -618,7 +559,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA,Vec
 	if (LHS <= RHS)//Collision
 	{
 
-		if (RHS - LHS > *greatestFaceIntersectionB)
+		if (RHS - LHS > *greatestFaceIntersectionB)	
 		{
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = Bz;
@@ -672,13 +613,13 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 	float Wa, Ha, Da;// half dimensions of A (Width, Height, Depth)
 	float Wb, Hb, Db;// half dimensions of B (Width, Height, Depth)
 
-	Wa = dimension.x / 4;
-	Ha = dimension.y / 4;
-	Da = dimension.z / 4;
+	Wa = dimension.x / 2;
+	Ha = dimension.y / 2;
+	Da = dimension.z / 2;
 
-	Wb = b->dimension.x / 4;
-	Hb = b->dimension.y / 4;
-	Db = b->dimension.z / 4;
+	Wb = b->dimension.x / 2;
+	Hb = b->dimension.y / 2;
+	Db = b->dimension.z / 2;
 
 	bool hasEdgeCollision = false;
 
@@ -774,17 +715,18 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 
 	return hasEdgeCollision;
 }
-void Object::findCollisionDirection(Object* a, Object* b, Vector3 uniqueAxisA, Vector3 uniqueAxisB)
+
+void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB)
 {
-	Vector3 T = b->pos - a->pos;
+	Vector3 T = b->pos - pos;
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
 	Vector3 Bx, By, Bz;// unit vector of the axes of B
 	Mtx44 rAx, rAy, rAz, rBx, rBy, rBz;
-	if (a->angle != Vector3(0, 0, 0))
+	if (angle != Vector3(0, 0, 0))
 	{
-		rAx.SetToRotation(a->angle.x, 1, 0, 0);
-		rAy.SetToRotation(a->angle.y, 0, 1, 0);
-		rAz.SetToRotation(a->angle.z, 0, 0, 1);
+		rAx.SetToRotation(angle.x, 1, 0, 0);
+		rAy.SetToRotation(angle.y, 0, 1, 0);
+		rAz.SetToRotation(angle.z, 0, 0, 1);
 	}
 	if (b->angle != Vector3(0, 0, 0))
 	{
@@ -799,7 +741,7 @@ void Object::findCollisionDirection(Object* a, Object* b, Vector3 uniqueAxisA, V
 	Bx = Vector3(1, 0, 0);
 	By = Vector3(0, 1, 0);
 	Bz = Vector3(0, 0, 1);
-	if (a->angle != Vector3(0, 0, 0))
+	if (angle != Vector3(0, 0, 0))
 	{
 		Ax = rAx * rAy * rAz * Ax;
 		Ay = rAx * rAy * rAz * Ay;
@@ -811,61 +753,71 @@ void Object::findCollisionDirection(Object* a, Object* b, Vector3 uniqueAxisA, V
 		By = rBx * rBy * rBz * By;
 		Bz = rBx * rBy * rBz * Bz;
 	}
-	if (uniqueAxisA == Ax)//find if collision is at positive or negative axis
+	if (*uniqueAxisA == Ax)//find if collision is at positive or negative axis
 	{
-		if (T.x >= 0)
+		if (T.x>0 && (angle.y > 90 && angle.y < 270) || (angle.z > 90 && angle.z < 270))
 		{
-			if (a->angle.y < 180.f)
-				a->collisionAt[POSX] = true;
-			else
-			{
-				a->collisionAt[NEGX] = true;
-			}
+			*uniqueAxisA = -*uniqueAxisA;
 		}
-		else
+		else if (T.x < 0 && (angle.y < 90 || angle.y >270) && (angle.z < 90 || angle.z >270))
 		{
-			if (a->angle.y < 180.f)
-				a->collisionAt[NEGX] = true;
-			else
-			{
-				a->collisionAt[POSX] = true;
-			}
+			*uniqueAxisA = -*uniqueAxisA;
 		}
 	}
-	else if (uniqueAxisA == Ay)
+	else if (*uniqueAxisA == Ay)
 	{
-		if (T.y >= 0)
+		if (T.x > 0 && (angle.x > 90 && angle.x < 270) || (angle.z > 90 && angle.z < 270))
 		{
-			if (a->angle.z < 180.f && angle.x < 180.f)
-				a->collisionAt[POSY] = true;
-			else
-				a->collisionAt[NEGY] = true;
+			*uniqueAxisA = -*uniqueAxisA;
 		}
-		else
+		else if (T.x < 0 && (angle.x < 90 || angle.x >270) && (angle.z < 90 || angle.z >270))
 		{
-			if (angle.z < 180.f && angle.x < 180.f)
-				a->collisionAt[NEGY] = true;
-			else
-				a->collisionAt[POSY] = true;
+			*uniqueAxisA = -*uniqueAxisA;
 		}
 	}
-	else if (uniqueAxisA == Az)
+	else if (*uniqueAxisA == Az)
 	{
-		if (T.z >= 0)
+		if (T.z > 0 && (angle.x > 90 && angle.x < 270) || (angle.y > 90 && angle.y < 270))
 		{
-			if (a->angle.y < 180.f)
-				a->collisionAt[POSZ] = true;
-			else
-			{
-				a->collisionAt[NEGZ] = true;
-			}
+			*uniqueAxisA = -*uniqueAxisA;
 		}
-		else
+		else if (T.z < 0 && (angle.x < 90 || angle.x >270) && (angle.z < 90 || angle.z >270))
 		{
-			if (a->angle.y < 180.f)
-				a->collisionAt[NEGZ] = true;
-			else
-				a->collisionAt[POSZ] = true;
+			*uniqueAxisA = -*uniqueAxisA;
+		}
+	}
+
+	if (*uniqueAxisB == Bx)//find if collision is at positive or negative axis
+	{
+		if (T.x < 0 && (b->angle.z > 90 && b->angle.z < 270) || (b->angle.x > 90 && b->angle.x < 270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
+		}
+		else if (T.x > 0 && (b->angle.z < 90 || b->angle.z >270) && (b->angle.x < 90 || b->angle.x >270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
+		}
+	}
+	else if (*uniqueAxisB == By)
+	{
+		if (T.y < 0 && (b->angle.z > 90 && b->angle.z < 270) || (b->angle.x > 90 && b->angle.x < 270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
+		}
+		else if (T.y > 0 && (b->angle.z < 90 || b->angle.z >270) && (b->angle.x < 90 || b->angle.x >270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
+		}
+	}
+	else if (*uniqueAxisB == Bz)
+	{
+		if (T.z < 0 && (b->angle.y > 90 && b->angle.y < 270) || (b->angle.x > 90 && b->angle.x < 270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
+		}
+		else if (T.z > 0 && (b->angle.y < 90 || b->angle.y >270) && (b->angle.x < 90 || b->angle.x >270))
+		{
+			*uniqueAxisB = -*uniqueAxisB;
 		}
 	}
 }

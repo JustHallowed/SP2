@@ -102,9 +102,9 @@ void MotorScene::CreateInstances()
 	object[TESTBOX].setTranslation(0,35,0);
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	object[TESTBOX2].setScale(50, 10, 10);
-	object[TESTBOX2].setDimension(100, 10, 10);
-	object[TESTBOX2].setTranslation(0, 35, -40);
+	/*object[TESTBOX2].setRotation(90, 'y');*/
+	object[TESTBOX2].setDimension(30, 20, 20);
+	object[TESTBOX2].setTranslation(0, 35, 40);
 
 	//object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
 	//object[TESTBOX3].setScale(10, 10, 10);
@@ -137,7 +137,7 @@ void MotorScene::Init(){ //Init scene
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-	Camera::getCam().Init(Vector3(0.f, 40.f, 30.f), Vector3(0.f, 35.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	Camera::getCam().Init(Vector3(0.f, 40.f, -30.f), Vector3(0.f, 35.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
@@ -309,7 +309,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -322,7 +322,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
 			modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{

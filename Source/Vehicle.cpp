@@ -19,7 +19,7 @@ void Vehicle::update(double dt)
 {
 	float accelerationConstant = 5;	//acceleration multiplier
 	float maxVelocity = 3;	//maximum velocity vehicle can travel
-	Vector3 front,movementDir;	//vehicle fromt, direction of movement
+	Vector3 front,right,movementDir;	//vehicle fromt, direction of movement
 	if (object->getVelocity() != Vector3(0, 0, 0))
 		movementDir = object->getVelocity().Normalized();
 
@@ -52,17 +52,18 @@ void Vehicle::update(double dt)
 		{
 			keyPress[SPACE_KEY] = true;
 		}
-		if (keyPress[A_KEY])//turn left
-		{
-			object->addRotation(80 * dt, 'y');
-		}
-		if (keyPress[D_KEY])//turn right
-		{
-			object->addRotation(-80 * dt, 'y');
-		}
 
-		front = Vector3(sin(Math::DegreeToRadian(-object->getAngle().y)), 0, -cos(Math::DegreeToRadian(-object->getAngle().y))).Normalized();
+		//if (keyPress[A_KEY])//turn left
+		//{
+		//	object->addRotation(80 * dt, 'y');
+		//}
+		//if (keyPress[D_KEY])//turn right
+		//{
+		//	object->addRotation(-80 * dt, 'y');
+		//}
 
+		front = Vector3(sin(Math::DegreeToRadian(object->getAngle().y)), 0, cos(Math::DegreeToRadian(-object->getAngle().y))).Normalized();
+		right = front.Cross(Vector3(0, 1, 0));
 		//friction
 		if ((object->getVelocity() - (movementDir * accelerationConstant * 0.2f * dt)).Length() < 0.1f)//to prevent movement caused by friction
 		{
@@ -81,6 +82,24 @@ void Vehicle::update(double dt)
 				else
 				{
 					object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * dt));
+				}
+			}
+			if (keyPress[A_KEY])//accelerate front
+			{
+				if ((right - movementDir).Length() > 0.5)
+					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2 * dt));
+				else
+				{
+					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * dt));
+				}
+			}
+			if (keyPress[D_KEY])//accelerate front
+			{
+				if ((right - movementDir).Length() > 0.5)
+					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2 * dt));
+				else
+				{
+					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * dt));
 				}
 			}
 			if (keyPress[S_KEY])//accelerate back
