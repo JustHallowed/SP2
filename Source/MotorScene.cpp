@@ -40,7 +40,30 @@ void MotorScene::InitLight() const{
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].cosInner"), light[0].cosInner);
 	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].exponent"), light[0].exponent);
-	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 1);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[1].type"), GLint(light[1].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].color"), 1, &light[1].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].power"), light[1].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kC"), light[1].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kL"), light[1].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].kQ"), light[1].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].spotDirection"), 1, &light[1].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].cosCutoff"), light[1].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].cosInner"), light[1].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[1].exponent"), light[1].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lights[2].type"), GLint(light[2].type));
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].color"), 1, &light[2].color.R);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].power"), light[2].power);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kC"), light[2].kC);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kL"), light[2].kL);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].kQ"), light[2].kQ);
+	glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].spotDirection"), 1, &light[2].spotDirection.x);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].cosCutoff"), light[2].cosCutoff);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].cosInner"), light[2].cosInner);
+	glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[2].exponent"), light[2].exponent);
+
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "numLights"), 3);
 }
 
 void MotorScene::InitMeshes(){
@@ -65,6 +88,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f,1.f,1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/dialogue.tga");
 
+	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
 	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -75,6 +99,16 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
 	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");
+
+	//normal vehicles
+	meshList[unsigned int(MESH::GY_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/guanyu_car.obj");
+	meshList[unsigned int(MESH::GY_CAR)]->textureID = LoadTGA("Resources/TGAs/guanyu_car.tga");
+	meshList[unsigned int(MESH::EH_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/enhui_car.obj");
+	meshList[unsigned int(MESH::EH_CAR)]->textureID = LoadTGA("Resources/TGAs/enhui_car.tga");
+	meshList[unsigned int(MESH::LF_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/loopy_vehicle.obj");
+	meshList[unsigned int(MESH::LF_CAR)]->textureID = LoadTGA("Resources/TGAs/loopy_vehicle.tga");
+	meshList[unsigned int(MESH::YW_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/yuwei_car.obj");
+	meshList[unsigned int(MESH::YW_CAR)]->textureID = LoadTGA("Resources/TGAs/yuwei_car.tga");
 
 	//base mesh
 	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
@@ -102,7 +136,10 @@ void MotorScene::CreateInstances()
 	createUFOs();
 
 	createRobot1();
+	createRobot2();
+	createRobot3();
 
+	createVehicles();
 }
 
 void MotorScene::Init(){ //Init scene
@@ -121,12 +158,15 @@ void MotorScene::Init(){ //Init scene
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = 0.0;
+	splitScreen = 0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = 0.0;
+	inRange[EH_CAR1] = false;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
+	light[0].power = 1.f;
 
 	//play thru out the scene and loops
-	engine->play2D("Resources/Sound/bgm.mp3", true);
+	//engine->play2D("Resources/Sound/bgm.mp3", true);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -192,9 +232,12 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		Camera::getCam().updateCollision(object[i]);
 	}
 
-	for (int i = 0; i < 5; i++)
+	object[PLATFORM1].addRotation(1, 'y');
+
+	if (Application::IsKeyPressed('G') && splitBounceTime <= elapsedTime)
 	{
-		object[i].addRotation(1, 'y');
+		splitScreen = !splitScreen;
+		splitBounceTime = elapsedTime + 0.4;
 	}
 
 	//!testing! if w is pressed, sound effects will be played
@@ -207,38 +250,35 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//	if (condition to turn clockwise)
 	//		object[A].setIsClockwise(true);
 	//}
-	//else if (object[A].isClockwise)
-	//{
-	//	//do animation
-	//	if (condition to turn anti-clockwise)
-	//		object[A].setIsClockwise(false);
-	//}
 
-
-	if (object[ROBOT_BODY1].checkDist(Camera::getCam().target) < 15.f)
-	{
-		inRange[ROBOT_BODY1] = true;
-		if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
-		{
-			interacted[ROBOT_BODY1] = !interacted[ROBOT_BODY1];
-			interactBounceTime = elapsedTime + 0.4;
-			if (interacted[ROBOT_BODY1])
-				engine->play2D("Resources/Sound/robot1.wav");
-		}
-	}
-	else
-	{
-		inRange[ROBOT_BODY1] = 0;
-		interacted[ROBOT_BODY1] = 0;
-	}
+	//then vice versa for clockwise
+	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
+	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
+	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
 }
 
-void MotorScene::Render(double dt, int winWidth, int winHeight){
+void MotorScene::Render(double dt, int winWidth, int winHeight) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (splitScreen)
+	{
+		glViewport(winWidth / 4, winHeight / 2, winWidth / 2, winHeight / 2);
+		RenderScreen1(dt, winWidth, winHeight);
+		glViewport(winWidth / 4, 0, winWidth / 2, winHeight / 2);
+		RenderScreen2(dt, winWidth, winHeight);
+	}
+	else
+	{
+		glViewport(0, 0, winWidth, winHeight);
+		RenderScreen1(dt, winWidth, winHeight);
+	}
+}
+
+void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
+{
 	viewStack.LoadIdentity();
 	viewStack.LookAt(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
 		Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z,
@@ -264,9 +304,9 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	RenderLight();
 
 	modelStack.PushMatrix();
-		modelStack.Translate(0.f, 100.f, 0.f);
-		modelStack.Scale(2.f, 2.f, 2.f);
-		RenderSkybox(!light[0].power);
+	modelStack.Translate(0.f, 100.f, 0.f);
+	modelStack.Scale(2.f, 2.f, 2.f);
+	RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
 	//modelStack.PushMatrix();
@@ -298,7 +338,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 
 	std::ostringstream ss;
-	if(showDebugInfo){
+	if (showDebugInfo) {
 		ss << std::fixed << std::setprecision(2);
 		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
@@ -314,10 +354,12 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
 		ss.str("");
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -330,27 +372,191 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
 		ss.str("");
 	}
+	if (inRange[ROBOT_BODY2] && interacted[ROBOT_BODY2])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "My son just ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "LOVES vehicles!";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+	}
+	if (inRange[ROBOT_BODY3] && interacted[ROBOT_BODY3])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "I am thorougly ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "displeased, ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Mother.";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 4.f, winWidth, winHeight);
+		ss.str("");
+	}
 }
 
+void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
+{
+	viewStack.LoadIdentity();
+	viewStack.LookAt(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
+		Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z,
+		Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z);
+	modelStack.LoadIdentity();
+
+	delete shMan;
+	shMan = new ShaderManager("Resources/Shaders/Particle.vs", "Resources/Shaders/Particle.fs");
+	/*for(Particle* p: bulletGenerator.particlePool){
+		if(p->life > 0.0f){
+			delete meshList[unsigned int(MESH::BULLET)];
+			meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(p->color, .4f, .4f, .4f);
+			modelStack.PushMatrix();
+				modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
+				RenderParticle(meshList[unsigned int(MESH::BULLET)], p->life);
+			modelStack.PopMatrix();
+		}
+	}*/
+
+	delete shMan;
+	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
+	InitLight();
+	RenderLight();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0.f, 100.f, 0.f);
+	modelStack.Scale(2.f, 2.f, 2.f);
+	RenderSkybox(!light[0].power);
+	modelStack.PopMatrix();
+
+	//modelStack.PushMatrix();
+	//modelStack.Translate(Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z);
+	//RenderMesh(meshList[unsigned int(MESH::HITSPHERE)], false);
+	//modelStack.PopMatrix();
+
+	//displays hitboxes
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y > 0)
+		{
+		modelStack.PushMatrix();
+		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
+		modelStack.PopMatrix();
+		}
+	}*/
+	//render all objects
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(&object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+
+	std::ostringstream ss;
+	if (showDebugInfo) {
+		ss << std::fixed << std::setprecision(2);
+		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Cam pos: " << Camera::getCam().pos.x << ", " << Camera::getCam().pos.y << ", " << Camera::getCam().pos.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		ss.str("");
+		ss << std::setprecision(3);
+		ss << "Elapsed: " << elapsedTime;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
+		ss.str("");
+		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
+	}
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+
+	//if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1]);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "Wow! These cars! ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "They're awesome!";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+	}
+	if (inRange[ROBOT_BODY2] && interacted[ROBOT_BODY2])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "My son just ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "LOVES vehicles!";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+	}
+	if (inRange[ROBOT_BODY3] && interacted[ROBOT_BODY3])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "I am thorougly ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "displeased, ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Mother.";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 4.f, winWidth, winHeight);
+		ss.str("");
+	}
+}
 void MotorScene::RenderLight(){
+
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
-	} else if(light[0].type == Light::LIGHT_TYPE::SPOT){
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
-	} else{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 	}
+	if (light[1].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[1].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	if (light[2].type == Light::LIGHT_TYPE::SPOT) {
+		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
+		glUniform3fv(glGetUniformLocation(shMan->getProgID(), "lights[2].spotDirection"), 1, &spotDirection_cameraspace.x);
+	}
+	
 	if(showLightSphere){
 		modelStack.PushMatrix();
 			modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 			modelStack.Scale(2.f, 2.f, 2.f);
 			RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(light[1].position.x, light[1].position.y, light[1].position.z);
+		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
+		modelStack.PopMatrix();
+		modelStack.PushMatrix();
+		modelStack.Translate(light[2].position.x, light[2].position.y, light[2].position.z);
+		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
 		modelStack.PopMatrix();
 	}
 }
@@ -514,23 +720,49 @@ void MotorScene::createPlatforms()
 
 	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM2].setTranslation(70, 0.5, 70);
+	object[PLATFORM2].setRotation(45, 'y');
 	object[PLATFORM2].setScale(4);
 	object[PLATFORM2].setDimension(40, 40, 40);
 
 	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM3].setTranslation(-70, 0.5, 70);
+	object[PLATFORM3].setRotation(-45, 'y');
 	object[PLATFORM3].setScale(4);
 	object[PLATFORM3].setDimension(40, 40, 40);
 
 	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM4].setTranslation(70, 0.5, -70);
+	object[PLATFORM4].setRotation(-45, 'y');
 	object[PLATFORM4].setScale(4);
 	object[PLATFORM4].setDimension(40, 40, 40);
 
 	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
 	object[PLATFORM5].setTranslation(-70, 0.5, -70);
+	object[PLATFORM5].setRotation(45, 'y');
 	object[PLATFORM5].setScale(4);
 	object[PLATFORM5].setDimension(40, 40, 40);
+
+	object[PLATFORM6].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM6].setTranslation(0, 0.5, -70);
+	object[PLATFORM6].setScale(4);
+	object[PLATFORM6].setDimension(40, 40, 40);
+
+	object[PLATFORM7].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM7].setTranslation(70, 0.5, 0);
+	object[PLATFORM7].setRotation(90, 'y');
+	object[PLATFORM7].setScale(4);
+	object[PLATFORM7].setDimension(40, 40, 40);
+
+	object[PLATFORM8].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM8].setTranslation(0, 0.5, 70);
+	object[PLATFORM8].setScale(4);
+	object[PLATFORM8].setDimension(40, 40, 40);
+
+	object[PLATFORM9].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM9].setTranslation(-70, 0.5, 0);
+	object[PLATFORM9].setRotation(90, 'y');
+	object[PLATFORM9].setScale(4);
+	object[PLATFORM9].setDimension(40, 40, 40);
 }
 
 void MotorScene::createUFOs()
@@ -568,6 +800,7 @@ void MotorScene::createRobot1()
 	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
 	object[ROBOT_BODY1].setTranslation(50, 5.2, 50);
 	object[ROBOT_BODY1].setScale(2);
+	object[ROBOT_BODY1].setRotation(45, 'y');
 	object[ROBOT_BODY1].setDimension(6, 15, 6);
 
 	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
@@ -602,6 +835,116 @@ void MotorScene::createRobot1()
 	object[ROBOT_LOWERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
 	object[ROBOT_LOWERLEG2].setTranslation(0, -1.15, 0);
 	Object::bind(&object[ROBOT_UPPERLEG2], &object[ROBOT_LOWERLEG2], true, true);
+}
+
+void MotorScene::createVehicles()
+{
+	//GY CAR
+	object[GY_CAR1].setMesh(meshList[unsigned int(MESH::GY_CAR)]);
+	object[GY_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM6], &object[GY_CAR1], true, true);
+
+	//EH CAR
+	object[EH_CAR1].setMesh(meshList[unsigned int(MESH::EH_CAR)]);
+	object[EH_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM7], &object[EH_CAR1], true, true);
+
+	//LF CAR
+	object[LF_CAR1].setMesh(meshList[unsigned int(MESH::LF_CAR)]);
+	object[LF_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM8], &object[LF_CAR1], true, true);
+
+	//YW CAR
+	object[YW_CAR1].setMesh(meshList[unsigned int(MESH::YW_CAR)]);
+	object[YW_CAR1].setTranslation(0, 0.6, 0);
+	Object::bind(&object[PLATFORM9], &object[YW_CAR1], true, true);
+}
+
+void MotorScene::createRobot2()
+{
+	object[ROBOT_BODY2].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY2].setTranslation(-50, 5.2, 50);
+	object[ROBOT_BODY2].setScale(2);
+	object[ROBOT_BODY2].setRotation(90, 'y');
+	object[ROBOT_BODY2].setDimension(6, 15, 6);
+
+	object[ROBOT_ARM3].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM3].setTranslation(-1, 2, 0);
+	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM3], true, true);
+
+	object[ROBOT_ARM4].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM4].setTranslation(1, 2, 0);
+	object[ROBOT_ARM4].setRotation(15, 'z');
+	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM4], true, true);
+
+	object[ROBOT_FOREARM3].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM3].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM3], &object[ROBOT_FOREARM3], true, true);
+
+	object[ROBOT_FOREARM4].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM4].setRotation(190, 'y');
+	object[ROBOT_FOREARM4].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM4], &object[ROBOT_FOREARM4], true, true);
+
+	object[ROBOT_UPPERLEG3].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG3].setTranslation(-0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_UPPERLEG3], true, true);
+
+	object[ROBOT_UPPERLEG4].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG4].setTranslation(0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_UPPERLEG4], true, true);
+
+	object[ROBOT_LOWERLEG3].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG3].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG3], &object[ROBOT_LOWERLEG3], true, true);
+
+	object[ROBOT_LOWERLEG4].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG4].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG4], &object[ROBOT_LOWERLEG4], true, true);
+}
+
+void MotorScene::createRobot3()
+{
+	object[ROBOT_BODY3].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY3].setTranslation(-50, 2.6, 45);
+	object[ROBOT_BODY3].setRotation(90, 'y');
+	object[ROBOT_BODY3].setDimension(6, 15, 6);
+
+	object[ROBOT_ARM5].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM5].setTranslation(-1, 2, 0);
+	object[ROBOT_ARM5].setScale(0.75);
+	object[ROBOT_ARM5].setRotation(-150, 'z');
+	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM5], true, true);
+
+	object[ROBOT_ARM6].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM6].setTranslation(1, 2, 0);
+	object[ROBOT_ARM6].setScale(0.75);
+	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM6], true, true);
+
+	object[ROBOT_FOREARM5].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM5].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM5], &object[ROBOT_FOREARM5], true, true);
+
+	object[ROBOT_FOREARM6].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM6].setRotation(190, 'y');
+	object[ROBOT_FOREARM6].setTranslation(0, -1, 0);
+	Object::bind(&object[ROBOT_ARM6], &object[ROBOT_FOREARM6], true, true);
+
+	object[ROBOT_UPPERLEG5].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG5].setTranslation(-0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_UPPERLEG5], true, true);
+
+	object[ROBOT_UPPERLEG6].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG6].setTranslation(0.45, -0.05, 0);
+	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_UPPERLEG6], true, true);
+
+	object[ROBOT_LOWERLEG5].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG5].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG5], &object[ROBOT_LOWERLEG5], true, true);
+
+	object[ROBOT_LOWERLEG6].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG6].setTranslation(0, -1.15, 0);
+	Object::bind(&object[ROBOT_UPPERLEG6], &object[ROBOT_LOWERLEG6], true, true);
 }
 
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
@@ -676,5 +1019,35 @@ void MotorScene::renderObject(Object* obj)
 
 		modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
 		RenderMesh(obj->getMesh(), true);
+	}
+}
+void MotorScene::npcCheck(OBJECT_INSTANCES instance, const char* audioFileName)
+{	//finds angle in between two vectors
+	Vector3 posToObject = object[instance].getPos() - Camera::getCam().pos;
+	Vector3 posToTarget = Camera::getCam().target - Camera::getCam().pos;
+
+	if (object[instance].getDist(Camera::getCam().pos) < 20.f)
+	{
+		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
+		{
+			inRange[instance] = true;
+			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			{
+				interacted[instance] = !interacted[instance];
+				interactBounceTime = elapsedTime + 0.4;
+				if (interacted[instance])
+					engine->play2D(audioFileName);
+			}
+		}
+		else
+		{
+			inRange[instance] = 0;
+			interacted[instance] = 0;
+		}
+	}
+	else
+	{
+		inRange[instance] = 0;
+		interacted[instance] = 0;
 	}
 }
