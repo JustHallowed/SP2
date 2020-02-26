@@ -253,72 +253,21 @@ void Object::setInteractable(bool canInteract)
 }
 void Object::updateCollision(Object* b, double dt)
 {
-	Vector3 displacementA, displacementB;//magnitude of displacement the two object will be applied if there is collision 
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
-	float Wa, Ha, Da;// half dimensions of A (Width, Height, Depth)
-	float Wb, Hb, Db;// half dimensions of B (Width, Height, Depth)
-	Vector3 Ax, Ay, Az;// unit vector of the axes of A
-	Vector3 Bx, By, Bz;// unit vector of the axes of B
-	Mtx44 rAx, rAy, rAz, rBx, rBy, rBz;
+	Vector3 penetration = Vector3(abs(T.x), abs(T.y), abs(T.z)); //magnitude of overlapp of object
+
 
 	bool faceCollision, edgeCollision = false;
-	
-	if (angle != Vector3(0, 0, 0))
-	{
-		rAx.SetToRotation(angle.x, 1, 0, 0);
-		rAy.SetToRotation(angle.y, 0, 1, 0);
-		rAz.SetToRotation(angle.z, 0, 0, 1);
-	}
-	if (b->angle != Vector3(0, 0, 0))
-	{
-		rBx.SetToRotation(b->angle.x, 1, 0, 0);
-		rBy.SetToRotation(b->angle.y, 0, 1, 0);
-		rBz.SetToRotation(b->angle.z, 0, 0, 1);
-	}
-
-	Wa = dimension.x / 2;
-	Ha = dimension.y / 2;
-	Da = dimension.z / 2;
-
-	Wb = b->dimension.x / 2;
-	Hb = b->dimension.y / 2;
-	Db = b->dimension.z / 2;
-
-	Vector3 penetration = Vector3(abs(T.x), abs(T.y), abs(T.z));
-
-	Ax = Vector3(1, 0, 0);
-	Ay = Vector3(0, 1, 0);
-	Az = Vector3(0, 0, 1);
-
-	Bx = Vector3(1, 0, 0);
-	By = Vector3(0, 1, 0);
-	Bz = Vector3(0, 0, 1);
-	if (angle != Vector3(0, 0, 0))
-	{
-		Ax = rAx * rAy * rAz * Ax;
-		Ay = rAx * rAy * rAz * Ay;
-		Az = rAx * rAy * rAz * Az;
-	}
-	if (b->angle != Vector3(0, 0, 0))
-	{
-		Bx = rBx * rBy * rBz * Bx;
-		By = rBx * rBy * rBz * By;
-		Bz = rBx * rBy * rBz * Bz;
-	}
 
 	float greatestFaceIntersectionA = 0; //for checking which face collides
-	float greatestEdgeIntersectionA = 0;
 	float greatestFaceIntersectionB = 0;
-	float greatestEdgeIntersectionB = 0;
 
 	Vector3 collidingFaceAxisA; //for storing collding axes
-	Vector3 collidingEdgeAxisA;
 	Vector3 collidingFaceAxisB;
-	Vector3 collidingEdgeAxisB;
 
 	faceCollision = hasFaceIntersection(b,&greatestFaceIntersectionA,&collidingFaceAxisA,&greatestFaceIntersectionB,&collidingFaceAxisB,&penetration);
 	
-	edgeCollision = hasEdgeIntersection(b, &greatestEdgeIntersectionA, &collidingEdgeAxisA, &greatestEdgeIntersectionB, &collidingEdgeAxisB, &penetration);
+	edgeCollision = hasEdgeIntersection(b);
 
 	if (faceCollision)//find if face collision is at positive or negative axis
 	{
@@ -410,12 +359,6 @@ void Object::updateCollision(Object* b, double dt)
 						translation.x -= penetration.x;
 				}
 			}
-			//if(edgeCollision)
-			//std::cout << "EDGE COLLISION\n";
-
-			//if (faceCollision)
-
-				std::cout << collidingFaceAxisB.x << "," << collidingFaceAxisB.y << "," << collidingFaceAxisB.z;
 		}
 	}
 	moveBy(velocity.x, velocity.y, velocity.z);
@@ -565,8 +508,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 		return false;
 	}
 }
-bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Vector3* collidingEdgeAxisA,
-	float* greatestEdgeIntersectionB, Vector3* collidingEdgeAxisB, Vector3* penetration)
+bool Object::hasEdgeIntersection(Object* b)
 {
 	Vector3 T = b->pos - pos;
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
@@ -615,15 +557,12 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 	Hb = b->dimension.y / 2;
 	Db = b->dimension.z / 2;
 
-	bool hasEdgeCollision = false;
-
 	Vector3 L = Ax.Cross(Bx); //Normal of separating plane aka separating axis
 	float LHS = projPlane(T, L).Length();
 	float RHS = projPlane(Wa * Ax, L).Length() + projPlane(Ha * Ay, L).Length() + projPlane(Da * Az, L).Length() +
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -633,7 +572,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -643,7 +581,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -653,7 +590,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -663,7 +599,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -673,7 +608,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -683,7 +617,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -693,7 +626,6 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
@@ -703,11 +635,10 @@ bool Object::hasEdgeIntersection(Object* b, float* greatestEdgeIntersectionA, Ve
 		projPlane(Wb * Bx, L).Length() + projPlane(Hb * By, L).Length() + projPlane(Db * Bz, L).Length();
 	if (LHS <= RHS)//Collision
 	{
-		hasEdgeCollision = true;
 	}
 	else return false;
 
-	return hasEdgeCollision;
+	return true;
 }
 
 void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB)
