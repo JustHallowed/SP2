@@ -1,0 +1,35 @@
+﻿  Application.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+  MotorScene.cpp
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\GameScene.h(35,24): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(545,55): warning C4390: ';': empty controlled statement found; is this the intent?
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(870,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(875,46): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(880,43): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(885,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(890,44): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(899,48): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(922,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(926,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(930,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(934,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(942,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(947,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(952,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(957,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(964,49): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(988,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(992,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(996,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1000,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1007,49): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1032,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1036,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1040,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1044,52): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1099,22): warning C4018: '<': signed/unsigned mismatch
+  DM2122 Prac.vcxproj -> D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\Debug\DM2122 Prac.exe

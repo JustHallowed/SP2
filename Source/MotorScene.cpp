@@ -170,6 +170,9 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+
+	//meshList[unsigned int(MESH::STAGE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stage.obj");
+	//meshList[unsigned int(MESH::STAGE)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
 }
 
 void MotorScene::CreateInstances()
@@ -185,6 +188,7 @@ void MotorScene::CreateInstances()
 	createRobot3();
 
 	createVehicles();
+	//createStage();
 }
 
 void MotorScene::Init(){ //Init scene
@@ -267,13 +271,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		bulletBounceTime = elapsedTime + 0.2;
 	}
 	bulletGenerator.UpdateParticles(dt);
-
-
-
-	for (int i = 0; i < 5; i++)
-	{
-		object[i].addRotation(1, 'y');
-	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -1047,6 +1044,12 @@ void MotorScene::createRobot3()
 	object[ROBOT_LOWERLEG6].setTranslation(0, -1.15, 0);
 	Object::bind(&object[ROBOT_UPPERLEG6], &object[ROBOT_LOWERLEG6], true, true);
 }
+
+//void MotorScene::createStage()
+//{
+//	object[STAGE1].setMesh(meshList[unsigned int(MESH::STAGE)]);
+//	object[STAGE1].setTranslation(30, 0, 0);
+//}
 
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
 	if(!mesh || mesh->textureID <= 0){ //Proper error check return
