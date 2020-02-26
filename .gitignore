@@ -42,3 +42,8 @@ Debug/SceneManager.obj
 Debug/vc142.idb
 Debug/vc142.pdb
 Debug/Vehicle.obj
+*.tlog
+*.obj
+*.enc
+*.idb
+*.pdb

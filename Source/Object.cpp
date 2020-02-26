@@ -254,8 +254,8 @@ void Object::setInteractable(bool canInteract)
 void Object::updateCollision(Object* b, double dt)
 {
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
-	Vector3 penetration = Vector3(abs(T.x), abs(T.y), abs(T.z)); //magnitude of overlapp of object
-
+	Vector3 penetration; //magnitude of overlapp of object
+	Vector3 rotationAxis;//axis of rotation during collision
 
 	bool faceCollision, edgeCollision = false;
 
@@ -265,107 +265,31 @@ void Object::updateCollision(Object* b, double dt)
 	Vector3 collidingFaceAxisA; //for storing collding axes
 	Vector3 collidingFaceAxisB;
 
-	faceCollision = hasFaceIntersection(b,&greatestFaceIntersectionA,&collidingFaceAxisA,&greatestFaceIntersectionB,&collidingFaceAxisB,&penetration);
-	
+	faceCollision = hasFaceIntersection(b, &greatestFaceIntersectionA, &collidingFaceAxisA, &greatestFaceIntersectionB, &collidingFaceAxisB, &penetration, &rotationAxis);
+	if (faceCollision)
 	edgeCollision = hasEdgeIntersection(b);
 
-	if (faceCollision)//find if face collision is at positive or negative axis
+	if (faceCollision && edgeCollision)
 	{
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
 
-		if (faceCollision || edgeCollision)
+		if (!b->isMovable())
 		{
-
-			if (!b->isMovable())
+			translation -= penetration;
+			if (movable)
 			{
-				if (velocity.x != 0)//changes velocity towards object b to 0
-				{
-					if (collidingFaceAxisB.x < 0)
-					{
-						if (velocity.x > 0)
-							velocity.x += collidingFaceAxisB.x * velocity.x;
-					}
-					else if (collidingFaceAxisB.x > 0)
-					{
-						if (velocity.x < 0)
-							velocity.x -= collidingFaceAxisB.x * velocity.x;
-					}
-				}
-				if (velocity.y != 0)
-				{
-					if (collidingFaceAxisB.y < 0)
-					{
-						if (velocity.y > 0)
-							velocity.y += collidingFaceAxisB.y * velocity.y;
-					}
-					else if (collidingFaceAxisB.y > 0)
-					{
-						if (velocity.y < 0)
-							velocity.y -= collidingFaceAxisB.y * velocity.y;
-					}
-				}
-				if (velocity.z != 0)
-				{
-					if (collidingFaceAxisB.z < 0)
-					{
-						if (velocity.z > 0)
-							velocity.z += collidingFaceAxisB.z * velocity.z;
-					}
-					else if (collidingFaceAxisB.z > 0)
-					{
-						if (velocity.z < 0)
-							velocity.z -= collidingFaceAxisB.z * velocity.z;
-					}
-				}
-
-				if (penetration.x < penetration.y) //find lowest penetration among the axis
-				{
-					if (penetration.y < penetration.z)
-					{
-						if (penetration.z < 0)
-						{
-							if (collidingFaceAxisA.z > 0)
-								translation.z += penetration.z;
-							else if (collidingFaceAxisA.z < 0)
-								translation.z -= penetration.z;
-						}
-					}
-					else
-					{
-						if (penetration.y < 0)
-						{
-							if (collidingFaceAxisA.y>0)
-								translation.y += penetration.y;
-							else if (collidingFaceAxisA.y<0)
-								translation.y -= penetration.y;
-						}
-					}
-				}
-				else if (penetration.x < penetration.z)
-				{
-					if (penetration.z < 0)
-					{
-						if (collidingFaceAxisA.z>0)
-							translation.z += penetration.z;
-						else if (collidingFaceAxisA.z < 0)
-							translation.z -= penetration.z;
-					}
-				}
-				else if (penetration.x < 0)
-				{
-					if (collidingFaceAxisA.x>0)
-						translation.x += penetration.x;
-					else if (collidingFaceAxisA.x < 0)
-						translation.x -= penetration.x;
-				}
+				angle.x += ((float)rotationAxis.x * (float)velocity.x - (float)b->velocity.x * 100 * dt);
+				angle.y += (rotationAxis.y * velocity.y - b->velocity.y * 100 * dt);
+				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
 		}
+
 	}
 	moveBy(velocity.x, velocity.y, velocity.z);
 }
 
 bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
-	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration)
+	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis)
 {
 	Vector3 T = b->pos - pos;
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
@@ -421,7 +345,6 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	{
 		*greatestFaceIntersectionA = RHS - LHS;//intersection at X plane
 		*collidingFaceAxisA = Ax;
-		penetration->x -= dimension.x / 2;
 	}
 	else
 	{
@@ -432,19 +355,18 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	RHS = Ha + abs(Hb * Ay.Dot(By)) + abs(Db * Ay.Dot(Bz));
 	if (LHS <= RHS)
 	{
-		if (RHS - LHS < * greatestFaceIntersectionA)
+		if (RHS - LHS < *greatestFaceIntersectionA)
 		{
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Ay;
 		}
-		penetration->y -= dimension.y /2;
 	}
 	else
 	{
 		return false;
 	}
 
-	LHS =abs(T.Dot( Az)); //Projection of T onto plane with normal Az
+	LHS = abs(T.Dot(Az)); //Projection of T onto plane with normal Az
 	RHS = Da + abs(Wb * Az.Dot(Bx)) + abs(Hb * Az.Dot(By)) + abs(Db * Az.Dot(Bz));
 	if (LHS <= RHS)//if collision
 	{
@@ -453,13 +375,13 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Az;
 		}
-		penetration->z -= dimension.z /2;
 	}
 	else
 	{
 		return false;
 	}
 
+ 	*penetration = (*greatestFaceIntersectionA) * (*collidingFaceAxisA);
 	//Checking by B
 
 	LHS = abs(T.Dot(Bx)); //Projection of T onto plane with normal Bx
@@ -468,7 +390,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	{
 		*greatestFaceIntersectionB = RHS - LHS;
 		*collidingFaceAxisB = Bx;
-		penetration->x -= b->dimension.x /2;
+		//penetration->x -= b->dimension.x / 2; replace with separate penetration b
 	}
 	else
 	{
@@ -484,7 +406,7 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = By;
 		}
-		penetration->y -= b->dimension.y/2 ;
+		//penetration->y -= b->dimension.y / 2; replace with separate penetration b
 	}
 	else
 	{
@@ -495,18 +417,22 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	RHS = abs(Wa * Ax.Dot(Bz)) + abs(Ha * Ay.Dot(Bz)) + abs(Da * Az.Dot(Bz)) + Db;
 	if (LHS <= RHS)//Collision
 	{
-
-		if (RHS - LHS < *greatestFaceIntersectionB)	
+		if (RHS - LHS < *greatestFaceIntersectionB)
 		{
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = Bz;
 		}
-		penetration->z -= b->dimension.z /2;
+		//penetration->z -= b->dimension.z / 2; replace with separate penetration b
 	}
 	else
 	{
 		return false;
 	}
+	if (*greatestFaceIntersectionB < *greatestFaceIntersectionA)
+	{
+		*penetration = (*greatestFaceIntersectionB) * (*collidingFaceAxisA);
+	}
+	//*rotationAxis = collidingFaceAxisA->Cross(*collidingFaceAxisB);
 }
 bool Object::hasEdgeIntersection(Object* b)
 {
@@ -680,7 +606,7 @@ void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* un
 	}
 	if (*uniqueAxisA == Ax)//find if collision is at positive or negative axis
 	{
-		if (T.x>0 && (angle.y > 90 && angle.y < 270) || (angle.z > 90 && angle.z < 270))
+		if (T.x > 0 && (angle.y > 90 && angle.y < 270) || (angle.z > 90 && angle.z < 270))
 		{
 			*uniqueAxisA = -*uniqueAxisA;
 		}

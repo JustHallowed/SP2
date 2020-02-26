@@ -98,11 +98,12 @@ void MotorScene::CreateInstances()
 {
 	object[TESTBOX].setMesh(meshList[unsigned int(MESH::HITBOXRED)]);
 	object[TESTBOX].setScale(10, 10, 10);
+	object[TESTBOX].setMovable(true);
 	object[TESTBOX].setDimension(10, 10, 10);
 	object[TESTBOX].setTranslation(0,35,0);
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	/*object[TESTBOX2].setRotation(90, 'y');*/
+	object[TESTBOX2].setRotation(10, 'y');
 	object[TESTBOX2].setDimension(100, 10, 10);
 	object[TESTBOX2].setTranslation(0, 35, 40);
 
@@ -227,16 +228,20 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		object[i].resetCollision();
 	}
 
-	object[TESTBOX2].addRotation(10 * dt, 'y');
+	//object[TESTBOX2].addRotation(10 * dt, 'y');
 
 	testVehicle.update(dt);
 
 	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
 	{
+		if (object[j].getDimension().y == 0)
+			continue;
 		for (int i = 0; i < NUM_INSTANCES; ++i)
 		{
 			if (i < j)
 				i = j+1;
+			if (object[i].getDimension().y == 0)
+				continue;
 			object[j].updateCollision(&object[i],dt);
 		}
 	}
