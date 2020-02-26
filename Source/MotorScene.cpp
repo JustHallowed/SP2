@@ -112,8 +112,9 @@ void MotorScene::InitLight() const{
 }
 
 void MotorScene::InitMeshes(){
-	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
-	meshList[unsigned int(MESH::HITSPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f),16,16,1);
+
+	meshList[unsigned int(MESH::HITBOXWHITE)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::HITBOXRED)] = MeshBuilder::GenerateCuboid(Color(1, 0, 0), 1.1f, 1.1f, 1.1f);
 	meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
@@ -227,38 +228,40 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	engine->drop();
 }
 
-void MotorScene::Update(double dt, float FOV){ //Update scene
-	for(int i = 0; i < 7; ++i){
-		if(Application::IsKeyPressed(keys[i])){
-			switch(keys[i]){
-				case '1': glDisable(GL_CULL_FACE); break; //Disable back-face culling
-				case '2': glEnable(GL_CULL_FACE); break; //Enable back-face culling
-				case '3': glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break; //Set polygon mode to GL_FILL (default mode)
-				case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
-				case '8': { //Off the light
-					light[0].power = 0.f;
-					glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].power"), light[0].power);
-					break;
-				}
-				case '9': { //On the light
-					light[0].power = 1.f;
-					glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].power"), light[0].power);
-					break;
-				}
-				case '0': SceneManager::getScMan()->SetNextScene(); //Change scene
+void MotorScene::Update(double dt, float FOV) { //Update scene
+	for (int i = 0; i < 7; ++i) {
+		if (Application::IsKeyPressed(keys[i])) {
+			switch (keys[i]) {
+			case '1': glDisable(GL_CULL_FACE); break; //Disable back-face culling
+			case '2': glEnable(GL_CULL_FACE); break; //Enable back-face culling
+			case '3': glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break; //Set polygon mode to GL_FILL (default mode)
+			case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
+			case '8': { //Off the light
+				light[0].power = 0.f;
+				glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].power"), light[0].power);
+				break;
+			}
+			case '9': { //On the light
+				light[0].power = 1.f;
+				glUniform1f(glGetUniformLocation(shMan->getProgID(), "lights[0].power"), light[0].power);
+				break;
+			}
+			case '0': SceneManager::getScMan()->SetNextScene(); //Change scene
 			}
 		}
 	}
-	if(Application::IsKeyPressed('P') && lightBounceTime <= elapsedTime){ //Show/Hide light sphere
+	if (Application::IsKeyPressed('P') && lightBounceTime <= elapsedTime) { //Show/Hide light sphere
 		showLightSphere = !showLightSphere;
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if(Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime){ //Show/Hide debug info
+
+	if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
+
 		showDebugInfo = !showDebugInfo;
 		debugBounceTime = elapsedTime + 0.5;
 	}
 
-	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
+	if (bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt) {
 		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
 		p->color = Color(1.f, 0.f, 0.f);
 		p->dir = Vector3(0, 1, 0);
@@ -269,13 +272,24 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getDimension().y == 0)
-			continue;
-		Camera::getCam().updateCollision(object[i]);
-	}*/
+		object[i].resetCollision();
+	}
 
+	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	{
+		if (object[j].getDimension().y == 0)
+			continue;
+		for (int i = 0; i < NUM_INSTANCES; ++i)
+		{
+			if (i < j)
+				i = j + 1;
+			if (object[i].getDimension().y == 0)
+				continue;
+			object[j].updateCollision(&object[i], dt);
+		}
+	}
 	object[PLATFORM1].addRotation(1, 'y');
 
 	if (Application::IsKeyPressed('G') && splitBounceTime <= elapsedTime)
@@ -297,7 +311,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
 	carCheck(EH_CAR1, "Resources/Sound/engine.mp3");
-	carCheck(LF_CAR1, "Resources/Sound/carkey.mp3"); 
+	carCheck(LF_CAR1, "Resources/Sound/carkey.mp3");
 	carCheck(YW_CAR1, "Resources/Sound/carchime.mp3");
 
 	Mtx44 projection;
@@ -366,7 +380,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		modelStack.PushMatrix();
 		modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
 		modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
+		RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
 		modelStack.PopMatrix();
 		}
 	}*/
@@ -537,6 +551,19 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 		ss << "Wow! These cars! ";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
 		ss.str("");
+	}
+
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "Wow! These cars! ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+
 		ss << "They're awesome!";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
 		ss.str("");
@@ -695,36 +722,36 @@ void MotorScene::RenderSkybox(bool lightSwitch){
 		RenderMesh(meshList[unsigned int(MESH::LEFT)], lightSwitch);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//	modelStack.Translate(49.8f, 0.f, 0.f);
-	//	modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
-	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-	//	modelStack.Scale(100.f, 100.f, 100.f);
-	//	RenderMesh(meshList[unsigned int(MESH::RIGHT)], lightSwitch);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+		modelStack.Translate(49.8f, 0.f, 0.f);
+		modelStack.Rotate(-90.f, 0.f, 1.f, 0.f);
+		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[unsigned int(MESH::RIGHT)], lightSwitch);
+	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//	modelStack.Translate(0.f, 0.f, -49.8f);
-	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-	//	modelStack.Scale(100.f, 100.f, 100.f);
-	//	RenderMesh(meshList[unsigned int(MESH::FRONT)], lightSwitch);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+		modelStack.Translate(0.f, 0.f, -49.8f);
+		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[unsigned int(MESH::FRONT)], lightSwitch);
+	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//	modelStack.Translate(0.f, 0.f, 49.8f);
-	//	modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
-	//	modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
-	//	modelStack.Scale(100.f, 100.f, 100.f);
-	//	RenderMesh(meshList[unsigned int(MESH::BACK)], lightSwitch);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+		modelStack.Translate(0.f, 0.f, 49.8f);
+		modelStack.Rotate(180.f, 0.f, 1.f, 0.f);
+		modelStack.Rotate(180.f, 0.f, 0.f, 1.f);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[unsigned int(MESH::BACK)], lightSwitch);
+	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//	modelStack.Translate(0.f, 49.8f, 0.f);
-	//	modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
-	//	modelStack.Rotate(270.f, 0.f, 0.f, 1.f);
-	//	modelStack.Scale(100.f, 100.f, 100.f);
-	//	RenderMesh(meshList[unsigned int(MESH::TOP)], lightSwitch);
-	//modelStack.PopMatrix();
+	modelStack.PushMatrix();
+		modelStack.Translate(0.f, 49.8f, 0.f);
+		modelStack.Rotate(90.f, 1.f, 0.f, 0.f);
+		modelStack.Rotate(270.f, 0.f, 0.f, 1.f);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[unsigned int(MESH::TOP)], lightSwitch);
+	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 		modelStack.Translate(0.f, -49.8f, 0.f);
