@@ -19,7 +19,6 @@ void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up){ //
 }
 
 void Camera::Update(double dt){ //Update cam
-
 	displacement.SetZero();
 	if(Application::IsKeyPressed('B') && modeBounceTime <= elapsedTime){ //Change cam mode
 		mode = MODE(!bool(mode));
@@ -27,16 +26,7 @@ void Camera::Update(double dt){ //Update cam
 		right.y = 0;
 		if(mode == MODE::FOCUS){
 			target = Vector3(0.f, 0.f, 0.f);
-			pos = Vector3(0.f, 5.f, -30.f);
 			front = target - pos;
-			front.y = 0;
-			right = front.Cross(up);
-			right.y = 0;
-			up = right.Cross(front).Normalized();
-		}
-		else
-		{
-			target = pos + front*2;
 			front.y = 0;
 			right = front.Cross(up);
 			right.y = 0;
@@ -45,63 +35,71 @@ void Camera::Update(double dt){ //Update cam
 		modeBounceTime = elapsedTime + 0.2;
 	}
 
-	if(Application::IsKeyPressed('A') - Application::IsKeyPressed('D')){ //Move cam left or right
-		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
-		right.y = 0;
+	float leftRight = -(axes[0] == int(axes[0]) ? axes[0] : 0);
+	if(!leftRight){
+		leftRight = Application::IsKeyPressed('A') - Application::IsKeyPressed('D');
+	}
+	if(leftRight){ //Move cam left or right
+		Vector3 dir = target - pos, front = dir.Normalized();
 		if(mode == MODE::FOCUS){
-			float yaw = float(float(Application::IsKeyPressed('A') - Application::IsKeyPressed('D')) * -focusSpd * dt);
+			float yaw = float(leftRight * -focusSpd * dt);
 			Mtx44 rotation;
 			rotation.SetToRotation(yaw, 0, 1, 0);
 			front = rotation * (target - pos);
 			pos = target - front;
-			right = front.Cross(up);
-			right.y = 0;
-			up = right.Cross(front).Normalized();
+			up = rotation * up;
 		} else if(mode == MODE::FREE){
-			displacement += float(Application::IsKeyPressed('A') - Application::IsKeyPressed('D')) * float(-freeSpd * dt) * right;
+			Vector3 right = front.Cross(up).Normalized();
+			right.y = 0;
+			pos += leftRight * float(-freeSpd * dt) * right;
+			target += leftRight * float(-freeSpd * dt) * right;
 		}
 	}
 
-	if(Application::IsKeyPressed('Q') - Application::IsKeyPressed('E')){ //Move cam up or down
-		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
-		right.y = 0;
+	float upDown = -(axes[3] == int(axes[3]) ? axes[3] : 0);
+	if(!upDown){
+		upDown = Application::IsKeyPressed('Q') - Application::IsKeyPressed('E');
+	}
+	if(upDown){ //Move cam up or down
+		Vector3 dir = target - pos, front = dir.Normalized();
 		if(mode == MODE::FOCUS){
-			float pitch = -float(float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * focusSpd * dt);
+			Vector3 right = front.Cross(up).Normalized();
+			right.y = 0;
+			float pitch = -upDown * focusSpd * dt;
 			Mtx44 rotation;
 			rotation.SetToRotation(pitch, right.x, right.y, right.z);
 			front = rotation * (target - pos);
 			pos = target - front;
-			right = front.Cross(up);
-			right.y = 0;
-			up = right.Cross(front).Normalized();
+			up = rotation * up;
 		} else if(mode == MODE::FREE){
-			pos += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0,1,0);
-			target += float(Application::IsKeyPressed(32) - Application::IsKeyPressed(16)) * float(freeSpd * dt) * Vector3(0, 1, 0);
+			pos += upDown * float(freeSpd * dt) * up;
+			target += upDown * float(freeSpd * dt) * up;
 		}
 	}
 
-	if(Application::IsKeyPressed('W') || (leftMouse && !rightMouse)){ //Move cam forward or towards the target
-		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
-		right.y = 0;
+	float forward = Application::IsKeyPressed('W') || axes[1] == -1, backward = Application::IsKeyPressed('S') || axes[1] == 1;
+	if(forward || (leftMouse && !rightMouse)){ //Move cam forward or towards the target
+		Vector3 dir = target - pos, front = dir.Normalized();
 		if(mode == MODE::FOCUS){
 			pos += front * float(focusSpd / 2 * dt) * (dir.Length() > 12);
 		} else{
-			if(Application::IsKeyPressed('W')){
+			if(forward){
 				front.y = 0;
 			}
-			displacement += float(freeSpd * dt) * front;
+			pos += float(freeSpd * dt) * front;
+			target += float(freeSpd * dt) * front;
 		}
 	}
-	if(Application::IsKeyPressed('S') || (rightMouse && !leftMouse)){ //Move cam backward or away from the target
-		Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
-		right.y = 0;
+	if(backward || (rightMouse && !leftMouse)){ //Move cam backward or away from the target
+		Vector3 dir = target - pos, front = dir.Normalized();
 		if(mode == MODE::FOCUS){
 			pos += front * float(-focusSpd / 2 * dt) * (dir.Length() < 200);
 		} else{
-			if(Application::IsKeyPressed('S')){
+			if(backward){
 				front.y = 0;
 			}
-			displacement += float(-freeSpd * dt) * front;
+			pos += float(-freeSpd * dt) * front;
+			target += float(-freeSpd * dt) * front;
 		}
 	}
 	//check for movement with collision
@@ -134,20 +132,15 @@ void Camera::UpdateCamVectors(float yaw, float pitch){ //For cam to respond to m
 	Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
 	right.y = 0;
 	Mtx44 r1, r2;
-	r1.SetToRotation(-yaw, 0,1,0);
+	r1.SetToRotation(-yaw, 0, 1, 0);
 	r2.SetToRotation(-pitch, right.x, right.y, right.z);
 	if(mode == MODE::FOCUS){
 		front = r1 * r2 * (target - pos);
 		pos = target - front;
-		right = front.Cross(up);
-		right.y = 0;
-		up = right.Cross(front).Normalized();
+		up = r1 * r2 * up;
 	} else if(mode == MODE::FREE){
-		if ((front.y <= -0.95 && pitch > 0) || (front.y >= 0.95 && pitch < 0))
-			r2.SetToRotation(0, 1, 1, 1);
-
 		front = r1 * r2 * front;
-		target = pos + front*5;
+		target = pos + front;
 	}
 	up = right.Cross(front).Normalized();
 }

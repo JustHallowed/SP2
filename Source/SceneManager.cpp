@@ -47,7 +47,7 @@ void SceneManager::SetNextSceneID(int newID){
 	nextSceneID = newID;
 }
 
-void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update current scene
+void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* axes){ //Update current scene
 	double dt = app.m_timer.getElapsedTime();
 	elapsedTime += dt;
 	if(Application::IsKeyPressed('C') && switchBounceTime <= elapsedTime){
@@ -74,7 +74,7 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update curr
 		camera.up = camera.defaultUp;
 		FOV = 45.f;
 	}
-	camera.Update(dt);
+	camera.Update(dt, axes);
 	sceneStorage[currSceneID]->Update(dt, FOV);
 	sceneStorage[currSceneID]->Render(dt, int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4);
 	glfwSwapBuffers(m_window);
