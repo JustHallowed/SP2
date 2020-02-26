@@ -100,32 +100,16 @@ void MotorScene::CreateInstances()
 	object[TESTBOX].setScale(10, 10, 10);
 	object[TESTBOX].setDimension(10, 10, 10);
 	object[TESTBOX].setTranslation(0,35,0);
-
-	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	/*object[TESTBOX2].setRotation(90, 'y');*/
-	object[TESTBOX2].setDimension(100, 10, 10);
-	object[TESTBOX2].setTranslation(0, 35, 40);
-
-	//object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	//object[TESTBOX3].setScale(10, 10, 10);
-	//object[TESTBOX3].setDimension(10, 10, 10);
-	//object[TESTBOX3].setTranslation(-5, 35, 20);
-
-	//object[TESTBOX4].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	//object[TESTBOX4].setScale(10, 10, 10);
-	//object[TESTBOX4].setDimension(10, 10, 10);
-	//object[TESTBOX4].setTranslation(5, 35, 20);
 	
-	testVehicle.setObject(&object[TESTBOX]);
+	testVehicle.setObject(&object[TESTBOX],false);
 
-	////create instances for platforms
-	//createPlatforms();
+	//create instances for platforms
+	createPlatforms();
 
-	////create instances for ufos
-	//createUFOs();
+	//create instances for ufos
+	createUFOs();
 
-	//createRobot1();
-
+	createRobot1();
 }
 
 void MotorScene::Init(){ //Init scene
@@ -220,23 +204,23 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		object[i].addRotation(1, 'y');
 	}
 	
-	
-	std::cout << "\n";
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		object[i].resetCollision();
 	}
 
-	object[TESTBOX2].addRotation(10 * dt, 'y');
-
 	testVehicle.update(dt);
 
 	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
 	{
+		if (object[j].getDimension().y == 0)
+			continue;
 		for (int i = 0; i < NUM_INSTANCES; ++i)
 		{
 			if (i < j)
 				i = j+1;
+			if (object[i].getDimension().y == 0)
+				continue;
 			object[j].updateCollision(&object[i],dt);
 		}
 	}

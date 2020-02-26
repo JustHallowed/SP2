@@ -3,22 +3,23 @@
 Vehicle::Vehicle()
 {
 	object = nullptr;
-	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = false;
-	keyPress[4] = true;
+	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = false;
+	isRotationMode = true;
 }
 Object* Vehicle::getObject()
 {
 	return object;
 }
-void Vehicle::setObject(Object* object)
+void Vehicle::setObject(Object* object, bool isRotationMode)
 {
 	this->object = object;
+	this->isRotationMode = isRotationMode;
 }
 
 void Vehicle::update(double dt)
 {
-	float accelerationConstant = 5;	//acceleration multiplier
-	float maxVelocity = 3;	//maximum velocity vehicle can travel
+	float accelerationConstant = 4;	//acceleration multiplier
+	float maxVelocity = 1;	//maximum velocity vehicle can travel
 	Vector3 front,right,movementDir;	//vehicle fromt, direction of movement
 	if (object->getVelocity() != Vector3(0, 0, 0))
 		movementDir = object->getVelocity().Normalized();
@@ -53,14 +54,17 @@ void Vehicle::update(double dt)
 			keyPress[SPACE_KEY] = true;
 		}
 
-		//if (keyPress[A_KEY])//turn left
-		//{
-		//	object->addRotation(80 * dt, 'y');
-		//}
-		//if (keyPress[D_KEY])//turn right
-		//{
-		//	object->addRotation(-80 * dt, 'y');
-		//}
+		if (isRotationMode)
+		{
+			if (keyPress[A_KEY])//turn left
+			{
+				object->addRotation(80 * dt, 'y');
+			}
+			if (keyPress[D_KEY])//turn right
+			{
+				object->addRotation(-80 * dt, 'y');
+			}
+		}
 
 		front = Vector3(sin(Math::DegreeToRadian(object->getAngle().y)), 0, cos(Math::DegreeToRadian(-object->getAngle().y))).Normalized();
 		right = front.Cross(Vector3(0, 1, 0));
@@ -84,7 +88,9 @@ void Vehicle::update(double dt)
 					object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * dt));
 				}
 			}
-			if (keyPress[A_KEY])//accelerate front
+			if (!isRotationMode)
+			{
+			if (keyPress[A_KEY])//accelerate left
 			{
 				if ((right - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2 * dt));
@@ -93,7 +99,7 @@ void Vehicle::update(double dt)
 					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * dt));
 				}
 			}
-			if (keyPress[D_KEY])//accelerate front
+			if (keyPress[D_KEY])//accelerate right
 			{
 				if ((right - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2 * dt));
@@ -102,6 +108,8 @@ void Vehicle::update(double dt)
 					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * dt));
 				}
 			}
+			}
+
 			if (keyPress[S_KEY])//accelerate back
 			{
 				if ((front - movementDir).Length() > 0.5)

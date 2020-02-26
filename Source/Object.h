@@ -26,7 +26,10 @@ protected:
 	enum DIRECTION {
 		POSX, POSY, POSZ, NEGX, NEGY, NEGZ,
 	};
-	
+	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
+	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA, float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration);
+	bool hasEdgeIntersection(Object* b);
+	void unbindChild(Object* child);
 public:
 	bool collisionAt[6];//which axis the object can be displaced
 	Object();
@@ -75,15 +78,8 @@ public:
 	bool isMovable();
 
 	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
-	void unbindChild(Object* child);//removes child from child vector
-	void updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
-	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
-	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
-	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
-									float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration);
-	bool hasEdgeIntersection(Object* b);
 
-	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
+	void updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
