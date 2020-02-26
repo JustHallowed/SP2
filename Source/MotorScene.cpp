@@ -319,6 +319,8 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		}
 	}
 
+	MenuInput(); //Menu-Screen Controls
+
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
@@ -598,6 +600,24 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
+	if (CurrentSelection == 2) // Text turn green when select on play
+	{
+		ss << "PLAY";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[0], menuG[0], 0.f), menuWordSize[0], 1.f, 3.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else if ( CurrentSelection == 1) // Text turn green when select on options
+	{
+		ss << "OPTIONS";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[1], menuG[1], 0.f), menuWordSize[1], 1.f, 2.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else // Text turn green when select on quit
+	{
+		ss << "QUIT";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[2], menuG[2], 0.f), menuWordSize[2], 1.f, 1.f, winWidth, winHeight);
+		ss.str("");
+	}
 	ss << "PLAY";
 	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[0], menuG[0], 1.f), menuWordSize[0], 1.f, 3.f, winWidth, winHeight);
 	ss.str("");
@@ -607,6 +627,7 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	ss << "QUIT";
 	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menuR[2], menuG[2], 1.f), menuWordSize[2], 1.f, 1.f, winWidth, winHeight);
 	ss.str("");
+	
 }
 void MotorScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
@@ -1102,5 +1123,46 @@ void MotorScene::npcCheck(OBJECT_INSTANCES instance, const char* audioFileName)
 	{
 		inRange[instance] = 0;
 		interacted[instance] = 0;
+	}
+}
+
+void MotorScene::MenuInput() //Menu-Screen Logic
+{
+
+	bool cSomethingHappened = false;
+	if (interactBounceTime > elapsedTime)
+		return;
+
+	if ((Application::IsKeyPressed(VK_UP) && CurrentSelection < 2))
+	{
+		CurrentSelection += 1;
+		cSomethingHappened = true;
+	}
+	else if ((Application::IsKeyPressed(VK_DOWN) && CurrentSelection > 0))
+	{
+		CurrentSelection -= 1;
+		cSomethingHappened = true;
+	}
+
+	if (Application::IsKeyPressed(VK_RETURN))
+	{
+		switch (CurrentSelection)
+		{
+		case 0:
+			//Quit game
+			MotorScene::~MotorScene();
+			break;
+		case 1:
+			//Enter options
+			break;
+		case 2:
+			//Start game
+			break;
+		}
+	}
+
+	if (cSomethingHappened)
+	{
+		interactBounceTime = elapsedTime + 0.125;
 	}
 }
