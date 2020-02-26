@@ -158,8 +158,6 @@ void MotorScene::InitMeshes(){
 	//base mesh
 	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
 	meshList[unsigned int(MESH::PLATFORM)]->textureID = LoadTGA("Resources/TGAs/platform.tga");
-
-	//base mesh
 	meshList[unsigned int(MESH::ROBOT_BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_body.obj");
 	meshList[unsigned int(MESH::ROBOT_BODY)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
 	meshList[unsigned int(MESH::ROBOT_ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_arm.obj");
@@ -170,6 +168,8 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::STAGE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stage.obj");
+	meshList[unsigned int(MESH::STAGE)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
 }
 
 void MotorScene::CreateInstances()
@@ -184,6 +184,7 @@ void MotorScene::CreateInstances()
 	createRobot2();
 	createRobot3();
 
+	createStage();
 	createVehicles();
 }
 
@@ -867,7 +868,7 @@ void MotorScene::createRobot1()
 {
 	//robot parts for 1 robot
 	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY1].setTranslation(50, 5.2, 50);
+	object[ROBOT_BODY1].setTranslation(10, 5.2, 50);
 	object[ROBOT_BODY1].setScale(2);
 	object[ROBOT_BODY1].setRotation(45, 'y');
 	object[ROBOT_BODY1].setDimension(6, 15, 6);
@@ -1014,6 +1015,12 @@ void MotorScene::createRobot3()
 	object[ROBOT_LOWERLEG6].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
 	object[ROBOT_LOWERLEG6].setTranslation(0, -1.15, 0);
 	Object::bind(&object[ROBOT_UPPERLEG6], &object[ROBOT_LOWERLEG6], true, true);
+}
+
+void MotorScene::createStage()
+{
+	object[STAGE1].setMesh(meshList[unsigned int(MESH::STAGE)]);
+	object[STAGE1].setTranslation(50, 0, 0);
 }
 
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
