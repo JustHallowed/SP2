@@ -1137,7 +1137,10 @@ void MotorScene::carCheck(OBJECT_INSTANCES instance, const char* audioFileName)
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
 				if (interacted[instance])
+				{
 					engine->play2D(audioFileName);
+					engine->setSoundVolume(0.1f);
+				}
 				//when interact wif car, car light on
 				if (interacted[EH_CAR1])
 				{
