@@ -154,11 +154,11 @@ void Application::IRun(){
 	int count;
 	m_timer.startTimer(); //Start timer to calculate how long it takes to render this frame
 	while(!glfwWindowShouldClose(m_window)){ //Main Loop
-		system("cls");
-		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-		for(int i = 0; i < count; ++i){
-			std::cout << axes[i] << std::endl;
+		if(glfwJoystickPresent(GLFW_JOYSTICK_1)){
+			const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+			SceneManager::getScMan()->Update(*this, m_window, axes); //Update current scene
+		} else{
+			SceneManager::getScMan()->Update(*this, m_window); //Update current scene
 		}
-		SceneManager::getScMan()->Update(*this, m_window, axes); //Update current scene
 	}
 }

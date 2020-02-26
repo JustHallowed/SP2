@@ -35,7 +35,7 @@ void Camera::Update(double dt){ //Update cam
 		modeBounceTime = elapsedTime + 0.2;
 	}
 
-	float leftRight = -(axes[0] == int(axes[0]) ? axes[0] : 0);
+	float leftRight = -(axes != 0 && axes[0] == int(axes[0]) ? axes[0] : 0);
 	if(!leftRight){
 		leftRight = Application::IsKeyPressed('A') - Application::IsKeyPressed('D');
 	}
@@ -56,7 +56,7 @@ void Camera::Update(double dt){ //Update cam
 		}
 	}
 
-	float upDown = -(axes[3] == int(axes[3]) ? axes[3] : 0);
+	float upDown = -(axes != 0 && axes[3] == int(axes[3]) ? axes[3] : 0);
 	if(!upDown){
 		upDown = Application::IsKeyPressed('Q') - Application::IsKeyPressed('E');
 	}
@@ -77,7 +77,7 @@ void Camera::Update(double dt){ //Update cam
 		}
 	}
 
-	float forward = Application::IsKeyPressed('W') || axes[1] == -1, backward = Application::IsKeyPressed('S') || axes[1] == 1;
+	float forward = Application::IsKeyPressed('W') || (axes != 0 && axes[1] == -1), backward = Application::IsKeyPressed('S') || (axes != 0 && axes[1] == 1);
 	if(forward || (leftMouse && !rightMouse)){ //Move cam forward or towards the target
 		Vector3 dir = target - pos, front = dir.Normalized();
 		if(mode == MODE::FOCUS){
@@ -102,6 +102,7 @@ void Camera::Update(double dt){ //Update cam
 			target += float(-freeSpd * dt) * front;
 		}
 	}
+
 	//check for movement with collision
 	if (canMove[POSX] && displacement.x > 0)
 	{
