@@ -8,9 +8,10 @@
 #include "Object.h"
 #include "Vehicle.h"
 
+
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , SMOKE, ARM,FOREARM,UPPER_LEG,LOWER_LEG,BODY, NUM_GEOMETRY,
 	};
 	enum OBJECT_INSTANCES{
 		PLATFORM1,
@@ -90,11 +91,11 @@ class MotorScene final: public Scene{
 	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
-	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, int) const,RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(),UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const;
+	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, int) const,RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(),UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const, RenderAnimation(Mesh*, std::string, Color) const;;
 	void npcCheck(int instance, const char* audioFileName);
 	void carCheck(int instance, const char* audioFileName);
-	 RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const,  ;
+
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
