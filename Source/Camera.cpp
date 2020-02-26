@@ -18,7 +18,7 @@ void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up){ //
 	this->up = defaultUp = up;
 }
 
-void Camera::Update(double dt){ //Update cam
+void Camera::Update(double dt, const float* axes){ //Update cam
 	displacement.SetZero();
 	if(Application::IsKeyPressed('B') && modeBounceTime <= elapsedTime){ //Change cam mode
 		mode = MODE(!bool(mode));
