@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "SceneManager.h"
 #include "MotorScene.h"
-
+#include "GameScene.h"
 bool firstMouse = 1;
 const unsigned char FPS = 90;
 extern const unsigned int frameTime = 1000 / FPS; //Time for each frame
@@ -117,7 +117,7 @@ Application::Application(){
 	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 	glfwSetScrollCallback(m_window, scroll_callback);
 
-	SceneManager::getScMan()->AddScene(new MotorScene);
+	SceneManager::getScMan()->AddScene(new GameScene);
 }
 
 Application::~Application(){

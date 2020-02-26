@@ -6,24 +6,18 @@
 #include "ShaderManager.hpp"
 #include "ParticleSystem.h"
 #include "Object.h"
+#include "vehicle.h"
 
 class GameScene final : public Scene {
 	enum class MESH {
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, NUM_GEOMETRY
+		HITBOX,LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, NUM_GEOMETRY
 	};
 	enum OBJECT_INSTANCES
 	{
-		PLATFORM1,
-		PLATFORM2,
-		PLATFORM3,
-		PLATFORM4,
-		PLATFORM5,
-
 		UFO_BASE1,
-		UFO_PURPLE1,
-		UFO_RED1,
-		UFO_BLUE1,
-		UFO_PINK1,
+		OBSTACLE1,
+		OBSTACLE2,
+		OBSTACLE3,
 
 		NUM_INSTANCES,
 	};
@@ -37,6 +31,7 @@ class GameScene final : public Scene {
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
 	ShaderManager* shMan;
+	Vehicle player;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);

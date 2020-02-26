@@ -39,97 +39,45 @@ void GameScene::InitLight() const {
 }
 
 void GameScene::InitMeshes() {
-	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 1.f, 1.f), 1.f, 1.f, 1.f);
-	meshList[unsigned int(MESH::HITSPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 16, 16, 1);
+	meshList[unsigned int(MESH::HITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), 1.f, 1.f, 1.f);
 	//meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), .4f, .4f, .4f);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+
 	meshList[unsigned int(MESH::RIGHT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::RIGHT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+
 	meshList[unsigned int(MESH::FRONT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::FRONT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+
 	meshList[unsigned int(MESH::BACK)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::BACK)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+
 	meshList[unsigned int(MESH::TOP)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TOP)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
+
 	meshList[unsigned int(MESH::BOTTOM)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::BOTTOM)]->textureID = LoadTGA("Resources/TGAs/bottom.tga");
+
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
+
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
-	/*meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO_PURPLE)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
-	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
-	meshList[unsigned int(MESH::UFO_BLUE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
-	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
-	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");*/
-
-	//base mesh
-	/*meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
-	meshList[unsigned int(MESH::PLATFORM)]->textureID = LoadTGA("Resources/TGAs/platform.tga");*/
-	/*meshList[unsigned int(MESH::PLATFORM)]->material.kAmbient.Set(1.f, 1.f, 1.f);
-	meshList[unsigned int(MESH::PLATFORM)]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
-	meshList[unsigned int(MESH::PLATFORM)]->material.kSpecular.Set(1.f, 1.f, 1.f);
-	meshList[unsigned int(MESH::PLATFORM)]->material.kShininess = 5.f;*/
 }
 void GameScene::CreateInstances()
 {
-	//multiple copies of platform
-	/*object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM1].setTranslation(0, 0.5, 0);
-	object[PLATFORM1].setScale(4);
-	object[PLATFORM1].setDimension(50, 50, 50);
-
-	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM2].setTranslation(70, 0.5, 70);
-	object[PLATFORM2].setScale(4);
-	object[PLATFORM2].setDimension(50, 50, 50);
-
-	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM3].setTranslation(-70, 0.5, 70);
-	object[PLATFORM3].setScale(4);
-	object[PLATFORM3].setDimension(50, 50, 50);
-
-	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM4].setTranslation(70, 0.5, -70);
-	object[PLATFORM4].setScale(4);
-	object[PLATFORM4].setDimension(50, 50, 50);
-
-	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM5].setTranslation(-70, 0.5, -70);
-	object[PLATFORM5].setScale(4);
-	object[PLATFORM5].setDimension(50, 50, 50);*/
-
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
 	object[UFO_BASE1].setTranslation(0, 0.6, 0);
-	object[UFO_BASE1].setScale(4);
-	//ufo in ref to platform
-	//Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
+	object[UFO_BASE1].setScale(40);
+	object[UFO_BASE1].setDimension(40, 20, 20);
+	player.setObject(&object[UFO_BASE1], false);
 
-	//object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
-	//object[UFO_PURPLE1].setTranslation(0, 0.6, 0);
-	////ufo in ref to platform
-	//Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
-
-	//object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	//object[UFO_RED1].setTranslation(0, 0.6, 0);
-	////ufo in ref to platform
-	//Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
-
-	//object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
-	//object[UFO_BLUE1].setTranslation(0, 0.6, 0);
-	////ufo in ref to platform
-	//Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
-
-	//object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
-	//object[UFO_PINK1].setTranslation(0, 0.6, 0);
-	////ufo in ref to platform
-	//Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
+	object[OBSTACLE1].setMesh(meshList[unsigned int(MESH::HITBOX)]);
+	object[OBSTACLE1].setDimension(10, 10, 10);
+	object[OBSTACLE1].setTranslation(0, 5, 40);
 }
 
 void GameScene::Init() { //Init scene
@@ -141,7 +89,7 @@ void GameScene::Init() { //Init scene
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-	Camera::getCam().Init(Vector3(0.f, 5.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	Camera::getCam().Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 5.f, 50.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
@@ -149,6 +97,7 @@ void GameScene::Init() { //Init scene
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene
@@ -206,27 +155,21 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
-	//for (int i = 0; i < NUM_INSTANCES; ++i)
-	//{
-	//	if (object[i].getDimension().y == 0)
-	//		continue;
-	//	Camera::getCam().updateCollision(object[i]);
-	//}
+	player.update(dt);
 
-	/*for (int i = 0; i < 5; i++)
+	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
 	{
-		object[i].addRotation(1, 'y');
-	}*/
-
-	//if (!object[A].isClockwise)
-	//{
-	//	//do animation
-	//	if (condition to turn clockwise)
-	//		object[A].setIsClockwise(true);
-	//}
-	//then vice versa for clockwise
-
-
+		if (object[j].getDimension().y == 0)
+			continue;
+		for (int i = 0; i < NUM_INSTANCES; ++i)
+		{
+			if (i < j)
+				i = j + 1;
+			if (object[i].getDimension().y == 0)
+				continue;
+			object[j].updateCollision(&object[i], dt);
+		}
+	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -282,6 +225,9 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 			modelStack.PopMatrix();
 		}
 	}
+
+	
+
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
