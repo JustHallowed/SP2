@@ -206,7 +206,6 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
-
 	/*for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y == 0)
