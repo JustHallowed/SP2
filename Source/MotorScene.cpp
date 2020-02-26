@@ -197,10 +197,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 		object[TESTBOX].setRotation(0, 'y');
 		object[TESTBOX].setVelocity(0, 0, 0);
 	}
-	//if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
-	//	showDebugInfo = !showDebugInfo;
-	//	debugBounceTime = elapsedTime + 0.5;
-	//}
+	if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
+		showDebugInfo = !showDebugInfo;
+		debugBounceTime = elapsedTime + 0.5;
+	}
 
 	if(bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt){
 		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
@@ -215,10 +215,10 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 
 
 
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	object[i].addRotation(1, 'y');
-	//}
+	for (int i = 0; i < 5; i++)
+	{
+		object[i].addRotation(1, 'y');
+	}
 	
 	
 	std::cout << "\n";
@@ -231,19 +231,16 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 
 	testVehicle.update(dt);
 
-	//for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
-	//{
-	//	for (int i = 0; i < NUM_INSTANCES; ++i)
-	//	{
-	//		if (i < j)
-	//			i = j+1;
-	//		object[j].updateCollision(&object[i],dt);
-	//	}
-	//}
-	//object[TESTBOX2].setTranslation(object[TESTBOX2].getTranslation().x, object[TESTBOX2].getTranslation().y, object[TESTBOX2].getTranslation().z + 5 * dt);
-	object[TESTBOX].updateCollision(&object[TESTBOX2], dt);
-	//object[TESTBOX].updateCollision(&object[TESTBOX3], dt);
-	//object[TESTBOX].updateCollision(&object[TESTBOX4], dt);
+	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	{
+		for (int i = 0; i < NUM_INSTANCES; ++i)
+		{
+			if (i < j)
+				i = j+1;
+			object[j].updateCollision(&object[i],dt);
+		}
+	}
+
 
 
 	//!testing! if w is pressed, sound effects will be played
@@ -251,7 +248,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	//	engine->play2D("Resources/Sound/bell.wav");
 
 
-	/*if (object[ROBOT_BODY1].checkDist(Camera::getCam().target) < 15.f)
+	if (object[ROBOT_BODY1].checkDist(Camera::getCam().target) < 15.f)
 	{
 		inRange[ROBOT_BODY1] = true;
 		if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
@@ -266,7 +263,7 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	{
 		inRange[ROBOT_BODY1] = 0;
 		interacted[ROBOT_BODY1] = 0;
-	}*/
+	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -304,11 +301,6 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		modelStack.Scale(2.f, 2.f, 2.f);
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//modelStack.Translate(Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z);
-	//RenderMesh(meshList[unsigned int(MESH::HITSPHERE)], false);
-	//modelStack.PopMatrix();
 
 	//displays hitboxes
 	for (int i = 0; i < NUM_INSTANCES; ++i)
@@ -376,20 +368,20 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
 
-	//if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
-	//	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
-	//if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
-	//{
-	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-	//	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-	//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//	ss << "Wow! These cars! ";
-	//	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-	//	ss.str("");
-	//	ss << "They're awesome!";
-	//	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
-	//	ss.str("");
-	//}
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
+	{
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		ss << "Wow! These cars! ";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "They're awesome!";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
+		ss.str("");
+	}
 }
 
 void MotorScene::RenderLight(){
