@@ -277,13 +277,13 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 
 	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
 	{
-		if (object[j].getDimension().y == 0)
+		if (object[j].getDimension().y == 0 || object[j].getMesh() == nullptr)
 			continue;
 		for (int i = 0; i < NUM_INSTANCES; ++i)
 		{
 			if (i < j)
 				i = j + 1;
-			if (object[i].getDimension().y == 0)
+			if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
 				continue;
 			object[j].updateCollision(&object[i], dt);
 		}
