@@ -281,7 +281,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 			continue;
 		for (int i = 0; i < NUM_INSTANCES; ++i)
 		{
-			if (i < j)
+			if (i <= j)
 				i = j + 1;
 			if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
 				continue;
