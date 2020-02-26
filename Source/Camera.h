@@ -26,6 +26,4 @@ public:
 	MODE mode;
 	static Camera& getCam();
 	void Init(const Vector3&, const Vector3&, const Vector3&), Update(double), UpdateCamVectors(float, float);
-	void updateCollision(Object target);
-	void resetCollision();
 };
