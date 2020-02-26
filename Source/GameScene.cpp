@@ -71,13 +71,25 @@ void GameScene::CreateInstances()
 {
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
 	object[UFO_BASE1].setTranslation(0, 0.6, 0);
-	object[UFO_BASE1].setScale(40);
-	object[UFO_BASE1].setDimension(40, 20, 20);
+	object[UFO_BASE1].setScale(4);
+	object[UFO_BASE1].setDimension(25, 20, 20);
 	player.setObject(&object[UFO_BASE1], false);
 
-	object[OBSTACLE1].setMesh(meshList[unsigned int(MESH::HITBOX)]);
-	object[OBSTACLE1].setDimension(10, 10, 10);
-	object[OBSTACLE1].setTranslation(0, 5, 40);
+	object[ENDWALL].setMesh(meshList[unsigned int(MESH::HITBOX)]);
+	object[ENDWALL].setTranslation(0, 0, -300);
+	object[ENDWALL].setDimension(500, 500, -30);
+
+	for (int i = 0; i < 20; ++i)
+	{
+		inactiveObstacleQueue.push_back(new Object);
+	}
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	{
+	inactiveObstacleQueue.at(i)->setMesh(meshList[unsigned int(MESH::HITBOX)]);
+	inactiveObstacleQueue.at(i)->setDimension(25, 10, 10);
+	inactiveObstacleQueue.at(i)->setScale(25, 10, 10);
+	inactiveObstacleQueue.at(i)->setTranslation(0, 5, 750);
+	}
 }
 
 void GameScene::Init() { //Init scene
@@ -96,7 +108,8 @@ void GameScene::Init() { //Init scene
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = 0.0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = 0.0;
+	srand(time(NULL));
 	
 }
 
@@ -157,23 +170,93 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 
 	player.update(dt);
 
-	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	updateObstacleState(dt);
+
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[j].getDimension().y == 0)
+		object[i].resetCollision();
+	}
+
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y == 0 || &object[i] == player.getObject())
 			continue;
-		for (int i = 0; i < NUM_INSTANCES; ++i)
+		object[UFO_BASE1].updateCollision(&object[i], dt);
+	}
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	{
+		if (player.getObject()->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
-			if (i < j)
-				i = j + 1;
-			if (object[i].getDimension().y == 0)
-				continue;
-			object[j].updateCollision(&object[i], dt);
+			activeObstacleQueue.at(i)->setTranslation(0, 0, player.getObject()->getPos().z - 30);
+			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
+			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 		}
 	}
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	{
+		activeObstacleQueue.at(i)->moveBy(0, 0, -10 * dt);
+		if (object[ENDWALL].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		{
+			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
+			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
+		}
+	}
+
+
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
+}
+
+void GameScene::updateObstacleState(double dt)
+{
+	if (timeSinceLastObstacle < 5)
+	{
+		timeSinceLastObstacle += dt;
+		return;
+	}
+	timeSinceLastObstacle = 0;
+	bool slotTaken[3] = { 0, };
+	for (int i = 0; i < 2; ++i)
+	{
+		activeObstacleQueue.push_back(inactiveObstacleQueue.back());
+		if(inactiveObstacleQueue.size()>0)
+		inactiveObstacleQueue.pop_back();
+		bool retry = true;
+		while (retry)//randomises obstacle slot placement
+		{
+			switch (rand() % 3)
+			{
+			case 0:
+				if (!slotTaken[0])
+				{
+					slotTaken[0] = true;
+					activeObstacleQueue.front()->setTranslation(-12.5f, 0, 750);
+					retry = false;
+				}
+				break;
+			case 1:
+				if (!slotTaken[0])
+				{
+					slotTaken[0] = true;
+					activeObstacleQueue.front()->setTranslation(0, 0, 750);
+					retry = false;
+				}
+				break;
+			case 2:
+				if (!slotTaken[2])
+				{
+					slotTaken[2] = true;
+					activeObstacleQueue.front()->setTranslation(12.5f, 0, 750);
+					retry = false;
+				}
+				break;
+			default: std::cout<<"random number at void GameScene::updateObstacleState(double dt) out of range"<<std::endl; //error:random number out of range
+				break;
+			}
+		}
+	}
 }
 
 void GameScene::Render(double dt, int winWidth, int winHeight) {
@@ -226,7 +309,17 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 		}
 	}
 
-	
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	{
+		if (activeObstacleQueue.at(i)!= nullptr)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(activeObstacleQueue.at(i)->getPos().x, activeObstacleQueue.at(i)->getPos().y, activeObstacleQueue.at(i)->getPos().z);
+			modelStack.Scale(activeObstacleQueue.at(i)->getDimension().x, activeObstacleQueue.at(i)->getDimension().y, activeObstacleQueue.at(i)->getDimension().z);
+			RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
+			modelStack.PopMatrix();
+		}
+	}
 
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
@@ -238,7 +331,13 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 			modelStack.PopMatrix();
 		}
 	}
-
+	//render obstacles
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	{
+		modelStack.PushMatrix();
+		renderObject(activeObstacleQueue.at(i));
+		modelStack.PopMatrix();
+	}
 	std::ostringstream ss;
 	if (showDebugInfo) {
 		ss << std::fixed << std::setprecision(2);

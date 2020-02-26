@@ -14,6 +14,7 @@ Object::Object()
 	parentScale = false;
 	interactable = false;
 	movable = false;
+	hasMoved = false;
 }
 
 Object::~Object()
@@ -237,7 +238,12 @@ void Object::setInteractable(bool canInteract)
 {
 	interactable = canInteract;
 }
-void Object::updateCollision(Object* b, double dt)
+void Object::resetCollision()
+{
+	hasMoved = false;
+}
+
+bool Object::updateCollision(Object* b, double dt)
 {
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
 	Vector3 penetration; //magnitude of overlapp of object
@@ -261,7 +267,7 @@ void Object::updateCollision(Object* b, double dt)
 
 		if (!b->isMovable())
 		{
-			translation -= penetration;
+			moveBy(-penetration.x, -penetration.y, -penetration.z);
 			if (movable)
 			{
 				angle.x += ((float)rotationAxis.x * (float)velocity.x - (float)b->velocity.x * 100 * dt);
@@ -269,9 +275,16 @@ void Object::updateCollision(Object* b, double dt)
 				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
 		}
+		return true;
 
 	}
+	else
+		return false;
+	if (hasMoved == false)
+	{
 	moveBy(velocity.x, velocity.y, velocity.z);
+	hasMoved = true;
+	}
 }
 
 bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,

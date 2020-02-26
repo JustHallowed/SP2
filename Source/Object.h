@@ -23,6 +23,7 @@ protected:
 	bool interactable; //whether object can be interacted
 	bool render; //where object is rendered
 	bool movable;//if object can be displaced by other objects
+	bool hasMoved;//if object moved this frame
 	enum DIRECTION {
 		POSX, POSY, POSZ, NEGX, NEGY, NEGZ,
 	};
@@ -60,7 +61,7 @@ public:
 	void setInteractable(bool canInteract);
 	void setRender(bool render);
 	void setMovable(bool movable);
-	void resetCollision();//run this before looping update()
+	void resetCollision();
 
 	//getters
 	Mesh* getMesh(); //returns meshtype from meshlist
@@ -81,7 +82,7 @@ public:
 	bool isMovable();
 
 	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
-	void updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
+	bool updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
