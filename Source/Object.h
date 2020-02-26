@@ -83,7 +83,6 @@ public:
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
-	float checkDist(Vector3 targetPos);
 	float getDist(Vector3 playerpos);
 	float getAngle(Vector3 A, Vector3 B);
 };
