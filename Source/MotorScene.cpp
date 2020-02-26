@@ -268,12 +268,12 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	}
 	bulletGenerator.UpdateParticles(dt);
 
-	for (int i = 0; i < NUM_INSTANCES; ++i)
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y == 0)
 			continue;
 		Camera::getCam().updateCollision(object[i]);
-	}
+	}*/
 
 	object[PLATFORM1].addRotation(1, 'y');
 
@@ -358,7 +358,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	for (int i = 0; i < NUM_INSTANCES; ++i)
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -368,7 +368,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		RenderMesh(meshList[unsigned int(MESH::HITBOX)], false);
 		modelStack.PopMatrix();
 		}
-	}
+	}*/
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -1090,7 +1090,7 @@ void MotorScene::renderObject(Object* obj)
 		RenderMesh(obj->getMesh(), true);
 	}
 }
-void MotorScene::npcCheck(OBJECT_INSTANCES instance, const char* audioFileName)
+void MotorScene::npcCheck(int instance, const char* audioFileName)
 {	//finds angle in between two vectors
 	Vector3 posToObject = object[instance].getPos() - Camera::getCam().pos;
 	Vector3 posToTarget = Camera::getCam().target - Camera::getCam().pos;
@@ -1121,7 +1121,7 @@ void MotorScene::npcCheck(OBJECT_INSTANCES instance, const char* audioFileName)
 	}
 }
 
-void MotorScene::carCheck(OBJECT_INSTANCES instance, const char* audioFileName)
+void MotorScene::carCheck(int instance, const char* audioFileName)
 {
 	//finds angle in between two vectors
 	Vector3 posToObject = object[instance].getPos() - Camera::getCam().pos;
