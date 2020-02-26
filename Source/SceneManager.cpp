@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 
 extern bool hideCursor;
+Camera camera;
 extern const unsigned int frameTime;
 extern double elapsedTime;
 extern float FOV;
@@ -8,36 +9,36 @@ extern float FOV;
 SceneManager::SceneManager(): currSceneID(0), nextSceneID(0), screenBounceTime(0.0), switchBounceTime(0.0){}
 
 SceneManager::~SceneManager(){
-	scStorage[currSceneID]->Exit(scStorage[currSceneID]);
-	for(size_t i = 0; i < scStorage.size(); ++i){
-		delete scStorage[i];
+	sceneStorage[currSceneID]->Exit(sceneStorage[currSceneID]);
+	for(size_t i = 0; i < sceneStorage.size(); ++i){
+		delete sceneStorage[i];
 	}
 }
 
-SceneManager* SceneManager::scMan = 0;
+SceneManager* SceneManager::sceneMan = 0;
 
 SceneManager* SceneManager::getScMan(){
-	if(!scMan){
-		scMan = new SceneManager;
+	if(!sceneMan){
+		sceneMan = new SceneManager;
 	}
-	return scMan;
+	return sceneMan;
 }
 
 void SceneManager::AddScene(Scene* newScene){
-	scStorage.emplace_back(newScene);
-	if(scStorage.size() == 1){
-		scStorage[currSceneID]->Init();
+	sceneStorage.emplace_back(newScene);
+	if(sceneStorage.size() == 1){
+		sceneStorage[currSceneID]->Init();
 	} else{
-		SceneManager::getScMan()->SetNextSceneID(scStorage.size() - 1);
+		SceneManager::getScMan()->SetNextSceneID(sceneStorage.size() - 1);
 	}
 }
 
 void SceneManager::SetNextScene(){
-	if(scStorage.size() > 1){
-		scStorage[currSceneID]->Exit(scStorage[nextSceneID]);
+	if(sceneStorage.size() > 1){
+		sceneStorage[currSceneID]->Exit(sceneStorage[nextSceneID]);
 	}
 	currSceneID = nextSceneID;
-	if(++nextSceneID == scStorage.size()){
+	if(++nextSceneID == sceneStorage.size()){
 		nextSceneID = 0;
 	}
 }
@@ -46,7 +47,7 @@ void SceneManager::SetNextSceneID(int newID){
 	nextSceneID = newID;
 }
 
-void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update current scene
+void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* axes){ //Update current scene
 	double dt = app.m_timer.getElapsedTime();
 	elapsedTime += dt;
 	if(Application::IsKeyPressed('C') && switchBounceTime <= elapsedTime){
@@ -58,7 +59,7 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update curr
 		}
 		switchBounceTime = elapsedTime + 0.5;
 	}
-	if(Application::IsKeyPressed('F') && screenBounceTime <= elapsedTime){ //Toggle fullscreen
+	if(Application::IsKeyPressed(VK_F11) && screenBounceTime <= elapsedTime){ //Toggle fullscreen
 		if(app.fullscreen){
 			glfwSetWindowMonitor(m_window, 0, int(app.mode->width / 4), int(app.mode->height / 30), int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4, GLFW_DONT_CARE);
 		} else{
@@ -68,14 +69,14 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window){ //Update curr
 		screenBounceTime = elapsedTime + 0.5;
 	}
 	if(Application::IsKeyPressed(VK_END)){ //Reset scene
-		Camera::getCam().pos = Camera::getCam().defaultPos;
-		Camera::getCam().target = Camera::getCam().defaultTarget;
-		Camera::getCam().up = Camera::getCam().defaultUp;
+		camera.pos = camera.defaultPos;
+		camera.target = camera.defaultTarget;
+		camera.up = camera.defaultUp;
 		FOV = 45.f;
 	}
-	Camera::getCam().Update(dt);
-	scStorage[currSceneID]->Update(dt, FOV);
-	scStorage[currSceneID]->Render(dt, int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4);
+	camera.Update(dt, axes);
+	sceneStorage[currSceneID]->Update(dt, FOV);
+	sceneStorage[currSceneID]->Render(dt, int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents(); //Get and organize events like kb and mouse input, window resizing, etc.
 	app.m_timer.waitUntil(frameTime); //Limits each frame to a specified time in ms

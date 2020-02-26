@@ -3,16 +3,16 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ShaderManager.hpp"
 #include "ParticleSystem.h"
+#include "ScoreSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
+
 class MotorScene final: public Scene{
 	enum class MESH {
 		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 	};
-	enum OBJECT_INSTANCES
-	{
+	enum OBJECT_INSTANCES{
 		PLATFORM1,
 		PLATFORM2, 
 		PLATFORM3, 
@@ -66,11 +66,12 @@ class MotorScene final: public Scene{
 
 		NUM_INSTANCES,
 	};
-	bool showDebugInfo, showLightSphere, splitScreen;
+	bool animateDir, showDebugInfo, showLightSphere, state,splitScreen;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime, splitBounceTime;
+	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed,splitBounceTime;
 	double CalcFrameRate() const;
+	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	Object object[NUM_INSTANCES];
 	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
@@ -85,14 +86,15 @@ class MotorScene final: public Scene{
 
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
-	ParticleEmitter bulletGenerator;
-	ShaderManager* shMan;
+	ParticleEmitter smokeGenerator;
+	ScoreManager* scoreMan;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, int) const,RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3();
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(),UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const;
 	void npcCheck(int instance, const char* audioFileName);
 	void carCheck(int instance, const char* audioFileName);
+	 RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, std::string, Color) const,  ;
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;

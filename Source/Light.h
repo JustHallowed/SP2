@@ -19,7 +19,7 @@ struct Light final{
 		kQ = .001f;
 		cosCutoff = cos(Math::DegreeToRadian(45.f));
 		cosInner = cos(Math::DegreeToRadian(30.f));
-		exponent = 3.f;
+		exponent = 32.f;
 		spotDirection.Set(spotDir.x, spotDir.y, spotDir.z);
 	}
 	enum class LIGHT_TYPE{
