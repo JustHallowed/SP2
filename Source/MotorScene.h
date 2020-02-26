@@ -10,7 +10,7 @@
 class MotorScene final: public Scene{
 	enum class MESH {
 
-		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, STAGE, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 
 		//HITBOXWHITE, HITBOXRED, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
 
@@ -37,8 +37,6 @@ class MotorScene final: public Scene{
 		EH_CAR1,
 		LF_CAR1,
 		YW_CAR1,
-
-		STAGE1,
 
 		ROBOT_BODY1,
 		ROBOT_ARM1,
@@ -99,7 +97,7 @@ class MotorScene final: public Scene{
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(), createStage();
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3();
 	void npcCheck(int instance, const char* audioFileName);
 	void carCheck(int instance, const char* audioFileName);
 public:
