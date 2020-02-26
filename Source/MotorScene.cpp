@@ -97,13 +97,13 @@ void MotorScene::InitMeshes(){
 void MotorScene::CreateInstances()
 {
 	object[TESTBOX].setMesh(meshList[unsigned int(MESH::HITBOXRED)]);
-	//object[TESTBOX].setScale(10, 10, 10);
+	object[TESTBOX].setScale(10, 10, 10);
 	object[TESTBOX].setDimension(10, 10, 10);
 	object[TESTBOX].setTranslation(0,35,0);
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
 	/*object[TESTBOX2].setRotation(90, 'y');*/
-	object[TESTBOX2].setDimension(10, 10, 10);
+	object[TESTBOX2].setDimension(100, 10, 10);
 	object[TESTBOX2].setTranslation(0, 35, 40);
 
 	//object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
@@ -226,6 +226,8 @@ void MotorScene::Update(double dt, float FOV){ //Update scene
 	{
 		object[i].resetCollision();
 	}
+
+	object[TESTBOX2].addRotation(10 * dt, 'y');
 
 	testVehicle.update(dt);
 

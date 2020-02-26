@@ -376,9 +376,9 @@ void Object::updateCollision(Object* b, double dt)
 						if (penetration.z < 0)
 						{
 							if (collidingFaceAxisA.z > 0)
-								translation.z -= penetration.z;
-							else if (collidingFaceAxisA.z < 0)
 								translation.z += penetration.z;
+							else if (collidingFaceAxisA.z < 0)
+								translation.z -= penetration.z;
 						}
 					}
 					else
@@ -472,12 +472,11 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	Hb = b->dimension.y / 2;
 	Db = b->dimension.z / 2;
 	//Checking by A
-	float LHS = projPlane(T, Ax).Length(); //Projection of T onto plane with normal Ax
-	float RHS = projPlane(Ax * Wa, Ax).Length() + projPlane(Ay * Ha, Ax).Length() + projPlane(Az * Da, Ax).Length() +
-		projPlane(Bx * Wb, Ax).Length() + projPlane(By * Hb, Ax).Length() + projPlane(Bz * Db, Ax).Length();
-	if (LHS <= RHS)//intersection at X plane
+	float LHS = abs(T.Dot(Ax)); //Projection of T onto plane with normal Ax
+	float RHS = Wa + abs(Wb * Ax.Dot(Bx)) + abs(Hb * Ax.Dot(By)) + abs(Db * Ax.Dot(Bz));
+	if (LHS <= RHS)
 	{
-		*greatestFaceIntersectionA = RHS - LHS;
+		*greatestFaceIntersectionA = RHS - LHS;//intersection at X plane
 		*collidingFaceAxisA = Ax;
 		penetration->x -= dimension.x / 2;
 	}
@@ -486,34 +485,32 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 		return false;
 	}
 
-	LHS = projPlane(T, Ay).Length(); //Projection of T onto plane with normal Ax
-	RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+	LHS = abs(T.Dot(Ay)); //Projection of T onto plane with normal Ax
+	RHS = Ha + abs(Hb * Ay.Dot(By)) + abs(Db * Ay.Dot(Bz));
 	if (LHS <= RHS)
 	{
-		if (RHS - LHS > * greatestFaceIntersectionA)
+		if (RHS - LHS < * greatestFaceIntersectionA)
 		{
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Ay;
 		}
-		penetration->y -= dimension.y ;
+		penetration->y -= dimension.y /2;
 	}
 	else
 	{
 		return false;
 	}
 
-	LHS = projPlane(T, Az).Length(); //Projection of T onto plane with normal Az
-	RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Az * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+	LHS =abs(T.Dot( Az)); //Projection of T onto plane with normal Az
+	RHS = Da + abs(Wb * Az.Dot(Bx)) + abs(Hb * Az.Dot(By)) + abs(Db * Az.Dot(Bz));
 	if (LHS <= RHS)//if collision
 	{
-		if (RHS - LHS > *greatestFaceIntersectionA)
+		if (RHS - LHS < *greatestFaceIntersectionA)
 		{
 			*greatestFaceIntersectionA = RHS - LHS;
 			*collidingFaceAxisA = Az;
 		}
-		penetration->z -= dimension.z ;
+		penetration->z -= dimension.z /2;
 	}
 	else
 	{
@@ -522,49 +519,46 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 
 	//Checking by B
 
-	LHS = projPlane(T, Bx).Length(); //Projection of T onto plane with normal Bx
-	RHS = projPlane(Ax * Wa, Bx).Length() + projPlane(Ay * Ha, Bx).Length() + projPlane(Az * Da, Bx).Length() +
-		projPlane(Bx * Wb, Bx).Length() + projPlane(By * Hb, Bx).Length() + projPlane(Bz * Db, Bx).Length();
+	LHS = abs(T.Dot(Bx)); //Projection of T onto plane with normal Bx
+	RHS = abs(Wa * Ax.Dot(Bx)) + abs(Ha * Ay.Dot(Bx)) + abs(Da * Az.Dot(Bx)) + Wb;
 	if (LHS <= RHS)//Collision
 	{
 		*greatestFaceIntersectionB = RHS - LHS;
 		*collidingFaceAxisB = Bx;
-		penetration->x -= b->dimension.x ;
+		penetration->x -= b->dimension.x /2;
 	}
 	else
 	{
 		return false;
 	}
 
-	LHS = projPlane(T, By).Length(); //Projection of T onto plane with normal By
-	RHS = projPlane(Ax * Wa, By).Length() + projPlane(By * Ha, By).Length() + projPlane(Az * Da, By).Length() +
-		projPlane(Bx * Wb, By).Length() + projPlane(By * Hb, By).Length() + projPlane(Bz * Db, By).Length();
+	LHS = abs(T.Dot(By)); //Projection of T onto plane with normal By
+	RHS = abs(Wa * Ax.Dot(By)) + abs(Ha * Ay.Dot(By)) + abs(Da * Az.Dot(By)) + Hb;
 	if (LHS <= RHS)//Collision
 	{
-		if (RHS - LHS > *greatestFaceIntersectionB)
+		if (RHS - LHS < *greatestFaceIntersectionB)
 		{
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = By;
 		}
-		penetration->y -= b->dimension.y ;
+		penetration->y -= b->dimension.y/2 ;
 	}
 	else
 	{
 		return false;
 	}
 
-	LHS = projPlane(T, Bz).Length(); //Projection of T onto plane with normal Bz
-	RHS = projPlane(Ax * Wa, Ay).Length() + projPlane(Ay * Ha, Ay).Length() + projPlane(Bz * Da, Ay).Length() +
-		projPlane(Bx * Wb, Ay).Length() + projPlane(By * Hb, Ay).Length() + projPlane(Bz * Db, Ay).Length();
+	LHS = abs(T.Dot(Bz)); //Projection of T onto plane with normal Bz
+	RHS = abs(Wa * Ax.Dot(Bz)) + abs(Ha * Ay.Dot(Bz)) + abs(Da * Az.Dot(Bz)) + Db;
 	if (LHS <= RHS)//Collision
 	{
 
-		if (RHS - LHS > *greatestFaceIntersectionB)	
+		if (RHS - LHS < *greatestFaceIntersectionB)	
 		{
 			*greatestFaceIntersectionB = RHS - LHS;
 			*collidingFaceAxisB = Bz;
 		}
-		penetration->z -= b->dimension.z ;
+		penetration->z -= b->dimension.z /2;
 	}
 	else
 	{
