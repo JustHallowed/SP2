@@ -26,10 +26,13 @@ protected:
 	enum DIRECTION {
 		POSX, POSY, POSZ, NEGX, NEGY, NEGZ,
 	};
+	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
+	void unbindChild(Object* child);//removes child from child vector
 	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
-	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA, float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration);
+	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
+		float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis);
 	bool hasEdgeIntersection(Object* b);
-	void unbindChild(Object* child);
+	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 public:
 	bool collisionAt[6];//which axis the object can be displaced
 	Object();
@@ -78,7 +81,6 @@ public:
 	bool isMovable();
 
 	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
-
 	void updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
