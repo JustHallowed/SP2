@@ -14,12 +14,6 @@ Object::Object()
 	parentScale = false;
 	interactable = false;
 	movable = false;
-	collisionAt[0] = false;
-	collisionAt[1] = false;
-	collisionAt[2] = false;
-	collisionAt[3] = false;
-	collisionAt[4] = false;
-	collisionAt[5] = false;
 }
 
 Object::~Object()
@@ -173,15 +167,7 @@ void Object::setMovable(bool movable)
 {
 	this->movable = movable;
 }
-void Object::resetCollision()
-{
-	collisionAt[0] = false;
-	collisionAt[1] = false;
-	collisionAt[2] = false;
-	collisionAt[3] = false;
-	collisionAt[4] = false;
-	collisionAt[5] = false;
-}
+
 bool Object::isClockwise()
 {
 	return clockwise;
