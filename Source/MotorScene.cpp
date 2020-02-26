@@ -16,6 +16,8 @@ extern double elapsedTime;
 
 using namespace irrklang;
 ISoundEngine* engine = createIrrKlangDevice();
+ISound* speaker1;
+ISound* speaker2;
 
 double MotorScene::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
@@ -173,6 +175,8 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::STAGE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stage.obj");
 	meshList[unsigned int(MESH::STAGE)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
+	meshList[unsigned int(MESH::STAND)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stand.obj");
+	meshList[unsigned int(MESH::STAND)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
 
 	meshList[unsigned int(MESH::SPEAKER)] = MeshBuilder::GenerateOBJ("Resources/OBJs/speaker.obj");
 	meshList[unsigned int(MESH::SPEAKER)]->textureID = LoadTGA("Resources/TGAs/speaker.tga");
@@ -217,8 +221,14 @@ void MotorScene::Init(){ //Init scene
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
 	light[0].power = 1.f;
-	//play thru out the scene and loops
-	//engine->play2D("Resources/Sound/bgm.mp3", true);
+
+	//play 3d sound //sound gets softer when further away frm speakers
+	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
+	if (speaker1)
+		speaker1->setMinDistance(30.f);
+	speaker2 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, -85), true, false, true);
+	if (speaker2)
+		speaker2->setMinDistance(30.f);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -232,6 +242,10 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	if(dynamic_cast<MotorScene*>(newScene) != this){
 		newScene->Init();
 	}
+	if (speaker1)
+		speaker1->drop();
+	if (speaker2)
+		speaker2->drop();
 	engine->drop();
 }
 
@@ -322,6 +336,9 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	carCheck(PLATFORM8, "Resources/Sound/carchime.mp3");
 	carCheck(PLATFORM9, "Resources/Sound/carkey.mp3");
 
+	engine->setListenerPosition(vec3df(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z), vec3df(Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z));
+	
+
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
@@ -381,17 +398,20 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	//for (int i = 0; i < NUM_INSTANCES; ++i)
-	//{
-	//	if (object[i].getDimension().y > 0)
-	//	{
-	//	modelStack.PushMatrix();
-	//	modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
-	//	modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-	//	RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
-	//	modelStack.PopMatrix();
-	//	}
-	//}
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y > 0)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+			modelStack.Rotate(object[i].getAngle().z, 0, 0, 1);
+			modelStack.Rotate(object[i].getAngle().y, 0, 1, 0);
+			modelStack.Rotate(object[i].getAngle().x, 1, 0, 0);
+			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
+			modelStack.PopMatrix();
+		}
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -1055,20 +1075,27 @@ void MotorScene::createStage()
 	object[STAGE1].setMesh(meshList[unsigned int(MESH::STAGE)]);
 	object[STAGE1].setTranslation(65, 0.5, 0);
 	object[STAGE1].setScale(5.5, 8, 8);
-	//object[STAGE1].setDimension(55, 80, 80);
+	object[STAGE1].setDimension(60, 16, 140);
+
+	object[STAND1].setMesh(meshList[unsigned int(MESH::STAND)]);
+	object[STAND1].setTranslation(65, 0.8, 0);
+	object[STAND1].setScale(5.5, 8, 8);
+	object[STAND1].setDimension(10, 60, 16);
 }
 
 void MotorScene::createSpeaker()
 {
 	object[SPEAKER1].setMesh(meshList[unsigned int(MESH::SPEAKER)]);
-	object[SPEAKER1].setRotation(-90, 'y');
+	object[SPEAKER1].setRotation(-115, 'y');
 	object[SPEAKER1].setScale(10);
-	object[SPEAKER1].setTranslation(65, 0.5, 70);
+	object[SPEAKER1].setTranslation(65, 0.5, 85);
+	object[SPEAKER1].setDimension(20, 80, 20);
 
 	object[SPEAKER2].setMesh(meshList[unsigned int(MESH::SPEAKER)]);
-	object[SPEAKER2].setRotation(-90, 'y');
+	object[SPEAKER2].setRotation(-65, 'y');
 	object[SPEAKER2].setScale(10);
-	object[SPEAKER2].setTranslation(65, 0.5, -70);
+	object[SPEAKER2].setTranslation(65, 0.5, -85);
+	object[SPEAKER2].setDimension(20, 80, 20);
 }
 
 void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
