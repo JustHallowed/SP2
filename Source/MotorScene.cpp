@@ -1139,7 +1139,7 @@ void MotorScene::carCheck(OBJECT_INSTANCES instance, const char* audioFileName)
 				if (interacted[instance])
 				{
 					engine->play2D(audioFileName);
-					engine->setSoundVolume(0.1f);
+					engine->setSoundVolume(0.1f); //acceptable range:)
 				}
 				//when interact wif car, car light on
 				if (interacted[EH_CAR1])

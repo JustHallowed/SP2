@@ -5,25 +5,22 @@
 
 class Vehicle
 {
-	Object* object;
-	Vector3 acceleration;
-	Vector3 velocity;
-	bool keyPress[5];
+	Object* object;	//the object that the movement is applied to
+	bool keyPress[6];	//key press detection
+	bool isRotationMode; //driving mode
 	enum KEYPRESS
 	{
-		W_KEY, A_KEY, S_KEY, D_KEY,NO_KEY,
+		W_KEY, A_KEY, S_KEY, D_KEY,SHIFT_KEY,SPACE_KEY,
 	};
 public:
 	Vehicle();
 	
 
-	Vector3 getVelocity();
-	Vector3 getAcceleration();
+
 	Object* getObject();
 
-	void setObject(Object* object);
-	void setVelocity(Vector3 velocity);
-	void setAcceleration(Vector3 acceleration);
+	void setObject(Object* object,bool isRotationMode);
+
 	void update(double dt);
 };
 

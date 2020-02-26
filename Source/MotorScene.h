@@ -9,7 +9,11 @@
 #include "Vehicle.h"
 class MotorScene final: public Scene{
 	enum class MESH {
+
 		HITBOX, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+
+		//HITBOXWHITE, HITBOXRED, HITSPHERE, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , NUM_GEOMETRY,
+
 	};
 	enum OBJECT_INSTANCES
 	{
@@ -64,6 +68,7 @@ class MotorScene final: public Scene{
 		ROBOT_LOWERLEG5,
 		ROBOT_LOWERLEG6,
 
+		TESTBOX,
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere, splitScreen;
@@ -72,6 +77,7 @@ class MotorScene final: public Scene{
 	double bulletBounceTime, debugBounceTime, lightBounceTime, interactBounceTime, splitBounceTime;
 	double CalcFrameRate() const;
 	Object object[NUM_INSTANCES];
+
 	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
 		Light('s', 13.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)), //eh car
@@ -83,6 +89,7 @@ class MotorScene final: public Scene{
 	}; 
 
 
+	Vehicle testVehicle;
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
