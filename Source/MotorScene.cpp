@@ -763,7 +763,7 @@ void MotorScene::RenderSkybox(bool lightSwitch){
 	modelStack.PopMatrix();
 }
 
-void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) const{
+void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
@@ -776,10 +776,43 @@ void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) cons
 
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(shMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-	mesh->Render();
+	mesh->Render(frame* 6, 6);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, float x, float y, int winWidth, int winHeight)
+{
+	if (!mesh || mesh->textureID <= 0) { //Proper error check return
+		glDisable(GL_DEPTH_TEST);
+	}
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need cam for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity(); //Reset modelStack
+	modelStack.Scale(size, size, size);
+	modelStack.Translate(x, y, 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "colorTextureEnabled"), 1);
+	glActiveTexture(GL_TEXTURE0);
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "colorTexture"), 0);
+	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(glGetUniformLocation(shMan->getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	mesh->Render(frame * 6, 6);
+	if (mesh != 0) {
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	}
+	glUniform1i(glGetUniformLocation(shMan->getProgID(), "textEnabled"), 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
 
