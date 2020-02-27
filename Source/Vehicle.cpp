@@ -103,11 +103,35 @@ void Vehicle::update(double dt)
 			{
 				object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
 				keyPressed = true;
+
+				if (object->getAngle().z > -10)
+				{
+					object->addRotation(-object->getVelocity().x/2, 'z');
+				}
+			}
+			if (!keyPress[A_KEY])
+			{
+				if (object->getAngle().z < 0)
+				{
+					object->addRotation(1, 'z');
+				}
 			}
 			if (keyPress[D_KEY] && !disabledKey[D_KEY])//accelerate right
 			{
 				object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2));
 				keyPressed = true;
+
+				if (object->getAngle().z < 10)
+				{
+					object->addRotation(-object->getVelocity().x/2, 'z');
+				}
+			}
+			if (!keyPress[D_KEY])
+			{
+				if (object->getAngle().z > 0)
+				{
+					object->addRotation(-1, 'z');
+				}
 			}
 		}
 
