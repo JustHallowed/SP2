@@ -15,8 +15,6 @@ class Vehicle
 public:
 	Vehicle();
 	
-
-
 	Object* getObject();
 
 	void setObject(Object* object,bool isRotationMode);

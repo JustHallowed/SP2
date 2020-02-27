@@ -19,7 +19,7 @@ void Vehicle::setObject(Object* object, bool isRotationMode)
 void Vehicle::update(double dt)
 {
 	float accelerationConstant = 4;	//acceleration multiplier
-	float maxVelocity = 3;	//maximum velocity vehicle can travel
+	float maxVelocity = 2;	//maximum velocity vehicle can travel
 	Vector3 front,right,movementDir;	//vehicle fromt, direction of movement
 	if (object->getVelocity() != Vector3(0, 0, 0))
 		movementDir = object->getVelocity().Normalized();
@@ -82,61 +82,31 @@ void Vehicle::update(double dt)
 		{
 			if (keyPress[W_KEY])//accelerate front
 			{
-				if ((front - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2 ));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() + (front * accelerationConstant));
-				}
 			}
 			if (!isRotationMode)
 			{
 			if (keyPress[A_KEY])//accelerate left
 			{
-				if ((right - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant ));
-				}
 			}
 			if (keyPress[D_KEY])//accelerate right
 			{
-				if ((right - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2 ));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() + (right * accelerationConstant ));
-				}
 			}
 			}
 
 			if (keyPress[S_KEY])//accelerate back
 			{
-				if ((front - movementDir).Length() > 0.5)
 					object->setAcceleration(object->getAcceleration() - (front * accelerationConstant * 2 ));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() - (front * accelerationConstant ));
-				}
 			}
 			if (keyPress[SPACE_KEY])//accelerate UP
 			{
-				if ((Vector3(0, 1, 0) - movementDir).Length() > 0.5)
-					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 1.5 ));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() + (Vector3(0, 1, 0) * accelerationConstant ));
-				}
+					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 2 ));
 			}
 			if (keyPress[SHIFT_KEY])//accelerate UP
 			{
-				if ((Vector3(0, -1, 0) - movementDir).Length() > 0.5)
-					object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant * 1.5));
-				else
-				{
-					object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant));
-				}
+					object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant * 2));
 			}
 		}
 		object->setVelocity(object->getVelocity() + object->getAcceleration()*dt);

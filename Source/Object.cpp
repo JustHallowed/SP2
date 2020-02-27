@@ -14,6 +14,7 @@ Object::Object()
 	parentScale = false;
 	interactable = false;
 	movable = false;
+	hasMoved = false;
 }
 
 Object::~Object()
@@ -237,7 +238,12 @@ void Object::setInteractable(bool canInteract)
 {
 	interactable = canInteract;
 }
-void Object::updateCollision(Object* b, double dt)
+void Object::resetCollision()
+{
+	hasMoved = false;
+}
+
+bool Object::updateCollision(Object* b, double dt)
 {
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
 	Vector3 penetration; //magnitude of overlapp of object
@@ -258,20 +264,57 @@ void Object::updateCollision(Object* b, double dt)
 	if (faceCollision && edgeCollision)
 	{
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
-
+		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
 		if (!b->isMovable())
 		{
-			translation -= penetration;
+			if (velocity.x != 0)
+			{
+				if (collidingFaceAxisB.x > 0 && velocity.x < 0)
+					velocity.x -= collidingFaceAxisB.x * velocity.x;
+				else
+				if (collidingFaceAxisB.x < 0 && velocity.x > 0)
+					velocity.x += collidingFaceAxisB.x * velocity.x;
+			}
+			if (velocity.y != 0)
+			{
+				if (collidingFaceAxisB.y > 0 && velocity.y < 0)
+					velocity.y -= collidingFaceAxisB.y * velocity.y;
+				else
+					if (collidingFaceAxisB.y < 0 && velocity.y > 0)
+						velocity.y += collidingFaceAxisB.y * velocity.y;
+			}
+			if (velocity.z != 0)
+			{
+				if (collidingFaceAxisB.z > 0 && velocity.z < 0)
+					velocity.z -= collidingFaceAxisB.z * velocity.z;
+				else
+					if (collidingFaceAxisB.z < 0 && velocity.z > 0)
+						velocity.z += collidingFaceAxisB.z * velocity.z;
+			}
+			moveBy(-penetration.x, -penetration.y, -penetration.z);
 			if (movable)
 			{
 				angle.x += ((float)rotationAxis.x * (float)velocity.x - (float)b->velocity.x * 100 * dt);
 				angle.y += (rotationAxis.y * velocity.y - b->velocity.y * 100 * dt);
 				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
+		}	
+		if (hasMoved == false)
+		{
+			moveBy(velocity.x, velocity.y, velocity.z);
+			hasMoved = true;
 		}
-
+		return true;
 	}
-	moveBy(velocity.x, velocity.y, velocity.z);
+	else
+	{
+		if (hasMoved == false)
+		{
+			moveBy(velocity.x, velocity.y, velocity.z);
+			hasMoved = true;
+		}
+		return false;
+	}
 }
 
 bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
@@ -690,7 +733,7 @@ void Object::unbind(Object* child)
 	}
 }
 
-float Object::getDist(Vector3 playerpos)
+float Object::checkDist(Vector3 playerpos)
 {
 	float x = pow(pos.x - playerpos.x, 2.0);
 	float z = pow(pos.z - playerpos.z, 2.0);

@@ -21,21 +21,12 @@ class MotorScene final: public Scene{
 		PLATFORM3, 
 		PLATFORM4, 
 		PLATFORM5,
-		PLATFORM6,
-		PLATFORM7,
-		PLATFORM8, 
-		PLATFORM9,
 
 		UFO_BASE1,
 		UFO_PURPLE1,
 		UFO_RED1, 
 		UFO_BLUE1, 
 		UFO_PINK1,
-
-		GY_CAR1,
-		EH_CAR1,
-		LF_CAR1,
-		YW_CAR1,
 
 		ROBOT_BODY1,
 		ROBOT_ARM1,
@@ -47,26 +38,11 @@ class MotorScene final: public Scene{
 		ROBOT_LOWERLEG1,
 		ROBOT_LOWERLEG2,
 
-		ROBOT_BODY2,
-		ROBOT_ARM3,
-		ROBOT_ARM4,
-		ROBOT_FOREARM3,
-		ROBOT_FOREARM4,
-		ROBOT_UPPERLEG3,
-		ROBOT_UPPERLEG4,
-		ROBOT_LOWERLEG3,
-		ROBOT_LOWERLEG4,
-
-		ROBOT_BODY3,
-		ROBOT_ARM5,
-		ROBOT_ARM6,
-		ROBOT_FOREARM5,
-		ROBOT_FOREARM6,
-		ROBOT_UPPERLEG5,
-		ROBOT_UPPERLEG6,
-		ROBOT_LOWERLEG5,
-		ROBOT_LOWERLEG6,
-
+		TESTBOX,
+		TESTBOX2,
+		TESTBOX3,
+		TESTBOX4,
+		TESTBOX5,
 		NUM_INSTANCES,
 	};
 	bool animateDir, showDebugInfo, showLightSphere, state,splitScreen;
@@ -77,17 +53,8 @@ class MotorScene final: public Scene{
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
 	Object object[NUM_INSTANCES];
-	Light light[7]{
-		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
-		Light('s', 13.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)), //eh car
-		Light('s', 7.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)),//eh car
-		Light('s', -48.f, 6.f, 72.f, 1.f, 0.6f, 0.f, Vector3(1, 0, 0)), //lf car
-		Light('s', -48.f, 6.f, 68.f, 1.f, 0.6f, 0.f, Vector3(1, 0, 0)), //lf car
-		Light('s', -84.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
-		Light('s', -76.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
-	}; 
-
-
+	Vehicle testVehicle;
+	Light light[1]{Light(0.f, 192.f, 0.f)};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter smokeGenerator;
