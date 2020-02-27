@@ -133,10 +133,11 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::BOTTOM)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::BOTTOM)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
-	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::SMOKE)] = MeshBuilder::GenerateQuad(Color(1.f, 0.f, 0.f), 5.f, 5.f);
 	meshList[unsigned int(MESH::SMOKE)]->textureID = LoadTGA("Resources/TGAs/Smoke.tga");
+	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
+	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 
 	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -495,6 +496,7 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 		glViewport(0, 0, winWidth, winHeight);
 		RenderScreen1(dt, winWidth, winHeight);
 	}
+	RenderMenu(dt, winWidth, winHeight);
 }
 
 void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
@@ -760,6 +762,24 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	}
 }
 
+void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
+{
+	std::ostringstream ss;
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
+	ss << "PLAY";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2,0.8, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+	ss.str("");
+	ss << "OPTIONS";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f),1.f, 1.f, 2.f, winWidth, winHeight);
+	ss.str("");
+	ss << "QUIT";
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f), 1.f, 1.f, 1.f, winWidth, winHeight);
+	ss.str("");
+}
+
 void MotorScene::RenderMainChar(){
 	modelStack.PushMatrix();
 		modelStack.Translate(MainChar::getMainChar().getPos().x, MainChar::getMainChar().getPos().y + 5.15f, MainChar::getMainChar().getPos().z);
@@ -891,6 +911,8 @@ void MotorScene::RenderLight(){
 }
 
 void MotorScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
+	if (!mesh || mesh->textureID <= 0)
+		return;
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
@@ -993,7 +1015,7 @@ void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
@@ -1002,7 +1024,7 @@ void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-	mesh->Render();
+	mesh->Render(frame * 6, 6);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
