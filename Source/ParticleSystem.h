@@ -11,6 +11,7 @@ struct Particle final{
 };
 
 class ParticleEmitter final{
+	friend class GameScene;
 	friend class GhostScene;
 	friend class MotorScene;
 	GLuint currAmt, maxAmt, oldest;

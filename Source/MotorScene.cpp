@@ -30,90 +30,90 @@ double MotorScene::CalcFrameRate() const{
 }
 
 void MotorScene::GetNameScoreData(bool showType) const{
-	//scoreMan->addNameScore(std::make_pair("Sabin", 0));
+	scoreMan->addNameScore(std::make_pair("Sam", 0));
 	scoreMan->sortNameScoreData();
 	scoreMan->showNameScoreData(showType);
 }
 
 void MotorScene::InitLight() const{
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].type"), GLint(light[0].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].color"), 1, &light[0].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].power"), light[0].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].kC"), light[0].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].kL"), light[0].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].kQ"), light[0].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].spotDirection"), 1, &light[0].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].cosInner"), light[0].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[0].exponent"), light[0].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].type"), GLint(light[0].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].color"), 1, &light[0].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].kC"), light[0].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].kL"), light[0].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].kQ"), light[0].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].spotDirection"), 1, &light[0].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].cosCutoff"), light[0].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].cosInner"), light[0].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].exponent"), light[0].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].type"), GLint(light[1].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].color"), 1, &light[1].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].power"), light[1].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].kC"), light[1].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].kL"), light[1].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].kQ"), light[1].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].spotDirection"), 1, &light[1].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].cosCutoff"), light[1].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].cosInner"), light[1].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].exponent"), light[1].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].type"), GLint(light[1].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].color"), 1, &light[1].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].power"), light[1].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].kC"), light[1].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].kL"), light[1].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].kQ"), light[1].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].spotDirection"), 1, &light[1].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].cosCutoff"), light[1].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].cosInner"), light[1].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].exponent"), light[1].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].type"), GLint(light[2].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].color"), 1, &light[2].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].power"), light[2].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].kC"), light[2].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].kL"), light[2].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].kQ"), light[2].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].spotDirection"), 1, &light[2].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].cosCutoff"), light[2].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].cosInner"), light[2].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].exponent"), light[2].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].type"), GLint(light[2].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].color"), 1, &light[2].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].power"), light[2].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].kC"), light[2].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].kL"), light[2].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].kQ"), light[2].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].spotDirection"), 1, &light[2].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].cosCutoff"), light[2].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].cosInner"), light[2].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].exponent"), light[2].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].type"), GLint(light[3].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].color"), 1, &light[3].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].power"), light[3].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].kC"), light[3].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].kL"), light[3].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].kQ"), light[3].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].spotDirection"), 1, &light[3].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].cosCutoff"), light[3].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].cosInner"), light[3].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].exponent"), light[3].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].type"), GLint(light[3].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].color"), 1, &light[3].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].power"), light[3].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].kC"), light[3].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].kL"), light[3].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].kQ"), light[3].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].spotDirection"), 1, &light[3].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].cosCutoff"), light[3].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].cosInner"), light[3].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].exponent"), light[3].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].type"), GLint(light[4].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].color"), 1, &light[4].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].power"), light[4].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].kC"), light[4].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].kL"), light[4].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].kQ"), light[4].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].spotDirection"), 1, &light[4].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].cosCutoff"), light[4].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].cosInner"), light[4].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].exponent"), light[4].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].type"), GLint(light[4].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].color"), 1, &light[4].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].power"), light[4].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].kC"), light[4].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].kL"), light[4].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].kQ"), light[4].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].spotDirection"), 1, &light[4].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].cosCutoff"), light[4].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].cosInner"), light[4].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].exponent"), light[4].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].type"), GLint(light[5].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].color"), 1, &light[5].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].power"), light[5].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].kC"), light[5].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].kL"), light[5].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].kQ"), light[5].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].spotDirection"), 1, &light[5].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].cosCutoff"), light[5].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].cosInner"), light[5].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].exponent"), light[5].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].type"), GLint(light[5].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].color"), 1, &light[5].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].power"), light[5].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].kC"), light[5].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].kL"), light[5].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].kQ"), light[5].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].spotDirection"), 1, &light[5].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].cosCutoff"), light[5].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].cosInner"), light[5].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].exponent"), light[5].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].type"), GLint(light[6].type));
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].color"), 1, &light[6].color.R);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].power"), light[6].power);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].kC"), light[6].kC);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].kL"), light[6].kL);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].kQ"), light[6].kQ);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].spotDirection"), 1, &light[6].spotDirection.x);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].cosCutoff"), light[6].cosCutoff);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].cosInner"), light[6].cosInner);
-	glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].exponent"), light[6].exponent);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].type"), GLint(light[6].type));
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].color"), 1, &light[6].color.R);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].power"), light[6].power);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].kC"), light[6].kC);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].kL"), light[6].kL);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].kQ"), light[6].kQ);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].spotDirection"), 1, &light[6].spotDirection.x);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].cosCutoff"), light[6].cosCutoff);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].cosInner"), light[6].cosInner);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].exponent"), light[6].exponent);
 
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "numLights"), 7);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "numLights"), 7);
 }
 
 void MotorScene::InitMeshes(){
@@ -222,8 +222,7 @@ void MotorScene::Init(){ //Init scene
 	interacted[ROBOT_BODY1] = 0;
 	light[0].power = 1.f;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
-	//play thru out the scene and loops
-	//engine->play2D("Resources/Sound/bgm.mp3", true);
+	//engine->play2D("Resources/Sound/bgm.mp3", true); //play thru out the scene and loops
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -261,12 +260,12 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 			case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
 			case '8': { //Off the light
 				light[0].power = 0.f;
-				glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].power"), light[0].power);
+				glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
 				break;
 			}
 			case '9': { //On the light
 				light[0].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].power"), light[0].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
 				break;
 			}
 			case '0': {
@@ -307,11 +306,12 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	smokeGenerator.UpdateParticles(dt);
 
 	smokeGenerator.UpdateParticles(dt);
-	for(int i = 0; i < NUM_INSTANCES; ++i){
-		if(object[i].getDimension().y == 0) continue;
-		camera.updateCollision(object[i]);
-	}
 
+
+	//for(int i = 0; i < NUM_INSTANCES; ++i){											//REMEMBER TO CHECK
+	//	if(object[i].getDimension().y == 0) continue;
+	//	camera.updateCollision(object[i]);
+	//}
 	for (int i = 0; i < 5; i++)
 	{
 		object[i].addRotation(1, 'y');
@@ -634,13 +634,11 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 {
 	viewStack.LoadIdentity();
-	viewStack.LookAt(Camera::pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z,
-		Camera::getCam().target.x, Camera::getCam().target.y, Camera::getCam().target.z,
-		Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z);
+	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
+		camera.target.x, camera.target.y, camera.target.z,
+		camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
 
-	delete ;
-	shMan = new ShaderManager("Resources/Shaders/Particle.vs", "Resources/Shaders/Particle.fs");
 	/*for(Particle* p: smokeGenerator.particlePool){
 		if(p->life > 0.0f){
 			delete meshList[unsigned int(MESH::BULLET)];
@@ -652,9 +650,6 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 		}
 	}*/
 
-	delete shMan;
-	shMan = new ShaderManager("Resources/Shaders/Regular.vs", "Resources/Shaders/Regular.fs");
-	InitLight();
 	RenderLight();
 
 	modelStack.PushMatrix();
@@ -692,10 +687,10 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	std::ostringstream ss;
 	if (showDebugInfo) {
 		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << Camera::getCam().target.x << ", " << Camera::getCam().target.y << ", " << Camera::getCam().target.z;
+		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
 		ss.str("");
-		ss << "Cam pos: " << Camera::getCam().pos.x << ", " << Camera::getCam().pos.y << ", " << Camera::getCam().pos.z;
+		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
@@ -830,51 +825,51 @@ void MotorScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].position_cameraspace"), 1, &lightDirection_cameraspace.x);
 	} else if(light[0].type == Light::LIGHT_TYPE::SPOT){
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].spotDirection"), 1, &spotDirection_cameraspace.x);
 	} else{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 	}
 	if (light[1].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 	if (light[2].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[2].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[2].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 	if (light[3].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[3].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[3].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 	if (light[4].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[4].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[4].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 	if (light[5].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[5].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[5].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 	if (light[6].type == Light::LIGHT_TYPE::SPOT) {
 		Position lightPosition_cameraspace = viewStack.Top() * light[6].position;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].position_cameraspace"), 1, &lightPosition_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].position_cameraspace"), 1, &lightPosition_cameraspace.x);
 		Vector3 spotDirection_cameraspace = viewStack.Top() * light[6].spotDirection;
-		glUniform3fv(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].spotDirection"), 1, &spotDirection_cameraspace.x);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].spotDirection"), 1, &spotDirection_cameraspace.x);
 	}
 
 	if(showLightSphere){
@@ -898,29 +893,29 @@ void MotorScene::RenderLight(){
 void MotorScene::RenderMesh(Mesh* mesh, bool enableLight, GLfloat alpha) const{
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 	modelView = viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MV"), 1, GL_FALSE, &modelView.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MV"), 1, GL_FALSE, &modelView.a[0]);
 	if(enableLight){
-		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 1);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 1);
 		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MV_inverse_transpose"), 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kAmbient"), 1, &mesh->material.kAmbient.r);
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kDiffuse"), 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kSpecular"), 1, &mesh->material.kSpecular.r);
-		glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "material.kShininess"), mesh->material.kShininess);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MV_inverse_transpose"), 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "material.kAmbient"), 1, &mesh->material.kAmbient.r);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "material.kDiffuse"), 1, &mesh->material.kDiffuse.r);
+		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "material.kSpecular"), 1, &mesh->material.kSpecular.r);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "material.kShininess"), mesh->material.kShininess);
 	} else{
-		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 	}
 	if(mesh->textureID > 0){
-		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	} else{
-		glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 0);
 	}
-	glUniform1f(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "alpha"), alpha);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "alpha"), alpha);
 	mesh->Render(); //Shld only be called once in the whole function
 }
 
@@ -998,19 +993,19 @@ void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 	mesh->Render();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -1029,18 +1024,18 @@ void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, floa
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "textEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 	mesh->Render(frame * 6, 6);
 	if (mesh != 0) {
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -1051,22 +1046,22 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textColor"), 1, &color.R);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textColor"), 1, &color.R);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	for(unsigned i = 0; i < text.length(); ++i){
 		Mtx44 characterSpacing;
 		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -1318,24 +1313,24 @@ void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, f
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 1);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textColor"), 1, &color.R);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTextureEnabled"), 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textColor"), 1, &color.R);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
 	if(mesh != 0){
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "colorTexture"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	for(unsigned i = 0; i < text.length(); ++i){
 		Mtx44 characterSpacing;
 		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
 		mesh->Render((unsigned)text[i] * 6, 6);
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getMainChar().getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
@@ -1379,10 +1374,10 @@ void MotorScene::renderObject(Object* obj){
 }
 void MotorScene::npcCheck(int instance, const char* audioFileName)
 {	//finds angle in between two vectors
-	Vector3 posToObject = object[instance].getPos() - Camera::getCam().pos;
-	Vector3 posToTarget = Camera::getCam().target - Camera::getCam().pos;
+	Vector3 posToObject = object[instance].getPos() - camera.pos;
+	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(Camera::getCam().pos) < 20.f)
+	if (object[instance].getDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
@@ -1411,10 +1406,10 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 void MotorScene::carCheck(int instance, const char* audioFileName)
 {
 	//finds angle in between two vectors
-	Vector3 posToObject = object[instance].getPos() - Camera::getCam().pos;
-	Vector3 posToTarget = Camera::getCam().target - Camera::getCam().pos;
+	Vector3 posToObject = object[instance].getPos() - camera.pos;
+	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(Camera::getCam().pos) < 20.f)
+	if (object[instance].getDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{
@@ -1429,23 +1424,23 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 				if (interacted[EH_CAR1])
 				{
 					light[1].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].power"), light[1].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].power"), light[1].power);
 					light[2].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].power"), light[2].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].power"), light[2].power);
 				}
 				if (interacted[LF_CAR1])
 				{
 					light[3].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].power"), light[3].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].power"), light[3].power);
 					light[4].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].power"), light[4].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].power"), light[4].power);
 				}
 				if (interacted[YW_CAR1])
 				{
 					light[5].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].power"), light[5].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].power"), light[5].power);
 					light[6].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].power"), light[6].power);
+					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].power"), light[6].power);
 				}
 			}
 		}
@@ -1461,17 +1456,17 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 		inRange[instance] = 0;
 		interacted[instance] = 0;
 		light[1].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[1].power"), light[1].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].power"), light[1].power);
 		light[2].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[2].power"), light[2].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].power"), light[2].power);
 		light[3].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[3].power"), light[3].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].power"), light[3].power);
 		light[4].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[4].power"), light[4].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].power"), light[4].power);
 		light[5].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[5].power"), light[5].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].power"), light[5].power);
 		light[6].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getProgID(), "lights[6].power"), light[6].power);
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].power"), light[6].power);
 
 	}
 }

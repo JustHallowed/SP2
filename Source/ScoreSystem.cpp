@@ -36,11 +36,9 @@ void ScoreNode::setNext(ScoreNode* newNext){
 ScoreManager::ScoreManager(): head(0), curr(0){
 	eDevice = new Encryptor;
 	dDevice = new Decryptor;
-	std::ifstream codes("LocalStorage/Codes.secret"), key("LocalStorage/Key.secret");
-	dType = (key.peek() != std::ifstream::traits_type::eof() ? 2 : (codes.peek() != std::ifstream::traits_type::eof() ? 1 : 0));
+	dType = 2;
 	tapOnBackup(dType);
 	putData(dType);
-	codes.close();
 }
 
 ScoreManager::~ScoreManager(){

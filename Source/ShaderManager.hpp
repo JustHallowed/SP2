@@ -9,7 +9,7 @@ class ShaderManager final{ //Singleton
     unsigned int vsID[2], fsID[2];
 public:
     ~ShaderManager();
-    static ShaderManager& getMainChar();
+    static ShaderManager& getShaderMan();
     static unsigned int getProgID();
     void LinkProg() const, ParseShader(const char*, unsigned int&) const, UseNewShaders(short, short) const, UseProg() const;
 };

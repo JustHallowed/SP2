@@ -4,7 +4,7 @@
 #include <vector>
 #include <GL/glew.h>
 
-ShaderManager& ShaderManager::getMainChar(){
+ShaderManager& ShaderManager::getShaderMan(){
 	static ShaderManager shaderMan;
 	return shaderMan;
 }
@@ -39,7 +39,7 @@ ShaderManager::~ShaderManager(){
 
 void ShaderManager::LinkProg() const{
 	GLint result, infoLogLength;
-	//printf("Linking programme...\n\n");
+	printf("Linking programme...");
 	glLinkProgram(getProgID()); //Vars in diff shaders are linked here too
 	glValidateProgram(getProgID());
 
@@ -68,7 +68,7 @@ void ShaderManager::ParseShader(const char* filePath, unsigned int& shaderID) co
 		return;
 	}
 
-	//printf("Compiling \"%s\"...\n", filePath);
+	printf("Compiling \"%s\"...\n", filePath);
 	const char* shaderSrcPtr = shaderSrc.c_str();
 	glShaderSource(shaderID, 1, &shaderSrcPtr, NULL);
 	glCompileShader(shaderID);
