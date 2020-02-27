@@ -4,6 +4,7 @@ Vehicle::Vehicle()
 {
 	object = nullptr;
 	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = keyPressed = false;
+	disabledKey[0] = disabledKey[1] = disabledKey[2] = disabledKey[3] = disabledKey[4] = disabledKey[5] = false;
 	isRotationMode = true;
 }
 Object* Vehicle::getObject()
@@ -15,7 +16,10 @@ void Vehicle::setObject(Object* object, bool isRotationMode)
 	this->object = object;
 	this->isRotationMode = isRotationMode;
 }
-
+void Vehicle::disableKey(int keyCode)
+{
+	disabledKey[keyCode] = true;
+}
 void Vehicle::update(double dt)
 {
 	float accelerationConstant = 4;	//acceleration multiplier
@@ -56,11 +60,11 @@ void Vehicle::update(double dt)
 
 	if (isRotationMode)
 	{
-		if (keyPress[A_KEY])//turn left
+		if (keyPress[A_KEY] && !disabledKey[A_KEY])//turn left
 		{
 			object->addRotation(80 * dt, 'y');
 		}
-		if (keyPress[D_KEY])//turn right
+		if (keyPress[D_KEY]&&!disabledKey[D_KEY])//turn right
 		{
 			object->addRotation(-80 * dt, 'y');
 		}
@@ -88,36 +92,36 @@ void Vehicle::update(double dt)
 	if (object->getVelocity().Length() < maxVelocity)
 	{
 		keyPressed = false;
-		if (keyPress[W_KEY])//accelerate front
+		if (keyPress[W_KEY] && !disabledKey[W_KEY])//accelerate front
 		{
 			object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2));
 			keyPressed = true;
 		}
 		if (!isRotationMode)
 		{
-			if (keyPress[A_KEY])//accelerate left
+			if (keyPress[A_KEY] && !disabledKey[A_KEY])//accelerate left
 			{
 				object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
 				keyPressed = true;
 			}
-			if (keyPress[D_KEY])//accelerate right
+			if (keyPress[D_KEY] && !disabledKey[D_KEY])//accelerate right
 			{
 				object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2));
 				keyPressed = true;
 			}
 		}
 
-		if (keyPress[S_KEY])//accelerate back
+		if (keyPress[S_KEY] && !disabledKey[S_KEY])//accelerate back
 		{
 			object->setAcceleration(object->getAcceleration() - (front * accelerationConstant * 2));
 			keyPressed = true;
 		}
-		if (keyPress[SPACE_KEY])//accelerate up
+		if (keyPress[SPACE_KEY] && !disabledKey[SPACE_KEY])//accelerate up
 		{
 			object->setAcceleration(object->getAcceleration() + (Vector3(0, 1, 0) * accelerationConstant * 1.5));
 			keyPressed = true;
 		}
-		if (keyPress[SHIFT_KEY])//accelerate down
+		if (keyPress[SHIFT_KEY] && !disabledKey[SHIFT_KEY])//accelerate down
 		{
 			object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant));
 			keyPressed = true;

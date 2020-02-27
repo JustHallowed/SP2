@@ -166,6 +166,10 @@ void GameScene::Init() { //Init scene
 	survivalTime = 0;
 	hitPoints = 3;
 	srand(time(NULL));
+	player.disableKey(0);//disable movement in z and y axis
+	player.disableKey(2);
+	player.disableKey(4);
+	player.disableKey(5);
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene
