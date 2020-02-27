@@ -259,14 +259,38 @@ bool Object::updateCollision(Object* b, double dt)
 
 	faceCollision = hasFaceIntersection(b, &greatestFaceIntersectionA, &collidingFaceAxisA, &greatestFaceIntersectionB, &collidingFaceAxisB, &penetration, &rotationAxis);
 	if (faceCollision)
-	edgeCollision = hasEdgeIntersection(b);
+		edgeCollision = hasEdgeIntersection(b);
 
 	if (faceCollision && edgeCollision)
 	{
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
-
+		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
 		if (!b->isMovable())
 		{
+			if (velocity.x != 0)
+			{
+				if (collidingFaceAxisB.x > 0 && velocity.x < 0)
+					velocity.x -= collidingFaceAxisB.x * velocity.x;
+				else
+					if (collidingFaceAxisB.x < 0 && velocity.x > 0)
+						velocity.x += collidingFaceAxisB.x * velocity.x;
+			}
+			if (velocity.y != 0)
+			{
+				if (collidingFaceAxisB.y > 0 && velocity.y < 0)
+					velocity.y -= collidingFaceAxisB.y * velocity.y;
+				else
+					if (collidingFaceAxisB.y < 0 && velocity.y > 0)
+						velocity.y += collidingFaceAxisB.y * velocity.y;
+			}
+			if (velocity.z != 0)
+			{
+				if (collidingFaceAxisB.z > 0 && velocity.z < 0)
+					velocity.z -= collidingFaceAxisB.z * velocity.z;
+				else
+					if (collidingFaceAxisB.z < 0 && velocity.z > 0)
+						velocity.z += collidingFaceAxisB.z * velocity.z;
+			}
 			moveBy(-penetration.x, -penetration.y, -penetration.z);
 			if (movable)
 			{

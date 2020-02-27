@@ -155,7 +155,7 @@ void GameScene::Init() { //Init scene
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 5.f, 50.f), Vector3(0.f, 1.f, 0.f));
+	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 0.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
