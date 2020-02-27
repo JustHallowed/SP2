@@ -138,6 +138,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
+	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/textbox.tga");
 
 	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -495,8 +496,8 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	{
 		glViewport(0, 0, winWidth, winHeight);
 		RenderScreen1(dt, winWidth, winHeight);
+		RenderMenu(dt, winWidth, winHeight);
 	}
-	RenderMenu(dt, winWidth, winHeight);
 }
 
 void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
@@ -770,13 +771,13 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
 	ss << "PLAY";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2,0.8, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2,0.8, 1.f), 6.f, 1.f, 3.f, winWidth, winHeight);
 	ss.str("");
 	ss << "OPTIONS";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f),1.f, 1.f, 2.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f),6.f, 1.f, 2.f, winWidth, winHeight);
 	ss.str("");
 	ss << "QUIT";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f), 1.f, 1.f, 1.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f), 6.f, 1.f, 1.f, winWidth, winHeight);
 	ss.str("");
 }
 
