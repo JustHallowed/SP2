@@ -61,7 +61,7 @@ public:
 	void setInteractable(bool canInteract);
 	void setRender(bool render);
 	void setMovable(bool movable);
-	void resetCollision();
+	void resetCollision();//run this before looping update()
 
 	//getters
 	Mesh* getMesh(); //returns meshtype from meshlist
@@ -86,7 +86,7 @@ public:
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
-	float checkDist(Vector3 playerpos);
+	float getDist(Vector3 playerpos);
 	float getAngle(Vector3 A, Vector3 B);
 	float checkDist(Vector3 playerpos);
 };

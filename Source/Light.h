@@ -2,11 +2,18 @@
 #include "Vertex.h"
 
 struct Light final{
-	Light(float x = 0.f, float y = 0.f, float z = 0.f, Vector3 spotDir = Vector3(0.f, 1.f, 0.f)){
-		type = LIGHT_TYPE::DIRECTIONAL;
+
+	Light(char t = 's' , float x = 0.f, float y = 0.f, float z = 0.f, float r = 1.f, float g = 1.f, float b = 1.f, Vector3 spotDir = Vector3(0.f, 1.f, 0.f)){
+		if (t=='d')
+			type = LIGHT_TYPE::DIRECTIONAL;
+		if (t=='s')
+			type = LIGHT_TYPE::SPOT;
+		if (t=='p')
+			type = LIGHT_TYPE::POINT;
+
 		position.Set(x, y, z);
-		color.Set(1.f, 1.f, 1.f);
-		power = 1.f;
+		color.Set(r, g, b);
+		power = 0.f;
 		kC = 1.f;
 		kL = .01f;
 		kQ = .001f;

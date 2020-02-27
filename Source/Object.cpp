@@ -264,33 +264,9 @@ bool Object::updateCollision(Object* b, double dt)
 	if (faceCollision && edgeCollision)
 	{
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
-		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
+
 		if (!b->isMovable())
 		{
-			if (velocity.x != 0)
-			{
-				if (collidingFaceAxisB.x > 0 && velocity.x < 0)
-					velocity.x -= collidingFaceAxisB.x * velocity.x;
-				else
-				if (collidingFaceAxisB.x < 0 && velocity.x > 0)
-					velocity.x += collidingFaceAxisB.x * velocity.x;
-			}
-			if (velocity.y != 0)
-			{
-				if (collidingFaceAxisB.y > 0 && velocity.y < 0)
-					velocity.y -= collidingFaceAxisB.y * velocity.y;
-				else
-					if (collidingFaceAxisB.y < 0 && velocity.y > 0)
-						velocity.y += collidingFaceAxisB.y * velocity.y;
-			}
-			if (velocity.z != 0)
-			{
-				if (collidingFaceAxisB.z > 0 && velocity.z < 0)
-					velocity.z -= collidingFaceAxisB.z * velocity.z;
-				else
-					if (collidingFaceAxisB.z < 0 && velocity.z > 0)
-						velocity.z += collidingFaceAxisB.z * velocity.z;
-			}
 			moveBy(-penetration.x, -penetration.y, -penetration.z);
 			if (movable)
 			{
@@ -298,7 +274,7 @@ bool Object::updateCollision(Object* b, double dt)
 				angle.y += (rotationAxis.y * velocity.y - b->velocity.y * 100 * dt);
 				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
-		}	
+		}
 		if (hasMoved == false)
 		{
 			moveBy(velocity.x, velocity.y, velocity.z);
@@ -307,6 +283,7 @@ bool Object::updateCollision(Object* b, double dt)
 		return true;
 	}
 	else
+
 	{
 		if (hasMoved == false)
 		{
@@ -316,6 +293,7 @@ bool Object::updateCollision(Object* b, double dt)
 		return false;
 	}
 }
+
 
 bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
 	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis)
@@ -733,7 +711,7 @@ void Object::unbind(Object* child)
 	}
 }
 
-float Object::checkDist(Vector3 playerpos)
+float Object::getDist(Vector3 playerpos)
 {
 	float x = pow(pos.x - playerpos.x, 2.0);
 	float z = pow(pos.z - playerpos.z, 2.0);

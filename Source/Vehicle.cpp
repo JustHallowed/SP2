@@ -102,11 +102,11 @@ void Vehicle::update(double dt)
 			}
 			if (keyPress[SPACE_KEY])//accelerate UP
 			{
-					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 2 ));
+					object->setAcceleration(object->getAcceleration() + (Vector3(0,1,0) * accelerationConstant * 1.5 ));
 			}
 			if (keyPress[SHIFT_KEY])//accelerate UP
 			{
-					object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant * 2));
+					object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant));
 			}
 		}
 		object->setVelocity(object->getVelocity() + object->getAcceleration()*dt);
