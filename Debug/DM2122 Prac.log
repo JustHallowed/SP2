@@ -1,24 +1,83 @@
-﻿  Crypto.cpp
+﻿  Application.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GhostScene.h(48): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+  Camera.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Camera.cpp(40): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Camera.cpp(61): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Camera.cpp(68): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Crypto.cpp
+  GameScene.cpp
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.h(34): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.cpp(109): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.cpp(512): warning C4018: '<': signed/unsigned mismatch
+  GhostScene.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GhostScene.h(48): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+  LoadOBJ.cpp
+  LoadTGA.cpp
+  main.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+  MainChar.cpp
+  Menu.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+  Mesh.cpp
+  MeshBuilder.cpp
   MotorScene.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\SRHD\Desktop\0.2\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\GameScene.h(34,24): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(707,55): warning C4390: ';': empty controlled statement found; is this the intent?
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1196,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1201,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1206,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1211,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1218,49): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1242,56): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1246,55): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1250,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1254,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1261,49): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1286,56): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1290,55): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1294,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\SRHD\Desktop\0.2\DM2122 Prac\Source\MotorScene.cpp(1298,52): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.h(34): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(719): warning C4390: ';': empty controlled statement found; is this the intent?
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1228): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1233): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1238): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1243): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1250): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1274): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1278): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1282): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1286): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1293): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1318): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1322): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1326): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1330): warning C4305: 'argument': truncation from 'double' to 'float'
+  Object.cpp
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(73): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(79): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(84): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(267): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(268): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(269): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(667): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(695): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(696): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(703): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(704): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(710): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(711): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  ParticleSystem.cpp
+  SceneManager.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
   ScoreSystem.cpp
+  ShaderManager.cpp
+  Utility.cpp
+  Vehicle.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Vehicle.cpp(61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Vehicle.cpp(65): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Vehicle.cpp(72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Vehicle.cpp(142): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   Generating Code...
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\Object.cpp(422): warning C4715: 'Object::hasFaceIntersection': not all control paths return a value
 LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  DM2122 Prac.vcxproj -> C:\Users\SRHD\Desktop\0.2\Debug\DM2122 Prac.exe
+  DM2122 Prac.vcxproj -> C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\Debug\DM2122 Prac.exe

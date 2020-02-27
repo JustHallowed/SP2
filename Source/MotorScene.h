@@ -7,6 +7,7 @@
 #include "ScoreSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
+#include "Menu.h"
 
 
 class MotorScene final: public Scene{
@@ -89,6 +90,7 @@ class MotorScene final: public Scene{
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter smokeGenerator;
 	ScoreManager* scoreMan;
+	Menu menu;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, int) const, RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);

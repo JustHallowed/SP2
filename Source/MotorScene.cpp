@@ -211,6 +211,7 @@ void MotorScene::Init(){ //Init scene
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
+	menu.Init();
 	jump->push_back(std::pair<bool, double>(0, 0.0));
 	upDown->push_back(std::pair<const char*, double>("none", 0.0));
 	leftRight->push_back(std::pair<const char*, double>("none", 0.0));
@@ -345,7 +346,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	{
 		SceneManager::getScMan()->AddScene(new GameScene);
 	}
-
+	
 
 
 	//!testing! if w is pressed, sound effects will be played
@@ -369,6 +370,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		pAngleXZ = 360.f - pAngleXZ;
 	}
 
+	menu.Update(dt);
 	UpdateMainChar(dt);
 
 	Mtx44 projection;
@@ -495,8 +497,15 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	else
 	{
 		glViewport(0, 0, winWidth, winHeight);
+	}
+	if (menu.menuActive)
+	{
 		RenderScreen1(dt, winWidth, winHeight);
 		RenderMenu(dt, winWidth, winHeight);
+	}
+	else
+	{
+		RenderScreen1(dt, winWidth, winHeight);
 	}
 }
 
@@ -771,13 +780,13 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
 	ss << "PLAY";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2,0.8, 1.f), 6.f, 1.f, 3.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0],menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[0], 3.f, winWidth, winHeight);
 	ss.str("");
 	ss << "OPTIONS";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f),6.f, 1.f, 2.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[0], 2.f, winWidth, winHeight);
 	ss.str("");
 	ss << "QUIT";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2, 0.8, 1.f), 6.f, 1.f, 1.f, winWidth, winHeight);
+	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[2], menu.menuG[2], 1.f), menu.menuWordSize[2], menu.menuX[0], 1.f, winWidth, winHeight);
 	ss.str("");
 }
 
