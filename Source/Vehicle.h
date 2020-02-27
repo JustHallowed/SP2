@@ -7,6 +7,7 @@ class Vehicle
 {
 	Object* object;	//the object that the movement is applied to
 	bool keyPress[6];	//key press detection
+	bool keyPressed;
 	bool isRotationMode; //driving mode
 	enum KEYPRESS
 	{
