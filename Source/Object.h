@@ -88,6 +88,5 @@ public:
 	static void unbind(Object* child);
 	float checkDist(Vector3 playerpos);
 	float getAngle(Vector3 A, Vector3 B);
-	float checkDist(Vector3 playerpos);
 };
 

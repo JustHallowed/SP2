@@ -6,6 +6,7 @@
 #include "LoadTGA.hpp"
 #include "SceneManager.h"
 #include "irrKlang.h"
+#include "GameScene.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
 extern Camera camera;
@@ -666,11 +667,12 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	}
 
 	Mtx44 projection;
-	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
+//	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
+	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
 }
 
-void MotorScene::Render(double dt, int winWidth, int winHeight){
+void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
@@ -917,8 +919,6 @@ void MotorScene::RenderMainChar(){
 }
 
 void MotorScene::RenderLight(){
-
-void MotorScene::RenderLight(){
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
@@ -1079,7 +1079,7 @@ void MotorScene::RenderSkybox(bool lightSwitch){
 	modelStack.PopMatrix();
 }
 
-void MotorScene::RenderAnimation(Mesh* mesh, std::string text, Color color) const{
+void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
@@ -1470,7 +1470,7 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 	Vector3 posToObject = object[instance].getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(camera.pos) < 20.f)
+	if (object[instance].checkDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
@@ -1502,7 +1502,7 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 	Vector3 posToObject = object[instance].getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(camera.pos) < 20.f)
+	if (object[instance].checkDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{

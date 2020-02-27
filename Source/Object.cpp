@@ -747,10 +747,3 @@ float Object::getAngle(Vector3 A, Vector3 B)
 	float pttMagnitude = sqrt(pow(B.x, 2.0) + pow(B.y, 2.0) + pow(B.z, 2.0));
 	return acos(dot / (ptoMagnitude * pttMagnitude));
 }
-
-float Object::checkDist(Vector3 playerpos)
-{
-	float x = pow(pos.x - playerpos.x, 2.0);
-	float z = pow(pos.z - playerpos.z, 2.0);
-	return sqrt(x + z);
-}
