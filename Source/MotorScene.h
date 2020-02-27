@@ -71,7 +71,7 @@ class MotorScene final: public Scene{
 	bool animateDir, showDebugInfo, showLightSphere, state,splitScreen;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed,splitBounceTime;
+	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed, splitBounceTime;
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	Object object[NUM_INSTANCES];

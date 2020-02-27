@@ -1,7 +1,7 @@
 #pragma once
 
 class Menu {
-
+public:
 	enum MENUSTATES {
 		MENU_1,
 		MENU_2,
@@ -9,8 +9,6 @@ class Menu {
 		CONTROLS,
 		NUM_STATES
 	};
-
-public:
 
 	Menu();
 	~Menu();
@@ -22,6 +20,7 @@ public:
 	void controls();
 
 	float menuR[7], menuG[7], menuWordSize[7], menuX[2];
+	double menuBounceTime;
 	MENUSTATES menuState;
 	bool menuActive;
 };

@@ -346,7 +346,10 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	{
 		SceneManager::getScMan()->AddScene(new GameScene);
 	}
-	
+	if (Application::IsKeyPressed('P') && !menu.menuActive)
+	{
+		menu.menuState = Menu::PAUSE;
+	}
 
 
 	//!testing! if w is pressed, sound effects will be played
@@ -369,7 +372,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	if(camera.pos.x < 0.f){
 		pAngleXZ = 360.f - pAngleXZ;
 	}
-
 	menu.Update(dt);
 	UpdateMainChar(dt);
 
@@ -779,15 +781,47 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
-	ss << "PLAY";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0],menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[0], 3.f, winWidth, winHeight);
-	ss.str("");
-	ss << "OPTIONS";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[0], 2.f, winWidth, winHeight);
-	ss.str("");
-	ss << "QUIT";
-	RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[2], menu.menuG[2], 1.f), menu.menuWordSize[2], menu.menuX[0], 1.f, winWidth, winHeight);
-	ss.str("");
+	if (menu.menuState == Menu::MENU_1)
+	{
+		ss << "PLAY";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[0], 3.f, winWidth, winHeight);
+		ss.str("");
+		ss << "OPTIONS";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[0], 2.f, winWidth, winHeight);
+		ss.str("");
+		ss << "QUIT";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[2], menu.menuG[2], 1.f), menu.menuWordSize[2], menu.menuX[0], 1.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else if (menu.menuState == Menu::MENU_2)
+	{
+		ss << "CONTROLS";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[1], 3.f, winWidth, winHeight);
+		ss.str("");
+		ss << "FULLSCREEN";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[1], 2.f, winWidth, winHeight);
+		ss.str("");
+		ss << "BACK";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[2], menu.menuG[2], 1.f), menu.menuWordSize[2], menu.menuX[1], 1.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else if (menu.menuState == Menu::PAUSE)
+	{
+		ss << "RESUME";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[3], menu.menuG[3], 1.f), menu.menuWordSize[3], menu.menuX[0], 4.f, winWidth, winHeight);
+		ss.str("");
+		ss << "CONTROLS";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[4], menu.menuG[4], 1.f), menu.menuWordSize[4], menu.menuX[0], 3.f, winWidth, winHeight);
+		ss.str("");
+		ss << "MAIN MENU";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[5], menu.menuG[5], 1.f), menu.menuWordSize[5], menu.menuX[0], 2.f, winWidth, winHeight);
+		ss.str("");
+		ss << "QUIT";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[6], menu.menuG[6], 1.f), menu.menuWordSize[6], menu.menuX[0], 1.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else if (menu.menuState == Menu::CONTROLS)
+	{ }
 }
 
 void MotorScene::RenderMainChar(){

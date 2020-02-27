@@ -1,6 +1,8 @@
 #include "Menu.h"
 #include "Application.h"
 
+extern double elapsedTime;
+
 Menu::Menu()
 {
 
@@ -20,9 +22,10 @@ void Menu::Init()
 	menuX[0] = 1.f;
 	menuX[1] = -11.f;
 	menuActive = true;
+	menuBounceTime = 0.0;
 }
 
-void Menu::Update(double)
+void Menu::Update(double dt)
 {
 	if (menuActive)
 	{
@@ -70,9 +73,10 @@ void Menu::menu1()
 					menuG[0] += 0.1f;
 					menuWordSize[0] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuActive = false;
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -93,9 +97,10 @@ void Menu::menu1()
 					menuG[1] += 0.1f;
 					menuWordSize[1] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuState = MENU_2;
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -116,7 +121,7 @@ void Menu::menu1()
 					menuG[2] += 0.1f;
 					menuWordSize[2] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					exit(0);
 				}
@@ -158,9 +163,10 @@ void Menu::menu2()
 					menuG[0] += 0.1f;
 					menuWordSize[0] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					//code for controls
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -181,9 +187,10 @@ void Menu::menu2()
 					menuG[1] += 0.1f;
 					menuWordSize[1] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					//fullscreen toggle
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -204,9 +211,10 @@ void Menu::menu2()
 					menuG[2] += 0.1f;
 					menuWordSize[2] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuState = MENU_1;
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -242,7 +250,7 @@ void Menu::pause()
 					menuG[3] += 0.1f;
 					menuWordSize[3] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuActive = false;
 				}
@@ -266,9 +274,10 @@ void Menu::pause()
 					menuG[4] += 0.1f;
 					menuWordSize[4] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					//code for controls
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -289,9 +298,10 @@ void Menu::pause()
 					menuG[5] += 0.1f;
 					menuWordSize[5] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuState = MENU_1;
+					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
 			else
@@ -312,7 +322,7 @@ void Menu::pause()
 					menuG[6] += 0.1f;
 					menuWordSize[6] += 0.1f;
 				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive)
+				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					exit(0);
 				}
