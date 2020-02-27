@@ -1,9 +1,4 @@
-﻿  Application.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GhostScene.h(48,23): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.h(32,24): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
-  GameScene.cpp
+﻿  GameScene.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
 C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.h(32,24): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
@@ -12,34 +7,14 @@ C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(168,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(181,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(185,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(266,20): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(273,47): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(277,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(267,20): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(274,47): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(278,20): warning C4018: '<': signed/unsigned mismatch
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(292,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(308,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(324,45): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(326,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(337,22): warning C4305: '=': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(405,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(675,22): warning C4018: '<': signed/unsigned mismatch
-  MotorScene.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.h(32,24): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(738,55): warning C4390: ';': empty controlled statement found; is this the intent?
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1309,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1314,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1319,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1324,42): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1331,49): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1355,56): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1359,55): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1363,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1367,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1374,49): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1399,56): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1403,55): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1407,52): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(1411,52): warning C4305: 'argument': truncation from 'double' to 'float'
-  Generating Code...
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(325,45): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(327,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(338,22): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(407,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\GameScene.cpp(677,22): warning C4018: '<': signed/unsigned mismatch
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe

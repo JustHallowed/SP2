@@ -1490,7 +1490,7 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 	Vector3 posToObject = object[instance].getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(camera.pos) < 20.f)
+	if (object[instance].checkDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
@@ -1522,7 +1522,7 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 	Vector3 posToObject = object[instance].getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].getDist(camera.pos) < 20.f)
+	if (object[instance].checkDist(camera.pos) < 20.f)
 	{
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{
