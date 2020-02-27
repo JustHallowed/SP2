@@ -380,7 +380,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 
 	static float lastTime = 0.0f;
 	float currentTime = GetTickCount64() * 0.001f;
-	if (currentTime - lastTime > 0.2f)
+	if (currentTime - lastTime > 0.02f)
 	{
 		Ani1++;
 		if (Ani1 >= 12)
@@ -1132,19 +1132,20 @@ void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, floa
 	viewStack.LoadIdentity(); //No need cam for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-	if (mesh != 0) {
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	}
 	mesh->Render(frame * 6, 6);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
