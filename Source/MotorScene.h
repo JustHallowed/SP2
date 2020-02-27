@@ -39,6 +39,7 @@ class MotorScene final: public Scene{
 		TESTBOX2,
 		TESTBOX3,
 		TESTBOX4,
+		TESTBOX5,
 		NUM_INSTANCES,
 	};
 	bool showDebugInfo, showLightSphere;

@@ -5,8 +5,9 @@
 
 class Vehicle
 {
-	Object* object;
-	bool keyPress[6];
+	Object* object;	//the object that the movement is applied to
+	bool keyPress[6];	//key press detection
+	bool isRotationMode; //driving mode
 	enum KEYPRESS
 	{
 		W_KEY, A_KEY, S_KEY, D_KEY,SHIFT_KEY,SPACE_KEY,
@@ -14,11 +15,9 @@ class Vehicle
 public:
 	Vehicle();
 	
-
-
 	Object* getObject();
 
-	void setObject(Object* object);
+	void setObject(Object* object,bool isRotationMode);
 
 	void update(double dt);
 };
