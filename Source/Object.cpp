@@ -274,16 +274,22 @@ bool Object::updateCollision(Object* b, double dt)
 				angle.y += (rotationAxis.y * velocity.y - b->velocity.y * 100 * dt);
 				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
+		}	
+		if (hasMoved == false)
+		{
+			moveBy(velocity.x, velocity.y, velocity.z);
+			hasMoved = true;
 		}
 		return true;
-
 	}
 	else
-		return false;
-	if (hasMoved == false)
 	{
-	moveBy(velocity.x, velocity.y, velocity.z);
-	hasMoved = true;
+		if (hasMoved == false)
+		{
+			moveBy(velocity.x, velocity.y, velocity.z);
+			hasMoved = true;
+		}
+		return false;
 	}
 }
 

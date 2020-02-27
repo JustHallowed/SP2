@@ -19,7 +19,7 @@ void Vehicle::setObject(Object* object, bool isRotationMode)
 void Vehicle::update(double dt)
 {
 	float accelerationConstant = 4;	//acceleration multiplier
-	float maxVelocity = 3;	//maximum velocity vehicle can travel
+	float maxVelocity = 2;	//maximum velocity vehicle can travel
 	Vector3 front,right,movementDir;	//vehicle fromt, direction of movement
 	if (object->getVelocity() != Vector3(0, 0, 0))
 		movementDir = object->getVelocity().Normalized();
