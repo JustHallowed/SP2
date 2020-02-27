@@ -824,6 +824,33 @@ void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
 	{ }
 }
 
+void MotorScene::RenderIdleScreen()
+{
+	viewStack.LoadIdentity();
+	viewStack.LookAt(iCamera.position.x, iCamera.position.y, iCamera.position.z, 
+				iCamera.target.x, iCamera.target.y, iCamera.target.z,
+				iCamera.up.x, iCamera.up.y, iCamera.up.z);
+	modelStack.LoadIdentity();
+
+	RenderLight();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0.f, 100.f, 0.f);
+	modelStack.Scale(2.f, 2.f, 2.f);
+	RenderSkybox(!light[0].power);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(&object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+}
+
 void MotorScene::RenderMainChar(){
 	modelStack.PushMatrix();
 		modelStack.Translate(MainChar::getMainChar().getPos().x, MainChar::getMainChar().getPos().y + 5.15f, MainChar::getMainChar().getPos().z);

@@ -8,6 +8,7 @@
 #include "Object.h"
 #include "Vehicle.h"
 #include "Menu.h"
+#include "IdleCamera.h"
 
 
 class MotorScene final: public Scene{
@@ -91,6 +92,7 @@ class MotorScene final: public Scene{
 	ParticleEmitter smokeGenerator;
 	ScoreManager* scoreMan;
 	Menu menu;
+	IdleCamera iCamera;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, int) const, RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
@@ -101,5 +103,5 @@ class MotorScene final: public Scene{
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
-	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(double, int, int);
+	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(double, int, int), RenderIdleScreen();
 };
