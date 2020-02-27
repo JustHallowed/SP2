@@ -103,19 +103,17 @@ void MotorScene::CreateInstances()
 	object[TESTBOX].setTranslation(0,35,0);
 
 	object[TESTBOX2].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	object[TESTBOX2].setRotation(10, 'y');
-	object[TESTBOX2].setDimension(100, 10, 10);
+	//object[TESTBOX2].setRotation(10, 'y');
+	object[TESTBOX2].setDimension(100, 50, 10);
 	object[TESTBOX2].setTranslation(0, 35, 40);
 
-	//object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	//object[TESTBOX3].setScale(10, 10, 10);
-	//object[TESTBOX3].setDimension(10, 10, 10);
-	//object[TESTBOX3].setTranslation(-5, 35, 20);
+	object[TESTBOX3].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
+	object[TESTBOX3].setDimension(10, 50, 100);
+	object[TESTBOX3].setTranslation(-40, 35, 40);
 
-	//object[TESTBOX4].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
-	//object[TESTBOX4].setScale(10, 10, 10);
-	//object[TESTBOX4].setDimension(10, 10, 10);
-	//object[TESTBOX4].setTranslation(5, 35, 20);
+	object[TESTBOX4].setMesh(meshList[unsigned int(MESH::HITBOXWHITE)]);
+	object[TESTBOX4].setDimension(10, 50, 100);
+	object[TESTBOX4].setTranslation(40, 35, 40);
 	
 	testVehicle.setObject(&object[TESTBOX]);
 
