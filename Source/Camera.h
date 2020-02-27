@@ -22,6 +22,4 @@ public:
 	const float focusSpd, freeSpd;
 	MODE mode;
 	void Init(const Vector3, const Vector3, const Vector3), Update(double, const float*), UpdateCamVectors(float, float);
-	void updateCollision(Object target);
-	void resetCollision();
 };

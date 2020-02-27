@@ -102,31 +102,6 @@ void Camera::Update(double dt, const float* axes){ //Update cam
 			target += float(-freeSpd * dt) * front;
 		}
 	}
-
-	//check for movement with collision
-	//if (canMove[POSX] && displacement.x > 0)
-	//{
-	//	pos.x += displacement.x;
-	//	target.x += displacement.x;
-	//}
-	//else
-	//	if (canMove[NEGX] && displacement.x < 0)
-	//	{
-	//		pos.x += displacement.x;
-	//		target.x += displacement.x;
-	//	}
-	//if (canMove[POSZ] && displacement.z > 0)
-	//{
-	//	pos.z += displacement.z;
-	//	target.z += displacement.z;
-	//}
-	//else
-	//	if (canMove[NEGZ] && displacement.z < 0)
-	//	{
-	//		pos.z += displacement.z;
-	//		target.z += displacement.z;
-	//	}
-	//resetCollision();
 	target += displacement;
 	pos += displacement;
 }

@@ -40,7 +40,7 @@ void GameScene::InitLight() const {
 }
 
 void GameScene::InitMeshes() {
-	meshList[unsigned int(MESH::REDHITBOX)] = MeshBuilder::GenerateCuboid(Color(1.f, 0.f, 0.f), 1.f, 1.f, 1.f);
+	meshList[unsigned int(MESH::REDHITBOX)] = MeshBuilder::GenerateCuboid(Color(1, 0, 0), 1, 1, 1);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::RIGHT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
@@ -70,7 +70,7 @@ void GameScene::CreateInstances()
 
 	object[ENDWALL].setMesh(meshList[unsigned int(MESH::REDHITBOX)]);
 	object[ENDWALL].setTranslation(0, 0, -300);
-	object[ENDWALL].setDimension(100, 20, 30);
+	object[ENDWALL].setDimension(500, 500, 30);
 
 	object[BOTTOM1].setMesh(meshList[unsigned(MESH::BOTTOM)]);
 	object[BOTTOM1].setTranslation(0.f, 0.f, 600.f);
@@ -143,7 +143,7 @@ void GameScene::CreateInstances()
 		inactiveObstacleQueue.at(i)->setMesh(meshList[unsigned int(MESH::REDHITBOX)]);
 		inactiveObstacleQueue.at(i)->setDimension(35, 10, 10);
 		inactiveObstacleQueue.at(i)->setScale(35, 10, 10);
-		inactiveObstacleQueue.at(i)->setTranslation(0, 5, 750);
+		inactiveObstacleQueue.at(i)->setTranslation(0, 5, 1500);
 	}
 }
 
@@ -234,18 +234,19 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 	bulletGenerator.UpdateParticles(dt);
 
 	player.update(dt);
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if(&object[i] == player.getObject())
-		continue;
-		object[UFO_BASE1].updateCollision(&object[i], dt);
-	}
 
 	updateGame(dt);
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		object[i].resetCollision();
+	}
+
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if(&object[i] == player.getObject()||object[i].getDimension().y == 0)
+		continue;
+		object[UFO_BASE1].updateCollision(&object[i], dt);
 	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
@@ -267,18 +268,17 @@ void GameScene::updateGame(double dt)
 
 	updateObstacleState(dt);
 
-	if (camera.pos.x< object[UFO_BASE1].getPos().x || camera.pos.x > object[UFO_BASE1].getPos().x)
+	if (camera.pos.x< object[UFO_BASE1].getPos().x || camera.pos.x > object[UFO_BASE1].getPos().x)//camera follow player
 	{
 		float cameraXDisplacement = camera.pos.x - object[UFO_BASE1].getPos().x;
 		camera.pos.x -= cameraXDisplacement * 5 * dt;
 		camera.target.Set(object[UFO_BASE1].getPos().x / 2, object[UFO_BASE1].getPos().y, object[UFO_BASE1].getPos().z);
 	}
 
-	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	for (int i = 0; i < activeObstacleQueue.size(); ++i)//check if obstacle hit player
 	{
 		if (object[UFO_BASE1].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
-			activeObstacleQueue.at(i)->setTranslation(0, 0, player.getObject()->getPos().z - 30);
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 			--hitPoints;
@@ -293,7 +293,7 @@ void GameScene::updateGame(double dt)
 	if (obstacleSpeed > 200)//speed limit
 		obstacleSpeed = 200;
 
-	if (object[BOTTOM1].getTranslation().z < -600)
+	if (object[BOTTOM1].getTranslation().z < -600)//loops ground
 	{
 		object[BOTTOM1].setTranslation(object[BOTTOM1].getTranslation().x, object[BOTTOM1].getTranslation().y, object[BOTTOM1].getTranslation().z + 2400);
 	}
@@ -302,13 +302,14 @@ void GameScene::updateGame(double dt)
 		object[BOTTOM2].setTranslation(object[BOTTOM2].getTranslation().x, object[BOTTOM2].getTranslation().y, object[BOTTOM2].getTranslation().z + 2400);
 	}
 
-	object[BOTTOM1].moveBy(0, 0, -obstacleSpeed);
+	object[BOTTOM1].moveBy(0, 0, -obstacleSpeed);//moves ground
 	object[BOTTOM2].moveBy(0, 0, -obstacleSpeed);
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
-		activeObstacleQueue.at(i)->moveBy(0, 0, -obstacleSpeed);
-		if (object[ENDWALL].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		activeObstacleQueue.at(i)->moveBy(0, 0, -obstacleSpeed);//Moves obstacle
+
+		if (object[ENDWALL].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)//puts obstacles that didn't hit player back to inactive
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -335,7 +336,7 @@ void GameScene::updateObstacleState(double dt)
 	float spawnInterval = 5 - survivalTime / 15; //increases rate of obstacle spawn as time passes
 	if (spawnInterval < 1)
 		spawnInterval = 0.7;
-	if (timeSinceLastObstacle < spawnInterval)
+	if (timeSinceLastObstacle < spawnInterval) //checks for whether to spawn new obstacle
 	{
 		timeSinceLastObstacle += dt;
 		return;
@@ -345,11 +346,12 @@ void GameScene::updateObstacleState(double dt)
 	for (int i = 0; i < 2; ++i)
 	{
 		if (inactiveObstacleQueue.size() > 0)
+		{
 			activeObstacleQueue.push_back(inactiveObstacleQueue.back());
-		else break;
-		if (inactiveObstacleQueue.size() > 0)
 			inactiveObstacleQueue.pop_back();
+		}
 		else break;
+			
 		bool retry = true;
 		while (retry)//randomises obstacle slot placement
 		{
@@ -359,7 +361,7 @@ void GameScene::updateObstacleState(double dt)
 				if (!slotTaken[0])
 				{
 					slotTaken[0] = true;
-					activeObstacleQueue.front()->setTranslation(0, 5, 1500);
+					activeObstacleQueue.back()->setTranslation(0, 5, 1500);
 					retry = false;
 				}
 				break;
@@ -367,7 +369,7 @@ void GameScene::updateObstacleState(double dt)
 				if (!slotTaken[0])
 				{
 					slotTaken[0] = true;
-					activeObstacleQueue.front()->setTranslation(-40.1f, 5, 1500);
+					activeObstacleQueue.back()->setTranslation(-40.1f, 5, 1500);
 					retry = false;
 				}
 				break;
@@ -375,7 +377,7 @@ void GameScene::updateObstacleState(double dt)
 				if (!slotTaken[2])
 				{
 					slotTaken[2] = true;
-					activeObstacleQueue.front()->setTranslation(40.1f, 5, 1500);
+					activeObstacleQueue.back()->setTranslation(40.1f, 5, 1500);
 					retry = false;
 				}
 				break;
@@ -402,20 +404,20 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 	//RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
-	for (int i = 0; i < activeObstacleQueue.size(); ++i)
+	for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
 	{
 		if (activeObstacleQueue.at(i) != nullptr)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(activeObstacleQueue.at(i)->getPos().x, activeObstacleQueue.at(i)->getPos().y, activeObstacleQueue.at(i)->getPos().z);
-			modelStack.Scale(activeObstacleQueue.at(i)->getDimension().x, activeObstacleQueue.at(i)->getDimension().y, activeObstacleQueue.at(i)->getDimension().z);
+			modelStack.Scale(activeObstacleQueue.at(i)->getScale().x, activeObstacleQueue.at(i)->getScale().y, activeObstacleQueue.at(i)->getScale().z);
 			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
 			modelStack.PopMatrix();
 		}
 	}
 
 	//displays hitboxes
-	for (int i = 0; i < NUM_INSTANCES; ++i)
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -425,7 +427,7 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
 			modelStack.PopMatrix();
 		}
-	}
+	}*/
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
