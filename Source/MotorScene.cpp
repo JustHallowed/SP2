@@ -139,6 +139,8 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
 	meshList[unsigned int(MESH::TEXTBOX)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::TEXTBOX)]->textureID = LoadTGA("Resources/TGAs/textbox.tga");
+	meshList[unsigned int(MESH::SPRITE1)] = MeshBuilder::GenerateText(5, 5);
+	meshList[unsigned int(MESH::SPRITE1)]->textureID = LoadTGA("Resources/TGAs/sprite1.tga");
 
 	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
@@ -209,6 +211,7 @@ void MotorScene::Init(){ //Init scene
 	GetNameScoreData(0);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	iCamera.Init(Vector3(0.f, 20.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	menu.Init();
@@ -224,6 +227,7 @@ void MotorScene::Init(){ //Init scene
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
 	light[0].power = 1.f;
+	Ani1 = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 	//engine->play2D("Resources/Sound/bgm.mp3", true); //play thru out the scene and loops
 }
@@ -346,9 +350,10 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	{
 		SceneManager::getScMan()->AddScene(new GameScene);
 	}
-	if (Application::IsKeyPressed('P') && !menu.menuActive)
+	if (Application::IsKeyPressed('P') && !menu.menuActive && menu.menuState != Menu::PAUSE)
 	{
 		menu.menuState = Menu::PAUSE;
+		menu.menuActive = true;
 	}
 
 
@@ -372,7 +377,19 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	if(camera.pos.x < 0.f){
 		pAngleXZ = 360.f - pAngleXZ;
 	}
+
+	static float lastTime = 0.0f;
+	float currentTime = GetTickCount64() * 0.001f;
+	if (currentTime - lastTime > 0.2f)
+	{
+		Ani1++;
+		if (Ani1 >= 12)
+			Ani1 = 0;
+		lastTime = currentTime;
+	}
+
 	menu.Update(dt);
+	iCamera.Update(dt);
 	UpdateMainChar(dt);
 
 	Mtx44 projection;
@@ -502,8 +519,8 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 	if (menu.menuActive)
 	{
-		RenderScreen1(dt, winWidth, winHeight);
-		RenderMenu(dt, winWidth, winHeight);
+		RenderIdleScreen();
+		RenderMenu(winWidth, winHeight);
 	}
 	else
 	{
@@ -774,13 +791,13 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	}
 }
 
-void MotorScene::RenderMenu(double dt, int winWidth, int winHeight)
+void MotorScene::RenderMenu(int winWidth, int winHeight)
 {
 	std::ostringstream ss;
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani2, 15, 10, 25, winWidth, winHeight);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 15, 10, 25, winWidth, winHeight);
 	if (menu.menuState == Menu::MENU_1)
 	{
 		ss << "PLAY";
@@ -1124,10 +1141,10 @@ void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, floa
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
 	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-	mesh->Render(frame * 6, 6);
 	if (mesh != 0) {
 		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
 	}
+	mesh->Render(frame * 6, 6);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();

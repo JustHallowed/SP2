@@ -13,7 +13,7 @@
 
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , SMOKE, ARM,FOREARM,UPPER_LEG,LOWER_LEG,BODY, NUM_GEOMETRY,
+		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, TEXTBOX , SMOKE, ARM,FOREARM,UPPER_LEG,LOWER_LEG,BODY,SPRITE1, NUM_GEOMETRY,
 	};
 	enum OBJECT_INSTANCES{
 		PLATFORM1,
@@ -75,6 +75,7 @@ class MotorScene final: public Scene{
 	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed, splitBounceTime;
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
+	int Ani1;
 	Object object[NUM_INSTANCES];
 	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
@@ -103,5 +104,5 @@ class MotorScene final: public Scene{
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
-	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(double, int, int), RenderIdleScreen();
+	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(int, int), RenderIdleScreen();
 };

@@ -7,6 +7,7 @@ public:
 		MENU_2,
 		PAUSE,
 		CONTROLS,
+		CLOSED,
 		NUM_STATES
 	};
 

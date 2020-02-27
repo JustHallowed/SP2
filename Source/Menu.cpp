@@ -76,6 +76,7 @@ void Menu::menu1()
 				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuActive = false;
+					menuState = CLOSED;
 					menuBounceTime = elapsedTime + 0.4;
 				}
 			}
@@ -253,6 +254,7 @@ void Menu::pause()
 				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
 				{
 					menuActive = false;
+					menuState = CLOSED;
 				}
 			}
 			else
