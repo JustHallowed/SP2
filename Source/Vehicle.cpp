@@ -85,7 +85,6 @@ void Vehicle::update(double dt)
 		movementDir.SetZero();
 		}
 	}
-	else
 		if (object->getVelocity().Length() != 0)
 			object->setAcceleration(object->getAcceleration() - (movementDir * accelerationConstant * 0.5f));
 
