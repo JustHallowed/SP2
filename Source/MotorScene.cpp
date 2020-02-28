@@ -245,12 +245,12 @@ void MotorScene::Init(){ //Init scene
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 
 	//play 3d sound //sound gets softer when further away frm speakers
-	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
+	/*speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
 	if (speaker1)
 		speaker1->setMinDistance(30.f);
 	speaker2 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, -85), true, false, true);
 	if (speaker2)
-		speaker2->setMinDistance(30.f);
+		speaker2->setMinDistance(30.f);*/
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -401,7 +401,8 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	iCamera.Update(dt);
 	UpdateMainChar(dt);
 
-	engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
+	//!!!this needs to be in respect wif the main character and cam? is the cam gonna move wif charac??
+	//engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -568,7 +569,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -581,7 +582,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
 			modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
