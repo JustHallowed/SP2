@@ -11,17 +11,18 @@ class Vehicle
 	bool keyPressed;//false if no user input
 	bool isRotationMode; //driving mode
 	bool animation;
+	int keyCode[6];
 public:
 	enum KEYPRESS
 	{
-		W_KEY, A_KEY, S_KEY, D_KEY,SHIFT_KEY, SPACE_KEY,
+		FRONT_KEY, LEFT_KEY, BACK_KEY, RIGHT_KEY,UP_KEY, DOWN_KEY,
 	};
 	Vehicle();
 	
 	Object* getObject();
 
 	void setObject(Object* object,bool isRotationMode);
-
+	void setKeys(int FRONT, int LEFT, int BACK, int RIGHT, int UP, int DOWN);
 	void disableKey(int keyCode);
 	void disableAnimation(bool animation);
 	void update(double dt);

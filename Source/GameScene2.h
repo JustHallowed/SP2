@@ -16,18 +16,17 @@ class GameScene2 final : public Scene {
 		UFO_BASE1,
 		UFO_RED1,
 		GROUND,
-		PLAYER1SCORE,
-		PLAYER2SCORE,
+		DEATHZONE,
 		NUM_INSTANCES,
 	};
 	std::vector<Object*> activeObstacleQueue;
 	std::vector<Object*> inactiveObstacleQueue;
 	bool showDebugInfo, showLightSphere;
 	char keys[7] = { '1', '2', '3', '4', '8', '9', '0' };
-	double bulletBounceTime, debugBounceTime, lightBounceTime, timeSinceLastObstacle;
+	double bulletBounceTime, debugBounceTime, lightBounceTime, timeSinceLastObstacle, spaceBounceTime,enterBounceTime;
 	double CalcFrameRate() const;
 	float survivalTime;
-	int hitPoints;
+	int p1BombCharge,p2BombCharge;
 	Object object[NUM_INSTANCES];
 	Light light[1]{ Light(0.f, 192.f, 0.f) };
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
