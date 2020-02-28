@@ -8,8 +8,9 @@ class Vehicle
 	Object* object;	//the object that the movement is applied to
 	bool keyPress[6];	//key press detection
 	bool disabledKey[6];
-	bool keyPressed;
+	bool keyPressed;//false if no user input
 	bool isRotationMode; //driving mode
+	bool animation;
 public:
 	enum KEYPRESS
 	{
@@ -22,7 +23,7 @@ public:
 	void setObject(Object* object,bool isRotationMode);
 
 	void disableKey(int keyCode);
-
+	void disableAnimation(bool animation);
 	void update(double dt);
 };
 

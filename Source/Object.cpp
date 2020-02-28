@@ -16,7 +16,7 @@ Object::Object()
 	movable = false;
 	hasMoved = false;
 	grounded = false;
-	hasGravity = false;
+	gravity = false;
 }
 
 Object::~Object()
@@ -172,7 +172,7 @@ void Object::setMovable(bool movable)
 }
 void Object::setHasGravity(bool hasGravity)
 {
-	this->hasGravity = hasGravity;
+	this->gravity = hasGravity;
 }
 
 bool Object::isClockwise()
@@ -252,10 +252,6 @@ void Object::resetCollision()
 void Object::updatePosition(double dt)
 {
 	moveBy(velocity.x,velocity.y,velocity.z);
-	if (hasGravity)
-	{
-		velocity.y -= 2* dt;
-	}
 }
 bool Object::updateCollision(Object* b, double dt)
 {
@@ -277,9 +273,13 @@ bool Object::updateCollision(Object* b, double dt)
 
 	if (faceCollision && edgeCollision)
 	{
-		if (collidingFaceAxisA.y > 0)
-			grounded = true;
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
+ 		if (collidingFaceAxisA.y < 0)
+			grounded = true;
+		else
+		{
+			int i =1;
+		}
 		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
 		if (!b->isMovable())
 		{
@@ -651,11 +651,11 @@ void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* un
 	}
 	else if (*uniqueAxisA == Ay)
 	{
-		if (T.x > 0 && (angle.x > 90 && angle.x < 270) || (angle.z > 90 && angle.z < 270))
+		if (T.y > 0 && (angle.x > 90 && angle.x < 270) || (angle.z > 90 && angle.z < 270))
 		{
 			*uniqueAxisA = -*uniqueAxisA;
 		}
-		else if (T.x < 0 && (angle.x < 90 || angle.x >270) && (angle.z < 90 || angle.z >270))
+		else if (T.y < 0 && (angle.x < 90 || angle.x >270) && (angle.z < 90 || angle.z >270))
 		{
 			*uniqueAxisA = -*uniqueAxisA;
 		}
@@ -709,6 +709,14 @@ void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* un
 Vector3 Object::projPlane(Vector3 vector, Vector3 planeNormal)
 {
 	return vector - vector.Dot(planeNormal) * (planeNormal);
+}
+bool Object::isGrounded()
+{
+	return grounded;
+}
+bool Object::hasGravity()
+{
+	return gravity;
 }
 void Object::unbindChild(Object* child)
 {

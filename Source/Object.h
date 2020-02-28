@@ -25,7 +25,7 @@ protected:
 	bool movable;//if object can be displaced by other objects
 	bool hasMoved;//if object moved this frame
 	bool grounded; //if object is on the ground
-	bool hasGravity;
+	bool gravity;
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 	void unbindChild(Object* child);//removes child from child vector
 	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
@@ -80,6 +80,8 @@ public:
 	bool isInteractable();
 	bool isRender();
 	bool isMovable();
+	bool isGrounded();
+	bool hasGravity();
 
 	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
 	bool updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)

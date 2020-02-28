@@ -5,7 +5,7 @@ Vehicle::Vehicle()
 	object = nullptr;
 	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = keyPressed = false;
 	disabledKey[0] = disabledKey[1] = disabledKey[2] = disabledKey[3] = disabledKey[4] = disabledKey[5] = false;
-	isRotationMode = true;
+	isRotationMode = animation = true;
 }
 Object* Vehicle::getObject()
 {
@@ -19,6 +19,10 @@ void Vehicle::setObject(Object* object, bool isRotationMode)
 void Vehicle::disableKey(int keyCode)
 {
 	disabledKey[keyCode] = true;
+}
+void Vehicle::disableAnimation(bool animation)
+{
+	this->animation = !animation;
 }
 void Vehicle::update(double dt)
 {
@@ -64,7 +68,7 @@ void Vehicle::update(double dt)
 		{
 			object->addRotation(80 * dt, 'y');
 		}
-		if (keyPress[D_KEY]&&!disabledKey[D_KEY])//turn right
+		if (keyPress[D_KEY] && !disabledKey[D_KEY])//turn right
 		{
 			object->addRotation(-80 * dt, 'y');
 		}
@@ -73,64 +77,62 @@ void Vehicle::update(double dt)
 	front = Vector3(sin(Math::DegreeToRadian(object->getAngle().y)), 0, cos(Math::DegreeToRadian(-object->getAngle().y))).Normalized();
 	right = front.Cross(Vector3(0, 1, 0));
 	//friction
-	if (!keyPressed) //if no movement key is pressed in the previous frame
+	//if (!keyPressed) //if no movement key is pressed in the previous frame
+	//{
+	//	//to prevent movement caused by friction
+	//	Vector3 friction = (movementDir * accelerationConstant * 0.5f * dt);
+	//	if (abs(object->getVelocity().x - friction.x) < abs(friction.x) ||
+	//		abs(object->getVelocity().y - friction.y) < abs(friction.y) ||
+	//		abs(object->getVelocity().z - friction.z) < abs(friction.z))
+	//	{
+	//	object->setVelocity(0, 0, 0);
+	//	movementDir.SetZero();
+	//	}
+	//}
+	if (object->getVelocity().Length() != 0)
+		object->setAcceleration(object->getAcceleration() - (object->getVelocity().Length() / maxVelocity) * (movementDir * accelerationConstant * 2));
+
+
+	keyPressed = false;
+	if (keyPress[W_KEY] && !disabledKey[W_KEY])//accelerate front
 	{
-		//to prevent movement caused by friction
-		Vector3 friction = (movementDir * accelerationConstant * 0.5f * dt);
-		if (abs(object->getVelocity().x - friction.x) < abs(friction.x) ||
-			abs(object->getVelocity().y - friction.y) < abs(friction.y) ||
-			abs(object->getVelocity().z - friction.z) < abs(friction.z))
-		{
-		object->setVelocity(0, 0, 0);
-		movementDir.SetZero();
-		}
+		object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2));
+		keyPressed = true;
 	}
-		if (object->getVelocity().Length() != 0)
-			object->setAcceleration(object->getAcceleration() - (movementDir * accelerationConstant * 0.5f));
-
-	if (object->getVelocity().Length() < maxVelocity)
+	if (!isRotationMode)
 	{
-		keyPressed = false;
-		if (keyPress[W_KEY] && !disabledKey[W_KEY])//accelerate front
+		if (keyPress[A_KEY] && !disabledKey[A_KEY])//accelerate left
 		{
-			object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2));
+			object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
 			keyPressed = true;
+
+			if (animation && object->getAngle().z > -10)
+			{
+				object->addRotation(-object->getVelocity().x / 2, 'z');
+			}
 		}
-		if (!isRotationMode)
+		if (!keyPress[A_KEY])
 		{
-			if (keyPress[A_KEY] && !disabledKey[A_KEY])//accelerate left
+			if (object->getAngle().z < 0)
 			{
-				object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
-				keyPressed = true;
+				object->addRotation(1, 'z');
+			}
+		}
+		if (keyPress[D_KEY] && !disabledKey[D_KEY])//accelerate right
+		{
+			object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2));
+			keyPressed = true;
 
-				if (object->getAngle().z > -10)
-				{
-					object->addRotation(-object->getVelocity().x/2, 'z');
-				}
-			}
-			if (!keyPress[A_KEY])
+			if (animation && object->getAngle().z < 10)
 			{
-				if (object->getAngle().z < 0)
-				{
-					object->addRotation(1, 'z');
-				}
+				object->addRotation(-object->getVelocity().x / 2, 'z');
 			}
-			if (keyPress[D_KEY] && !disabledKey[D_KEY])//accelerate right
+		}
+		if (!keyPress[D_KEY])
+		{
+			if (object->getAngle().z > 0)
 			{
-				object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2));
-				keyPressed = true;
-
-				if (object->getAngle().z < 10)
-				{
-					object->addRotation(-object->getVelocity().x/2, 'z');
-				}
-			}
-			if (!keyPress[D_KEY])
-			{
-				if (object->getAngle().z > 0)
-				{
-					object->addRotation(-1, 'z');
-				}
+				object->addRotation(-1, 'z');
 			}
 		}
 
@@ -150,5 +152,8 @@ void Vehicle::update(double dt)
 			keyPressed = true;
 		}
 	}
+	if(object->hasGravity()&&!object->isGrounded()&&!keyPress[SPACE_KEY])
+	object->setAcceleration(object->getAcceleration().x, object->getAcceleration().y - accelerationConstant * 5, object->getAcceleration().z);
+	
 	object->setVelocity(object->getVelocity() + object->getAcceleration() * dt);
 }

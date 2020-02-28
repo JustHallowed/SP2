@@ -16,6 +16,8 @@ class GameScene2 final : public Scene {
 		UFO_BASE1,
 		UFO_RED1,
 		GROUND,
+		PLAYER1SCORE,
+		PLAYER2SCORE,
 		NUM_INSTANCES,
 	};
 	std::vector<Object*> activeObstacleQueue;

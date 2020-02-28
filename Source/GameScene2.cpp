@@ -41,6 +41,7 @@ void GameScene2::InitLight() const {
 
 void GameScene2::InitMeshes() {
 	meshList[unsigned int(MESH::REDHITBOX)] = MeshBuilder::GenerateCuboid(Color(1, 0, 0), 1, 1, 1);
+	meshList[unsigned int(MESH::REDHITBOX)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
 	meshList[unsigned int(MESH::WHITEHITBOX)] = MeshBuilder::GenerateCuboid(Color(1, 1, 1), 1, 1, 1);
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
@@ -67,21 +68,32 @@ void GameScene2::InitMeshes() {
 void GameScene2::CreateInstances()
 {
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(0, 0.6, 35);
+	object[UFO_BASE1].setTranslation(150, 0,0);
 	object[UFO_BASE1].setScale(4);
 	object[UFO_BASE1].setDimension(25, 20, 20);
-	player1.setObject(&object[UFO_BASE1], false);
 	object[UFO_BASE1].setHasGravity(true);
+	player1.setObject(&object[UFO_BASE1], false);
+	player1.disableAnimation(true);
 
 	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(0, 0.6, 35);
+	object[UFO_RED1].setTranslation(-150, 0,0);
 	object[UFO_RED1].setScale(4);
 	object[UFO_RED1].setDimension(25, 20, 20);
 	object[UFO_RED1].setHasGravity(true);
 	player2.setObject(&object[UFO_RED1], false);
+	player2.disableAnimation(true);
 
 	object[GROUND].setMesh(meshList[unsigned int(MESH::WHITEHITBOX)]);
-	object[GROUND].setDimension(100, 10, 100);
+	object[GROUND].setTranslation(0, -30, 0);
+	object[GROUND].setDimension(400, 10, 400);
+
+	object[PLAYER1SCORE].setMesh(meshList[unsigned int(MESH::WHITEHITBOX)]);
+	object[PLAYER1SCORE].setTranslation(-201, 75, 0);
+	object[PLAYER1SCORE].setDimension(1, 200, 400);
+
+	object[PLAYER2SCORE].setMesh(meshList[unsigned int(MESH::WHITEHITBOX)]);
+	object[PLAYER2SCORE].setTranslation(201, 75, 0);
+	object[PLAYER2SCORE].setDimension(1, 200, 400);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -104,7 +116,7 @@ void GameScene2::Init() { //Init scene
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
-	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 0.6f, 50.f), Vector3(0.f, 1.f, 0.f));
+	camera.Init(Vector3(0.f, 330.f, -500.f), Vector3(0.f, 1.f, 0.f), Vector3(0.f, 0.f, 1.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
@@ -115,6 +127,8 @@ void GameScene2::Init() { //Init scene
 	survivalTime = 0;
 	hitPoints = 3;
 	srand(time(NULL));
+	player1.disableKey(5);//disable fly
+	player2.disableKey(5);
 }
 
 void GameScene2::Exit(Scene* newScene) { //Exit scene
@@ -182,7 +196,13 @@ void GameScene2::Update(double dt, float FOV) { //Update scene
 		object[i].resetCollision();
 	}
 
-
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (&object[i] == player1.getObject() || &object[i] == player2.getObject() || object[i].getDimension().y == 0)
+			continue;
+		object[UFO_BASE1].updateCollision(&object[i], dt);
+		object[UFO_RED1].updateCollision(&object[i], dt);
+	}
 
 
 	
@@ -229,14 +249,9 @@ void GameScene2::updateGame(double dt)
 		}
 	}
 
-	float obstacleSpeed = 80 * dt + survivalTime / 5;//increases speed overtime
-	if (obstacleSpeed > 200)//speed limit
-		obstacleSpeed = 200;
-
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
-		activeObstacleQueue.at(i)->moveBy(0, 0, -obstacleSpeed);//Moves obstacle
 
 
 	}
@@ -247,14 +262,18 @@ void GameScene2::resetGame()
 {
 	hitPoints = 3;
 	survivalTime = 0;
-	object[UFO_BASE1].setTranslation(0, 0.6, 35);
+	object[UFO_BASE1].setTranslation(150,0 ,0 );
 	object[UFO_BASE1].setVelocity(0, 0.0, 0);
+	
+	object[UFO_RED1].setTranslation(-150, 0, 0);
+	object[UFO_RED1].setVelocity(0, 0.0, 0);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 		activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 	}
-	//camera.pos.Set(0.f, 30.f, -50.f), camera.target.Set(0.f, 5.f, 50.f), camera.up.Set(0.f, 1.f, 0.f);
+	
+	camera.pos.Set(0.f, 330.f, -500.f), camera.target.Set(0.f, 1.f, 0.f), camera.up.Set(0.f, 0.f, 1.f);
 }
 void GameScene2::updateObstacleState(double dt)
 {
@@ -326,7 +345,7 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 	modelStack.PushMatrix();
 	modelStack.Translate(0.f, 50.f, 380.f);
 	modelStack.Scale(2.f, 2.f, 2.f);
-	//RenderSkybox(!light[0].power);
+	RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
 	//for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
@@ -463,7 +482,7 @@ void GameScene2::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizeX, f
 
 void GameScene2::RenderSkybox(bool lightSwitch) {
 	lightSwitch = 1;
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	modelStack.Translate(-24.8f, 0.f, 0.f);
 	modelStack.Scale(50.f, 50.f, 400.f);
 	modelStack.Rotate(90.f, 0.f, 1.f, 0.f);
@@ -510,7 +529,7 @@ void GameScene2::RenderSkybox(bool lightSwitch) {
 	modelStack.Rotate(90.f, 0.f, 0.f, 1.f);
 	RenderMesh(meshList[unsigned int(MESH::BOTTOM)], lightSwitch);
 	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 }
 
 void GameScene2::RenderAnimation(Mesh* mesh, std::string text, Color color) const {
