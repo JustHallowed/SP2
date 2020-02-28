@@ -183,7 +183,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
 	meshList[unsigned int(MESH::FOREARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 	meshList[unsigned int(MESH::BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharBody.obj");
-	meshList[unsigned int(MESH::BODY)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::BODY)]->textureID = LoadTGA("Resources/TGAs/robot_lutfi.tga");
 	meshList[unsigned int(MESH::LOWER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharLowerLeg.obj");
 	meshList[unsigned int(MESH::LOWER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharUpperLeg.obj");
@@ -228,6 +228,7 @@ void MotorScene::Init(){ //Init scene
 	interacted[ROBOT_BODY1] = 0;
 	light[0].power = 1.f;
 	Ani1 = 0;
+	robotRotation[0] = robotRotation[1] = robotRotation[2] = Switch = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 	//engine->play2D("Resources/Sound/bgm.mp3", true); //play thru out the scene and loops
 }
@@ -357,8 +358,8 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	//	engine->play2D("Resources/Sound/bell.wav");
 
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
-	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
+	npcCheck(ROBOT_BODY3, "Resources/Sound/robot3.wav");
 	carCheck(EH_CAR1, "Resources/Sound/engine.mp3");
 	carCheck(LF_CAR1, "Resources/Sound/carkey.mp3");
 	carCheck(YW_CAR1, "Resources/Sound/carchime.mp3");
@@ -614,7 +615,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to interact", Color(0.5f, 0.5, 1.f), 4.f, 7.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
@@ -1334,7 +1335,7 @@ void MotorScene::createRobot2()
 
 	object[ROBOT_ARM4].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM4].setTranslation(1, 2, 0);
-	object[ROBOT_ARM4].setRotation(15, 'z');
+	object[ROBOT_ARM4].setRotation(-15, 'z');
 	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM4], true, true);
 
 	object[ROBOT_FOREARM3].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
@@ -1373,7 +1374,7 @@ void MotorScene::createRobot3()
 	object[ROBOT_ARM5].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM5].setTranslation(-1, 2, 0);
 	object[ROBOT_ARM5].setScale(0.75);
-	object[ROBOT_ARM5].setRotation(-150, 'z');
+	object[ROBOT_ARM5].setRotation(150, 'z');
 	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM5], true, true);
 
 	object[ROBOT_ARM6].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
@@ -1490,7 +1491,7 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
 			inRange[instance] = true;
-			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;

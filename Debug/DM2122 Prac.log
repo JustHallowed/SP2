@@ -1,4 +1,26 @@
-﻿  Menu.cpp
+﻿  Application.cpp
 C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
   C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GhostScene.h(48): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.h(32): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+  MotorScene.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: 'APIENTRY': macro redefinition
+  C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\glfw\include\GLFW\glfw3.h(104): note: see previous definition of 'APIENTRY'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\GameScene.h(32): warning C4244: 'argument': conversion from 'float' to 'char', possible loss of data
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(733): warning C4390: ';': empty controlled statement found; is this the intent?
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1304): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1309): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1314): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1319): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1326): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1350): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1354): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1358): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1362): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1369): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1394): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1398): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1402): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\DM2122 Prac\Source\MotorScene.cpp(1406): warning C4305: 'argument': truncation from 'double' to 'float'
+  Generating Code...
   DM2122 Prac.vcxproj -> C:\Users\Loopy\Downloads\DM2122_Week16_Solution (1)\Debug\DM2122 Prac.exe
