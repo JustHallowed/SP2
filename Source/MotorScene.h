@@ -69,10 +69,10 @@ class MotorScene final: public Scene{
 
 		NUM_INSTANCES,
 	};
-	bool animateDir, showDebugInfo, showLightSphere, state,splitScreen;
+	bool animateDir, showDebugInfo, showLightSphere, state;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed, splitBounceTime;
+	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed;
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
@@ -106,5 +106,5 @@ class MotorScene final: public Scene{
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
-	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(int, int), RenderIdleScreen();
+	void RenderScreen(double, int, int), RenderMenu(int, int), RenderIdleScreen();
 };

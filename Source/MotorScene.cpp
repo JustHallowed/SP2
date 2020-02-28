@@ -222,10 +222,7 @@ void MotorScene::Init(){ //Init scene
 	CreateInstances();
 	animateDir = showDebugInfo = 1;
 	state = showLightSphere = 0;
-	splitScreen = 0;
-	debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = timePressed = swingBounceTime = 0.0;
-	inRange[ROBOT_BODY1] = 0;
-	interacted[ROBOT_BODY1] = 0;
+	debugBounceTime = lightBounceTime = interactBounceTime = timePressed = swingBounceTime = 0.0;
 	light[0].power = 1.f;
 	Ani1 = 0;
 	Switch = 0;
@@ -341,12 +338,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 
 	object[PLATFORM1].addRotation(1, 'y');
 
-	if (Application::IsKeyPressed('G') && splitBounceTime <= elapsedTime)
-	{
-		splitScreen = !splitScreen;
-		splitBounceTime = elapsedTime + 0.4;
-	}
-
 	if (Application::IsKeyPressed('E'))
 	{
 		SceneManager::getScMan()->AddScene(new GameScene);
@@ -360,6 +351,9 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
 	npcCheck(ROBOT_BODY3, "Resources/Sound/robot3.wav");
+	animateNpc(ROBOT_BODY1);
+	animateNpc(ROBOT_BODY2);
+	animateNpc(ROBOT_BODY3);
 	carCheck(EH_CAR1, "Resources/Sound/engine.mp3");
 	carCheck(LF_CAR1, "Resources/Sound/carkey.mp3");
 	carCheck(YW_CAR1, "Resources/Sound/carchime.mp3");
@@ -383,10 +377,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 			Ani1 = 0;
 		lastTime = currentTime;
 	}
-
-	animateNpc(ROBOT_BODY1);
-	animateNpc(ROBOT_BODY2);
-	animateNpc(ROBOT_BODY3);
 	
 
 	menu.Update(dt);
@@ -507,17 +497,6 @@ void MotorScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
 
 void MotorScene::Render(double dt, int winWidth, int winHeight){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (splitScreen)
-	{
-		glViewport(winWidth / 4, winHeight / 2, winWidth / 2, winHeight / 2);
-		RenderScreen1(dt, winWidth, winHeight);
-		glViewport(winWidth / 4, 0, winWidth / 2, winHeight / 2);
-		RenderScreen2(dt, winWidth, winHeight);
-	}
-	else
-	{
-		glViewport(0, 0, winWidth, winHeight);
-	}
 	if (menu.menuActive)
 	{
 		RenderIdleScreen();
@@ -525,11 +504,11 @@ void MotorScene::Render(double dt, int winWidth, int winHeight){
 	}
 	else
 	{
-		RenderScreen1(dt, winWidth, winHeight);
+		RenderScreen(dt, winWidth, winHeight);
 	}
 }
 
-void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
+void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 {
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
@@ -626,135 +605,6 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		ss << "Wow! These cars! ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-		ss.str("");
-		ss << "They're awesome!";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
-		ss.str("");
-	}
-	if (inRange[ROBOT_BODY2] && interacted[ROBOT_BODY2])
-	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		ss << "My son just ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-		ss.str("");
-		ss << "LOVES vehicles!";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
-		ss.str("");
-	}
-	if (inRange[ROBOT_BODY3] && interacted[ROBOT_BODY3])
-	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		ss << "I am thorougly ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-		ss.str("");
-		ss << "displeased, ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 5.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Mother.";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 4.f, winWidth, winHeight);
-		ss.str("");
-	}
-}
-
-void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
-{
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
-		camera.target.x, camera.target.y, camera.target.z,
-		camera.up.x, camera.up.y, camera.up.z);
-	modelStack.LoadIdentity();
-
-	/*for(Particle* p: smokeGenerator.particlePool){
-		if(p->life > 0.0f){
-			delete meshList[unsigned int(MESH::BULLET)];
-			meshList[unsigned int(MESH::BULLET)] = MeshBuilder::GenerateCuboid(p->color, .4f, .4f, .4f);
-			modelStack.PushMatrix();
-				modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
-				RenderParticle(meshList[unsigned int(MESH::BULLET)], p->life);
-			modelStack.PopMatrix();
-		}
-	}*/
-
-	RenderLight();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 100.f, 0.f);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	RenderSkybox(!light[0].power);
-	modelStack.PopMatrix();
-
-	//displays hitboxes
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getDimension().y > 0)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
-			modelStack.Rotate(object[i].getAngle().z, 0, 0, 1);
-			modelStack.Rotate(object[i].getAngle().y, 0, 1, 0);
-			modelStack.Rotate(object[i].getAngle().x, 1, 0, 0);
-			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
-			modelStack.PopMatrix();
-		}
-	}
-	//render all objects
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getParent() == nullptr)
-		{
-			modelStack.PushMatrix();
-			renderObject(&object[i]);
-			modelStack.PopMatrix();
-		}
-	}
-
-	std::ostringstream ss;
-	if (showDebugInfo) {
-		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << std::setprecision(3);
-		ss << "Elapsed: " << elapsedTime;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
-		ss.str("");
-		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
-
-	//if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1]);
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
-	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
-	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		ss << "Wow! These cars! ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-		ss.str("");
-	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
-
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
-	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
-	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		RenderMeshOnScreen(getTextMesh(), 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		ss << "Wow! These cars! ";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
