@@ -72,14 +72,14 @@ class MotorScene final: public Scene{
 	ParticleEmitter bulletGenerator;
 	ShaderManager* shMan;
 	unsigned m_vertexArrayID;
-	int CurrentSelection = 2;
+	//int CurrentSelection = 2; //to be removed when v0.2 is split
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, int) const,RenderAnimationOnScreen(Mesh*,int, float, float, float, int, int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
 	void createPlatforms(), createUFOs(), createRobot1(), createRobot2(), createRobot3();
 	void npcCheck(OBJECT_INSTANCES instance, const char* audioFileName);
-	void MenuInput();
+	//void MenuInput();
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
-	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(double, int, int);
+	void RenderScreen1(double, int, int), RenderScreen2(double, int, int), RenderMenu(int winWidth, int winHeight);
 };
