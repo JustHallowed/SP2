@@ -14,6 +14,7 @@ class Camera final{ //Singleton
 	friend class MotorScene;
 	friend class GhostScene;
 	friend class GameScene;
+	friend class GameScene2;
 	friend class SceneManager;
 	Vector3 pos, target, up, defaultPos, defaultTarget, defaultUp, displacement;
 public:

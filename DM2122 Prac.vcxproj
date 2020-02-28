@@ -132,6 +132,7 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Crypto.h" />
     <ClInclude Include="Source\GameScene.h" />
+    <ClInclude Include="Source\GameScene2.h" />
     <ClInclude Include="Source\GhostScene.h" />
     <ClInclude Include="Source\IdleCamera.h" />
     <ClInclude Include="Source\Light.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Crypto.cpp" />
     <ClCompile Include="Source\GameScene.cpp" />
+    <ClCompile Include="Source\GameScene2.cpp" />
     <ClCompile Include="Source\GhostScene.cpp" />
     <ClCompile Include="Source\IdleCamera.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />

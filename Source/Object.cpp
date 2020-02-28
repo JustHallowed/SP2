@@ -15,6 +15,8 @@ Object::Object()
 	interactable = false;
 	movable = false;
 	hasMoved = false;
+	grounded = false;
+	hasGravity = false;
 }
 
 Object::~Object()
@@ -168,6 +170,10 @@ void Object::setMovable(bool movable)
 {
 	this->movable = movable;
 }
+void Object::setHasGravity(bool hasGravity)
+{
+	this->hasGravity = hasGravity;
+}
 
 bool Object::isClockwise()
 {
@@ -241,8 +247,16 @@ void Object::setInteractable(bool canInteract)
 void Object::resetCollision()
 {
 	hasMoved = false;
+	grounded = false;
 }
-
+void Object::updatePosition(double dt)
+{
+	moveBy(velocity.x,velocity.y,velocity.z);
+	if (hasGravity)
+	{
+		velocity.y -= 2* dt;
+	}
+}
 bool Object::updateCollision(Object* b, double dt)
 {
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
@@ -263,6 +277,8 @@ bool Object::updateCollision(Object* b, double dt)
 
 	if (faceCollision && edgeCollision)
 	{
+		if (collidingFaceAxisA.y > 0)
+			grounded = true;
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
 		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
 		if (!b->isMovable())
@@ -299,23 +315,10 @@ bool Object::updateCollision(Object* b, double dt)
 				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
 			}
 		}
-		if (hasMoved == false)
-		{
-			moveBy(velocity.x, velocity.y, velocity.z);
-			hasMoved = true;
-		}
 		return true;
 	}
 	else
-
-	{
-		if (hasMoved == false)
-		{
-			moveBy(velocity.x, velocity.y, velocity.z);
-			hasMoved = true;
-		}
 		return false;
-	}
 }
 
 

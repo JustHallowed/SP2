@@ -24,9 +24,8 @@ protected:
 	bool render; //where object is rendered
 	bool movable;//if object can be displaced by other objects
 	bool hasMoved;//if object moved this frame
-	enum DIRECTION {
-		POSX, POSY, POSZ, NEGX, NEGY, NEGZ,
-	};
+	bool grounded; //if object is on the ground
+	bool hasGravity;
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 	void unbindChild(Object* child);//removes child from child vector
 	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
@@ -35,7 +34,6 @@ protected:
 	bool hasEdgeIntersection(Object* b);
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 public:
-	bool collisionAt[6];//which axis the object can be displaced
 	Object();
 	~Object();
 	//setters
@@ -62,6 +60,8 @@ public:
 	void setRender(bool render);
 	void setMovable(bool movable);
 	void resetCollision();//run this before looping update()
+	void updatePosition(double dt);//updates translation and gravity
+	void setHasGravity(bool hasGravity);
 
 	//getters
 	Mesh* getMesh(); //returns meshtype from meshlist

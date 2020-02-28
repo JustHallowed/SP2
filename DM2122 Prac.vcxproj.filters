@@ -87,6 +87,9 @@
     <ClInclude Include="Source\IdleCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\GameScene2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -150,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\IdleCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameScene2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
