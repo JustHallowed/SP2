@@ -245,12 +245,12 @@ void MotorScene::Init(){ //Init scene
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 
 	//play 3d sound //sound gets softer when further away frm speakers
-	/*speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
+	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
 	if (speaker1)
 		speaker1->setMinDistance(30.f);
 	speaker2 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, -85), true, false, true);
 	if (speaker2)
-		speaker2->setMinDistance(30.f);*/
+		speaker2->setMinDistance(30.f);
 }
 
 void MotorScene::Exit(Scene* newScene){ //Exit scene
@@ -301,19 +301,22 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 				break;
 			}
 			case '0': {
+				if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+				{
 					SceneManager::getScMan()->SetNextScene(); //Change scene
 					printf("\n\n");
-					for(auto itr = upDown->begin(); itr != upDown->end(); ++itr){
+					for (auto itr = upDown->begin(); itr != upDown->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = leftRight->begin(); itr != leftRight->end(); ++itr){
+					for (auto itr = leftRight->begin(); itr != leftRight->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = jump->begin(); itr != jump->end(); ++itr){
+					for (auto itr = jump->begin(); itr != jump->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
+				}
 				}
 			}
 		}
@@ -376,6 +379,10 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	carCheck(PLATFORM7, "Resources/Sound/engine.mp3");
 	carCheck(PLATFORM8, "Resources/Sound/carchime.mp3");
 	carCheck(PLATFORM9, "Resources/Sound/carkey.mp3");
+
+	//temp audio first
+	carCheck(PLATFORM1, "Resources/Sound/carkey.mp3");
+
 	//Billboarding for particles
 	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
 	pAngleXZ = Math::RadianToDegree(acos(pFrontXZ.Dot(Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z)) /
@@ -403,6 +410,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 
 	//!!!this needs to be in respect wif the main character and cam? is the cam gonna move wif charac??
 	//engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
+	//error exception thrown when changin scene
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -629,6 +637,9 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+
+	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [0] to play game", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
 
 	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
