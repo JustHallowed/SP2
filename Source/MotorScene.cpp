@@ -792,7 +792,7 @@ void MotorScene::RenderMenu(int winWidth, int winHeight)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 15, 10, 25, winWidth, winHeight);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 45, 40, 30, winWidth, winHeight);
 	if (menu.menuState == Menu::MENU_1)
 	{
 		ss << "PLAY";
