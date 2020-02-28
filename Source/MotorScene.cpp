@@ -301,19 +301,22 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 				break;
 			}
 			case '0': {
+				if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+				{
 					SceneManager::getScMan()->SetNextScene(); //Change scene
 					printf("\n\n");
-					for(auto itr = upDown->begin(); itr != upDown->end(); ++itr){
+					for (auto itr = upDown->begin(); itr != upDown->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = leftRight->begin(); itr != leftRight->end(); ++itr){
+					for (auto itr = leftRight->begin(); itr != leftRight->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = jump->begin(); itr != jump->end(); ++itr){
+					for (auto itr = jump->begin(); itr != jump->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
+				}
 				}
 			}
 		}
@@ -363,11 +366,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		splitScreen = !splitScreen;
 		splitBounceTime = elapsedTime + 0.4;
 	}
-
-	if (Application::IsKeyPressed('E'))
-	{
-		SceneManager::getScMan()->AddScene(new GameScene);
-	}
 	if (Application::IsKeyPressed('P') && !menu.menuActive && menu.menuState != Menu::PAUSE)
 	{
 		menu.menuState = Menu::PAUSE;
@@ -381,6 +379,10 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	carCheck(PLATFORM7, "Resources/Sound/engine.mp3");
 	carCheck(PLATFORM8, "Resources/Sound/carchime.mp3");
 	carCheck(PLATFORM9, "Resources/Sound/carkey.mp3");
+
+	//temp audio first
+	carCheck(PLATFORM1, "Resources/Sound/carkey.mp3");
+
 	//Billboarding for particles
 	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
 	pAngleXZ = Math::RadianToDegree(acos(pFrontXZ.Dot(Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z)) /
@@ -407,6 +409,9 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	UpdateMainChar(dt);
 
 	engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
+	//!!!this needs to be in respect wif the main character and cam? is the cam gonna move wif charac??
+	//engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
+	//error exception thrown when changin scene
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -573,7 +578,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -586,7 +591,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
 			modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -633,6 +638,9 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		ss.str("");
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+
+	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [0] to play game", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
 
 	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
