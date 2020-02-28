@@ -363,11 +363,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		splitScreen = !splitScreen;
 		splitBounceTime = elapsedTime + 0.4;
 	}
-
-	if (Application::IsKeyPressed('E'))
-	{
-		SceneManager::getScMan()->AddScene(new GameScene);
-	}
 	if (Application::IsKeyPressed('P') && !menu.menuActive && menu.menuState != Menu::PAUSE)
 	{
 		menu.menuState = Menu::PAUSE;
@@ -406,7 +401,7 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	iCamera.Update(dt);
 	UpdateMainChar(dt);
 
-	engine->setListenerPosition(vec3df(Camera::getCam().pos.x, Camera::getCam().pos.y, Camera::getCam().pos.z), vec3df(Camera::getCam().up.x, Camera::getCam().up.y, Camera::getCam().up.z));
+	engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(camera.up.x, camera.up.y, camera.up.z));
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
