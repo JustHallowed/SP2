@@ -76,7 +76,6 @@ class MotorScene final: public Scene{
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
-	int robotRotation[3];
 	bool Switch;
 	Object object[NUM_INSTANCES];
 	Light light[7]{
