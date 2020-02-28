@@ -384,91 +384,9 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		lastTime = currentTime;
 	}
 
-	if (interacted[ROBOT_BODY1])
-	{
-		object[ROBOT_FOREARM1].setRotation(-90, 'y');
-		object[ROBOT_FOREARM1].setRotation(-40, 'x');
-		object[ROBOT_FOREARM2].setRotation(-90, 'y');
-		object[ROBOT_FOREARM2].setRotation(-40, 'x');
-
-		if (object[ROBOT_ARM1].getAngle().x <= -90)
-		{
-			Switch = true;
-		}
-		else if (object[ROBOT_ARM1].getAngle().x >= -45)
-		{
-			Switch = false;
-		}
-		if (Switch)
-		{
-			object[ROBOT_ARM1].addRotation(3, 'x');
-			object[ROBOT_ARM2].addRotation(3, 'x');
-		}
-		else
-		{
-			object[ROBOT_ARM1].addRotation(-3, 'x');
-			object[ROBOT_ARM2].addRotation(-3, 'x');
-		}
-	}
-	else
-	{
-		object[ROBOT_FOREARM1].setRotation(0, 'x');
-		object[ROBOT_FOREARM1].setRotation(0, 'y');
-		object[ROBOT_FOREARM2].setRotation(0, 'x');
-		object[ROBOT_FOREARM2].setRotation(180, 'y');
-
-		if (object[ROBOT_ARM1].getAngle().x < 0)
-		{
-			object[ROBOT_ARM1].addRotation(1, 'x');
-			object[ROBOT_ARM2].addRotation(1, 'x');
-		}
-	}
-
-	if (interacted[ROBOT_BODY2])
-	{
-		object[ROBOT_FOREARM4].setRotation(-90, 'y');
-		object[ROBOT_FOREARM4].setRotation(-40, 'x');
-
-		if (object[ROBOT_ARM4].getAngle().x <= -90)
-			Switch = true;
-		else if (object[ROBOT_ARM4].getAngle().x >= -45)
-			Switch = false;
-		if (Switch)
-			object[ROBOT_ARM4].addRotation(3, 'x');
-		else
-			object[ROBOT_ARM4].addRotation(-3, 'x');
-	}
-	else
-	{
-		object[ROBOT_FOREARM4].setRotation(0, 'x');
-		object[ROBOT_FOREARM4].setRotation(0, 'y');
-
-		if (object[ROBOT_ARM4].getAngle().x < 0)
-			object[ROBOT_ARM4].addRotation(1, 'x');
-	}
-
-	if (interacted[ROBOT_BODY3])
-	{
-		object[ROBOT_FOREARM5].setRotation(-90, 'y');
-		object[ROBOT_FOREARM5].setRotation(-40, 'x');
-
-		if (object[ROBOT_ARM5].getAngle().x <= -90)
-			Switch = true;
-		else if (object[ROBOT_ARM5].getAngle().x >= -45)
-			Switch = false;
-		if (Switch)
-			object[ROBOT_ARM5].addRotation(3, 'x');
-		else
-			object[ROBOT_ARM5].addRotation(-3, 'x');
-	}
-	else
-	{
-		object[ROBOT_FOREARM5].setRotation(0, 'x');
-		object[ROBOT_FOREARM5].setRotation(0, 'y');
-
-		if (object[ROBOT_ARM5].getAngle().x < 0)
-			object[ROBOT_ARM5].addRotation(1, 'x');
-	}
+	animateNpc(ROBOT_BODY1);
+	animateNpc(ROBOT_BODY2);
+	animateNpc(ROBOT_BODY3);
 	
 
 	menu.Update(dt);
@@ -1411,14 +1329,13 @@ void MotorScene::createVehicles()
 void MotorScene::createRobot2()
 {
 	object[ROBOT_BODY2].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY2].setTranslation(-50, 5.2, 50);
+	object[ROBOT_BODY2].setTranslation(-50, 5.2, 52);
 	object[ROBOT_BODY2].setScale(2);
 	object[ROBOT_BODY2].setRotation(90, 'y');
 	object[ROBOT_BODY2].setDimension(6, 15, 6);
 
 	object[ROBOT_ARM3].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM3].setTranslation(-1, 2, 0);
-	object[ROBOT_ARM3].setRotation(-15, 'z');
 	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM3], true, true);
 
 	object[ROBOT_ARM4].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
@@ -1455,8 +1372,9 @@ void MotorScene::createRobot3()
 {
 	object[ROBOT_BODY3].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
 	object[ROBOT_BODY3].setTranslation(-50, 2.6, 45);
+	object[ROBOT_BODY3].setScale(1.25);
 	object[ROBOT_BODY3].setRotation(90, 'y');
-	object[ROBOT_BODY3].setDimension(6, 15, 6);
+	object[ROBOT_BODY3].setDimension(4, 12, 4);
 
 	object[ROBOT_ARM5].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM5].setTranslation(-1, 2, 0);
@@ -1466,7 +1384,6 @@ void MotorScene::createRobot3()
 	object[ROBOT_ARM6].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
 	object[ROBOT_ARM6].setTranslation(1, 2, 0);
 	object[ROBOT_ARM6].setScale(0.75);
-	object[ROBOT_ARM6].setRotation(100, 'z');
 	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM6], true, true);
 
 	object[ROBOT_FOREARM5].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
@@ -1596,6 +1513,56 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 	{
 		inRange[instance] = 0;
 		interacted[instance] = 0;
+	}
+}
+
+void MotorScene::animateNpc(int instance)
+{
+	Vector3 objectToPlayer = camera.pos - object[instance].getPos();
+	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
+		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
+	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
+
+	if (interacted[instance])
+	{
+		if (angle > 10)
+			object[instance].addRotation(angle, 'y');
+		object[instance + 3].setRotation(-90, 'y');
+		object[instance + 3].setRotation(-40, 'x');
+		object[instance + 4 ].setRotation(-90, 'y');
+		object[instance + 4].setRotation(-40, 'x');
+
+		if (object[instance + 1].getAngle().x <= -90)
+		{
+			Switch = true;
+		}
+		else if (object[instance + 1].getAngle().x >= -45)
+		{
+			Switch = false;
+		}
+		if (Switch)
+		{
+			object[instance + 1].addRotation(3, 'x');
+			object[instance + 2].addRotation(3, 'x');
+		}
+		else
+		{
+			object[instance + 1].addRotation(-3, 'x');
+			object[instance + 2].addRotation(-3, 'x');
+		}
+	}
+	else
+	{
+		object[instance + 3].setRotation(0, 'x');
+		object[instance + 3].setRotation(0, 'y');
+		object[instance + 4].setRotation(0, 'x');
+		object[instance + 4].setRotation(180, 'y');
+
+		if (object[instance + 1].getAngle().x < 0)
+		{
+			object[instance + 1].addRotation(1, 'x');
+			object[instance + 2].addRotation(1, 'x');
+		}
 	}
 }
 

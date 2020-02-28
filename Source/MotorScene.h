@@ -100,6 +100,7 @@ class MotorScene final: public Scene{
 	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, int) const, RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
 	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(),UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const, RenderAnimation(Mesh*, std::string, Color) const;;
 	void npcCheck(int instance, const char* audioFileName);
+	void animateNpc(int instance);
 	void carCheck(int instance, const char* audioFileName);
 
 public:
