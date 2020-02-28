@@ -247,7 +247,7 @@ bool Object::updateCollision(Object* b, double dt)
 {
 	Vector3 T = b->pos - pos;//displacement between the two object's centre
 	Vector3 penetration; //magnitude of overlapp of object
-	Vector3 rotationAxis;//axis of rotation during collision
+
 
 	bool faceCollision, edgeCollision = false;
 
@@ -257,7 +257,7 @@ bool Object::updateCollision(Object* b, double dt)
 	Vector3 collidingFaceAxisA; //for storing collding axes
 	Vector3 collidingFaceAxisB;
 
-	faceCollision = hasFaceIntersection(b, &greatestFaceIntersectionA, &collidingFaceAxisA, &greatestFaceIntersectionB, &collidingFaceAxisB, &penetration, &rotationAxis);
+	faceCollision = hasFaceIntersection(b, &greatestFaceIntersectionA, &collidingFaceAxisA, &greatestFaceIntersectionB, &collidingFaceAxisB, &penetration);
 	if (faceCollision)
 	edgeCollision = hasEdgeIntersection(b);
 
@@ -265,6 +265,34 @@ bool Object::updateCollision(Object* b, double dt)
 	{
 		findCollisionDirection(b, &collidingFaceAxisA, &collidingFaceAxisB);
 		penetration.Set(penetration.x * collidingFaceAxisA.x, penetration.y * collidingFaceAxisA.y, penetration.z * collidingFaceAxisA.z);
+		Vector3 rotationAxis = collidingFaceAxisB.Cross(collidingFaceAxisA);//axis of rotation during collision
+		if (movable)
+		{
+			Vector3 thetaA = Vector3(fmod(angle.x, 90), fmod(angle.y, 90), fmod(angle.z, 90));
+			Vector3 thetaB = Vector3(fmod(b->angle.x, 90), fmod(b->angle.y, 90), fmod(b->angle.z, 90));
+			Vector3 thetaC = rotationAxis * 1000 * dt;
+			Vector3 angleDiff = Vector3(abs(thetaB.x - thetaA.x), abs(thetaB.y - thetaA.y),abs(thetaB.z - thetaA.z));
+			if (fmod(abs(angleDiff.x + thetaC.x),90 ) > fmod(abs(angleDiff.x - thetaC.x),90))
+				angle.x += thetaC.x;
+			else
+			{
+				angle.x -= thetaC.x;
+			}
+
+			if (fmod(abs(angleDiff.y + thetaC.y), 90) > fmod(abs(angleDiff.y - thetaC.y), 90))
+				angle.y += thetaC.y;
+			else
+			{
+				angle.y -= thetaC.y;
+			}
+
+			if (fmod(abs(angleDiff.z + thetaC.z), 90) > fmod(abs(angleDiff.z - thetaC.z), 90))
+				angle.z += thetaC.z;
+			else
+			{
+				angle.z -= thetaC.z;
+			}
+		}
 		if (!b->isMovable())
 		{
 			if (velocity.x != 0)
@@ -292,18 +320,16 @@ bool Object::updateCollision(Object* b, double dt)
 						velocity.z += collidingFaceAxisB.z * velocity.z;
 			}
 			moveBy(-penetration.x, -penetration.y, -penetration.z);
-			if (movable)
-			{
-				angle.x += ((float)rotationAxis.x * (float)velocity.x - (float)b->velocity.x * 100 * dt);
-				angle.y += (rotationAxis.y * velocity.y - b->velocity.y * 100 * dt);
-				angle.z += (rotationAxis.z * velocity.z - b->velocity.z * 100 * dt);
-			}
+
 		}	
 		if (hasMoved == false)
 		{
 			moveBy(velocity.x, velocity.y, velocity.z);
 			hasMoved = true;
 		}
+		std::cout << "AX: " << collidingFaceAxisA.x << "	 AY: " << collidingFaceAxisA.y << "  AZ: " << collidingFaceAxisA.z << std::endl;
+		std::cout << "BX: " << rotationAxis.x << "	 BY: " << rotationAxis.y << "  BZ: " << rotationAxis.z << std::endl;
+		std::cout <<"CrossX: "<<rotationAxis.x << "	 CrossY: " << rotationAxis.y << "  CrossZ: " << rotationAxis.z<<std::endl;
 		return true;
 	}
 	else
@@ -318,7 +344,7 @@ bool Object::updateCollision(Object* b, double dt)
 }
 
 bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
-	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis)
+	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration)
 {
 	Vector3 T = b->pos - pos;
 	Vector3 Ax, Ay, Az;// unit vector of the axes of A
@@ -461,7 +487,6 @@ bool Object::hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Ve
 	{
 		*penetration = (*greatestFaceIntersectionB) * (*collidingFaceAxisA);
 	}
-	//*rotationAxis = collidingFaceAxisA->Cross(*collidingFaceAxisB);
 }
 bool Object::hasEdgeIntersection(Object* b)
 {

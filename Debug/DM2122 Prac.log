@@ -1,6 +1,18 @@
-﻿  MotorScene.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
-C:\Users\ASUS\Desktop\Computer Graphics Project\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(230,34): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\MotorScene.cpp(713,22): warning C4018: '<': signed/unsigned mismatch
+﻿  Object.cpp
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(74,28): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(80,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(85,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(271,71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(271,52): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(271,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(272,77): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(272,55): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(272,33): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(273,43): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(735,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(763,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(764,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(771,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(772,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\ASUS\Desktop\Computer Graphics Project\DM2122 Prac\Source\Object.cpp(490): warning C4715: 'Object::hasFaceIntersection': not all control paths return a value
   DM2122 Prac.vcxproj -> C:\Users\ASUS\Desktop\Computer Graphics Project\Debug\DM2122 Prac.exe
