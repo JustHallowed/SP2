@@ -24,4 +24,5 @@ public:
 	double menuBounceTime;
 	MENUSTATES menuState;
 	bool menuActive;
+	int currentSelection;
 };

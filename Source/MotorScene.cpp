@@ -350,11 +350,6 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	{
 		SceneManager::getScMan()->AddScene(new GameScene);
 	}
-	if (Application::IsKeyPressed('P') && !menu.menuActive && menu.menuState != Menu::PAUSE)
-	{
-		menu.menuState = Menu::PAUSE;
-		menu.menuActive = true;
-	}
 
 
 	//!testing! if w is pressed, sound effects will be played
