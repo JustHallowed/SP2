@@ -13,7 +13,7 @@ Vehicle::Vehicle()
 	keyCode[UP_KEY] = VK_SPACE;
 	keyCode[DOWN_KEY] = VK_SHIFT;
 }
-Object* Vehicle::getObject()
+Object* Vehicle::getObject() const
 {
 	return object;
 }

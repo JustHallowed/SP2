@@ -175,68 +175,68 @@ void Object::setHasGravity(bool hasGravity)
 	this->gravity = hasGravity;
 }
 
-bool Object::isClockwise()
+bool Object::isClockwise()const
 {
 	return clockwise;
 }
-bool Object::followParentRotation()
+bool Object::followParentRotation()const
 {
 	return parentRotation;
 }
-bool Object::followParentScale()
+bool Object::followParentScale()const
 {
 	return parentScale;
 
 }
-bool Object::isInteractable()
+bool Object::isInteractable()const
 {
 	return interactable;
 }
-Vector3 Object::getScale()
+Vector3 Object::getScale()const
 {
 	return scale;
 }
-Object* Object::getParent()
+Object* Object::getParent()const
 {
 	return parent;
 }
-std::vector<Object*> Object::getChild()
+std::vector<Object*> Object::getChild()const
 {
 	return child;
 }
-Vector3 Object::getPos()
+Vector3 Object::getPos()const
 {
 	return pos;
 }
-Vector3 Object::getTranslation()
+Vector3 Object::getTranslation()const
 {
 	return translation;
 }
-Vector3 Object::getAngle()
+Vector3 Object::getAngle()const
 {
 	return angle;
 }
-Mesh* Object::getMesh()
+Mesh* Object::getMesh()const
 {
 	return meshType;
 }
-Vector3 Object::getDimension()
+Vector3 Object::getDimension()const
 {
 	return dimension;
 }
-Vector3 Object::getVelocity()
+Vector3 Object::getVelocity()const
 {
 	return velocity;
 }
-Vector3 Object::getAcceleration()
+Vector3 Object::getAcceleration()const
 {
 	return acceleration;
 }
-bool Object::isRender()
+bool Object::isRender()const
 {
 	return render;
 }
-bool Object::isMovable()
+bool Object::isMovable()const
 {
 	return movable;
 }
@@ -706,15 +706,15 @@ void Object::findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* un
 		}
 	}
 }
-Vector3 Object::projPlane(Vector3 vector, Vector3 planeNormal)
+Vector3 Object::projPlane(Vector3 vector, Vector3 planeNormal)const
 {
 	return vector - vector.Dot(planeNormal) * (planeNormal);
 }
-bool Object::isGrounded()
+bool Object::isGrounded()const
 {
 	return grounded;
 }
-bool Object::hasGravity()
+bool Object::hasGravity()const
 {
 	return gravity;
 }
@@ -746,7 +746,7 @@ void Object::unbind(Object* child)
 	}
 }
 
-float Object::getAngle(Vector3 A, Vector3 B)
+float Object::getAngle(Vector3 A, Vector3 B)const
 {
 	//gets angle between two vectors
 	float ptoMagnitude = sqrt(pow(A.x, 2.0) + pow(A.y, 2.0) + pow(A.z, 2.0));
@@ -754,7 +754,7 @@ float Object::getAngle(Vector3 A, Vector3 B)
 	return acos(A.Dot(B) / (ptoMagnitude * pttMagnitude));
 }
 
-float Object::checkDist(Vector3 playerpos)
+float Object::checkDist(Vector3 playerpos) const
 {
 	float x = pow(pos.x - playerpos.x, 2.0);
 	float z = pow(pos.z - playerpos.z, 2.0);

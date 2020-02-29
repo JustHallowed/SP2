@@ -64,31 +64,31 @@ public:
 	void setHasGravity(bool hasGravity);
 
 	//getters
-	Mesh* getMesh(); //returns meshtype from meshlist
-	Vector3 getPos();
-	Vector3 getTranslation();
-	Vector3 getAngle();
-	Vector3 getScale();
-	Vector3 getDimension();
-	Vector3 getVelocity();
-	Vector3 getAcceleration();
-	Object* getParent();
-	std::vector<Object*> getChild();
-	bool isClockwise();
-	bool followParentRotation();
-	bool followParentScale();
-	bool isInteractable();
-	bool isRender();
-	bool isMovable();
-	bool isGrounded();
-	bool hasGravity();
+	Mesh* getMesh()const; //returns meshtype from meshlist
+	Vector3 getPos()const;
+	Vector3 getTranslation()const;
+	Vector3 getAngle()const;
+	Vector3 getScale()const;
+	Vector3 getDimension()const;
+	Vector3 getVelocity()const;
+	Vector3 getAcceleration()const;
+	Object* getParent()const;
+	std::vector<Object*> getChild()const;
+	bool isClockwise()const;
+	bool followParentRotation()const;
+	bool followParentScale()const;
+	bool isInteractable()const;
+	bool isRender()const;
+	bool isMovable()const;
+	bool isGrounded()const;
+	bool hasGravity()const;
 
-	Vector3 projPlane(Vector3 vector, Vector3 planeNormal);
+	Vector3 projPlane(Vector3 vector, Vector3 planeNormal)const;
 	bool updateCollision(Object* b,double dt);	//check for collision (run resetCollision() before running this in aloop)
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
-	float getAngle(Vector3 A, Vector3 B);
-	float checkDist(Vector3 playerpos);
+	float getAngle(Vector3 A, Vector3 B)const;
+	float checkDist(Vector3 playerpos)const;
 };
 

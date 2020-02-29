@@ -19,7 +19,7 @@ public:
 	};
 	Vehicle();
 	
-	Object* getObject();
+	Object* getObject() const;
 
 	void setObject(Object* object,bool isRotationMode);
 	void setKeys(int FRONT, int LEFT, int BACK, int RIGHT, int UP, int DOWN);
