@@ -236,6 +236,7 @@ void GameScene::Init() { //Init scene
 	player1.disableKey(4);
 	player1.disableKey(5);
 
+	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
 	player2.disableKey(0);//disable movement in z and y axis
 	player2.disableKey(2);
 	player2.disableKey(4);
@@ -530,8 +531,93 @@ void GameScene::updateObstacleState(double dt)
 	}
 }
 
-void GameScene::Render(double dt, int winWidth, int winHeight) {
+void GameScene::Render(double dt, int winWidth, int winHeight) 
+{
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glViewport(winWidth / 4, winHeight / 2, winWidth / 2, winHeight / 2);
+	RenderScreen1(dt, winWidth, winHeight);
+	glViewport(winWidth / 4, 0, winWidth / 2, winHeight / 2);
+	RenderScreen2(dt, winWidth, winHeight);
+}
+
+void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
+{
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera2.pos.x, camera2.pos.y, camera2.pos.z,
+		camera2.target.x, camera2.target.y, camera2.target.z,
+		camera2.up.x, camera2.up.y, camera2.up.z);
+	modelStack.LoadIdentity();
+
+	RenderLight();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0.f, 50.f, 380.f);
+	modelStack.Scale(2.f, 2.f, 2.f);
+	//RenderSkybox(!light[0].power);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
+	{
+		if (activeObstacleQueue.at(i) != nullptr)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(activeObstacleQueue.at(i)->getPos().x, activeObstacleQueue.at(i)->getPos().y, activeObstacleQueue.at(i)->getPos().z);
+			modelStack.Scale(activeObstacleQueue.at(i)->getScale().x, activeObstacleQueue.at(i)->getScale().y, activeObstacleQueue.at(i)->getScale().z);
+			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
+			modelStack.PopMatrix();
+		}
+	}
+
+	//displays hitboxes
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y > 0)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
+			modelStack.PopMatrix();
+		}
+	}*/
+	//render all objects
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(&object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+
+	std::ostringstream ss;
+	if (showDebugInfo) {
+		ss << std::fixed << std::setprecision(2);
+		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		ss.str("");
+		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
+		ss.str("");
+		ss << std::setprecision(3);
+		ss << "Elapsed: " << elapsedTime;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
+		ss.str("");
+		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
+
+	}
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p1HitPoints, 1, 0.2, 29, winWidth, winHeight);
+}
+
+void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
+{
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
 		camera.target.x, camera.target.y, camera.target.z,
@@ -603,8 +689,7 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3- p1HitPoints,1, 0.2, 29, winWidth, winHeight);
-	
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p2HitPoints, 1, 0.2, 29, winWidth, winHeight);
 }
 
 void GameScene::RenderLight() {
