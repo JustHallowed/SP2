@@ -5,13 +5,12 @@
 
 struct Particle final{
 	Particle();
-	Color color;
-	GLfloat life;
+	float distToCam, xScale, yScale, zScale;
+	GLfloat accel, birthLife, life, spd, maxSpd, minSpd;
 	Vector3 dir, pos;
 };
 
 class ParticleEmitter final{
-	friend class GameScene;
 	friend class GhostScene;
 	friend class MotorScene;
 	GLuint currAmt, maxAmt, oldest;
@@ -20,5 +19,5 @@ public:
 	ParticleEmitter();
 	~ParticleEmitter();
 	GLuint GetIndex();
-	void InitParticles(), UpdateParticles(double);
+	void InitParticles(), SortParticles(), UpdateParticles(double);
 };

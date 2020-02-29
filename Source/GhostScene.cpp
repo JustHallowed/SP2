@@ -189,7 +189,6 @@ void GhostScene::Update(double dt, float FOV, const unsigned char* buttons){ //U
 	}
 	if(smokeBounceTime <= elapsedTime && smokeGenerator.currAmt < smokeGenerator.maxAmt){
 		Particle* p = smokeGenerator.particlePool[smokeGenerator.GetIndex()];
-		p->color = Color(1.f, 0.f, 0.f);
 		p->dir = Vector3(0, 1, 0);
 		p->life = 1.f;
 		p->pos = Vector3(0, 0, 0) + p->dir * 2.5f + Vector3(0.f, 7.5f, 0.f);
