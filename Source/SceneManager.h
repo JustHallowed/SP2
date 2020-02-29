@@ -16,5 +16,5 @@ class SceneManager final{ //Singleton
 public:
 	~SceneManager();
 	static SceneManager* getScMan();
-	void AddScene(Scene*), SetNextScene(), SetNextSceneID(int), Update(Application&, GLFWwindow*, const float* = 0);
+	void AddScene(Scene*), SetNextScene(), SetNextSceneID(int), Update(Application&, GLFWwindow*, const float* = 0, const unsigned char* = 0);
 };
