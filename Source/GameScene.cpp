@@ -260,6 +260,11 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 		object[UFO_BASE1].updateCollision(&object[i], dt);
 	}
 
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		object[i].updatePosition(dt);
+	}
+
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
 	projectionStack.LoadMatrix(projection);
@@ -370,9 +375,9 @@ void GameScene::updateObstacleState(double dt)
 				}
 				break;
 			case 1:
-				if (!slotTaken[0])
+				if (!slotTaken[1])
 				{
-					slotTaken[0] = true;
+					slotTaken[1] = true;
 					activeObstacleQueue.back()->setTranslation(-40.1f, 5, 1500);
 					retry = false;
 				}

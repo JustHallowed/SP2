@@ -187,8 +187,6 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::SPEAKER)] = MeshBuilder::GenerateOBJ("Resources/OBJs/speaker.obj");
 	meshList[unsigned int(MESH::SPEAKER)]->textureID = LoadTGA("Resources/TGAs/speaker.tga");
-
-
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
@@ -274,13 +272,12 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 		if(leftRight != 0){
 			delete leftRight;
 		}
-		
+		if(speaker1)
+			speaker1->drop();
+		if(speaker2)
+			speaker2->drop();
+		engine->drop();
 	}
-	if (speaker1)
-		speaker1->drop();
-	if (speaker2)
-		speaker2->drop();
-	engine->drop();
 }
 
 void MotorScene::Update(double dt, float FOV) { //Update scene
@@ -347,19 +344,19 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		object[i].resetCollision();
 	}
 
-	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
-	{
-		if (object[j].getDimension().y == 0 || object[j].getMesh() == nullptr)
-			continue;
-		for (int i = 0; i < NUM_INSTANCES; ++i)
-		{
-			if (i <= j)
-				i = j + 1;
-			if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
-				continue;
-			object[j].updateCollision(&object[i], dt);
-		}
-	}
+	//for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	//{
+	//	if (object[j].getDimension().y == 0 || object[j].getMesh() == nullptr)
+	//		continue;
+	//	for (int i = 0; i < NUM_INSTANCES; ++i)
+	//	{
+	//		if (i <= j)
+	//			i = j + 1;
+	//		if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
+	//			continue;
+	//		object[j].updateCollision(&object[i], dt);
+	//	}
+	//}
 
 	object[PLATFORM1].addRotation(1, 'y');
 
@@ -574,7 +571,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -584,10 +581,10 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 			modelStack.Rotate(object[i].getAngle().y, 0, 1, 0);
 			modelStack.Rotate(object[i].getAngle().x, 1, 0, 0);
 			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
+			RenderMesh(meshList[unsigned int(MESH::HITBOXRED)], false);
 			modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -636,10 +633,10 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
@@ -1543,7 +1540,7 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
 			inRange[instance] = true;
-			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
@@ -1575,7 +1572,7 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{
 			inRange[instance] = true;
-			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
