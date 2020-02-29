@@ -375,9 +375,9 @@ void GameScene::updateObstacleState(double dt)
 				}
 				break;
 			case 1:
-				if (!slotTaken[0])
+				if (!slotTaken[1])
 				{
-					slotTaken[0] = true;
+					slotTaken[1] = true;
 					activeObstacleQueue.back()->setTranslation(-40.1f, 5, 1500);
 					retry = false;
 				}
