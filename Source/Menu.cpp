@@ -13,17 +13,19 @@ Menu::~Menu()
 
 void Menu::Init()
 {
-	for (int i = 0; i < 7; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		menuR[i] = 0.2f;
 		menuG[i] = 0.8f;
 		menuWordSize[i] = 6.f;
 	}
 	menuX[0] = 1.f;
-	menuX[1] = -11.f;
+	for (int i = 1; i < 5; ++i)
+		menuX[i] = -11.f;
 	menuActive = true;
 	menuBounceTime = 0.0;
 	currentSelection = 1;
+	prev = 1;
 }
 
 void Menu::Update(double dt)
@@ -44,6 +46,9 @@ void Menu::Update(double dt)
 		case(CONTROLS):
 			controls();
 			break;
+		case(HOWTOPLAY):
+			howtoplay();
+			break;
 		default:
 			break;
 		}
@@ -62,10 +67,7 @@ void Menu::Update(double dt)
 
 void Menu::menu1()
 {
-	if (menuX[1] != -11)
-		--menuX[1];
-	if (menuX[0] != 1)
-		++menuX[0];
+	currentPage(0);
 
 	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 3)
 	{
@@ -137,10 +139,7 @@ void Menu::menu1()
 
 void Menu::menu2()
 {
-	if (menuX[0] != -11)
-		--menuX[0];
-	if (menuX[1] != 1)
-		++menuX[1];
+	currentPage(1);
 
 	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 3)
 	{
@@ -167,12 +166,12 @@ void Menu::menu2()
 			{
 				currentSelection = 1;
 			}
-			//FULLSCREEN
-			else if (p.x > 67 && p.x < 622 && p.y > 789 && p.y < 826)
+			//HOW TO PLAY
+			else if (p.x > 67 && p.x < 672 && p.y > 789 && p.y < 826)
 			{
 				currentSelection = 2;
 			}
-			//QUIT
+			//BACK
 			else if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
 			{
 				currentSelection = 3;
@@ -185,7 +184,10 @@ void Menu::menu2()
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
-			//controls
+			//CONTROLS
+			menuState = CONTROLS;
+			currentSelection = 1;
+			prev = 1;
 			menuBounceTime = elapsedTime + 0.4;
 		}
 	}
@@ -195,7 +197,9 @@ void Menu::menu2()
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
-			//FULLLSCREEN
+			//HOW TO PLAY
+			menuState = HOWTOPLAY;
+			currentSelection = 1;
 			menuBounceTime = elapsedTime + 0.4;
 		}
 	}
@@ -214,6 +218,8 @@ void Menu::menu2()
 
 void Menu::pause()
 {
+	currentPage(2);
+
 	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 4)
 	{
 		++currentSelection;
@@ -260,7 +266,7 @@ void Menu::pause()
 
 	if (currentSelection == 1)
 	{
-		selected(3);
+		selected(0);
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
@@ -270,17 +276,20 @@ void Menu::pause()
 	}
 	else if (currentSelection == 2)
 	{
-		selected(4);
+		selected(1);
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
 			//CONTROLS
+			menuState = CONTROLS;
+			currentSelection = 1;
+			prev = 2;
 			menuBounceTime = elapsedTime + 0.4;
 		}
 	}
 	else if (currentSelection == 3)
 	{
-		selected(5);
+		selected(2);
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
@@ -292,7 +301,7 @@ void Menu::pause()
 	}
 	else if (currentSelection == 4)
 	{
-		selected(6);
+		selected(3);
 		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
@@ -303,11 +312,70 @@ void Menu::pause()
 
 void Menu::controls()
 {
+	currentPage(3);
+	POINT p;
+	if (GetCursorPos(&p))
+	{
+		system("cls");
+		std::cout << p.x << std::endl << p.y << std::endl;
+		HWND hwnd = ::GetActiveWindow();
+		if (ScreenToClient(hwnd, &p))
+		{
+			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
+			{
+				currentSelection = 1;
+			}
+		}
+	}
+	//BACK
+	if (currentSelection == 1)
+	{
+		selected(0);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			if (prev == MENU_2)
+				menuState = MENU_2;
+			else if (prev == PAUSE)
+				menuState = PAUSE;
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+}
+
+void Menu::howtoplay()
+{
+	currentPage(4);
+	POINT p;
+	if (GetCursorPos(&p))
+	{
+		system("cls");
+		std::cout << p.x << std::endl << p.y << std::endl;
+		HWND hwnd = ::GetActiveWindow();
+		if (ScreenToClient(hwnd, &p))
+		{
+			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
+			{
+				currentSelection = 1;
+			}
+		}
+	}
+	if (currentSelection == 1)
+	{
+		//BACK
+		selected(0);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			menuState = MENU_2;
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
 }
 
 void Menu::selected(int x)
 {
-	for (int i = 0; i < 7; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		if (i != x)
 		{
@@ -325,5 +393,19 @@ void Menu::selected(int x)
 		menuG[x] += 0.1f;
 		menuWordSize[x] += 0.1f;
 	}
+}
+
+void Menu::currentPage(int x)
+{
+	for (int i = 0; i < 5; ++i)
+	{
+		if (i != x)
+		{
+			if (menuX[i] != -11)
+				--menuX[i];
+		}
+	}
+	if (menuX[x] != 1)
+		++menuX[x];
 }
 
