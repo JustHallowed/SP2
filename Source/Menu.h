@@ -7,7 +7,6 @@ public:
 		MENU_2,
 		PAUSE,
 		CONTROLS,
-		CLOSED,
 		NUM_STATES
 	};
 
@@ -19,9 +18,11 @@ public:
 	void menu2();
 	void pause();
 	void controls();
+	void selected(int);
 
 	float menuR[7], menuG[7], menuWordSize[7], menuX[2];
 	double menuBounceTime;
 	MENUSTATES menuState;
 	bool menuActive;
+	int currentSelection;
 };
