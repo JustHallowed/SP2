@@ -7,6 +7,7 @@ public:
 		MENU_2,
 		PAUSE,
 		CONTROLS,
+		HOWTOPLAY,
 		NUM_STATES
 	};
 
@@ -18,11 +19,14 @@ public:
 	void menu2();
 	void pause();
 	void controls();
+	void howtoplay();
 	void selected(int);
+	void currentPage(int);
 
-	float menuR[7], menuG[7], menuWordSize[7], menuX[2];
+	float menuR[4], menuG[4], menuWordSize[4], menuX[5];
 	double menuBounceTime;
 	MENUSTATES menuState;
 	bool menuActive;
 	int currentSelection;
+	int prev;
 };

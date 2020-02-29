@@ -777,9 +777,9 @@ void MotorScene::RenderMenu(int winWidth, int winHeight)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 65, 44.5f, 132, 103, winWidth, winHeight);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 45, 40, 30, winWidth, winHeight);
 	if (menu.menuState == Menu::MENU_1)
 	{
+		RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 45, 40, 30, winWidth, winHeight);
 		ss << "PLAY";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[0], 3.f, winWidth, winHeight);
 		ss.str("");
@@ -792,10 +792,11 @@ void MotorScene::RenderMenu(int winWidth, int winHeight)
 	}
 	else if (menu.menuState == Menu::MENU_2)
 	{
+		RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 45, 40, 30, winWidth, winHeight);
 		ss << "CONTROLS";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[1], 3.f, winWidth, winHeight);
 		ss.str("");
-		ss << "FULLSCREEN";
+		ss << "HOW TO PLAY";
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[1], 2.f, winWidth, winHeight);
 		ss.str("");
 		ss << "BACK";
@@ -804,21 +805,113 @@ void MotorScene::RenderMenu(int winWidth, int winHeight)
 	}
 	else if (menu.menuState == Menu::PAUSE)
 	{
+		RenderAnimationOnScreen(meshList[unsigned int(MESH::SPRITE1)], Ani1, 45, 40, 30, winWidth, winHeight);
 		ss << "RESUME";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[3], menu.menuG[3], 1.f), menu.menuWordSize[3], menu.menuX[0], 4.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[2], 4.f, winWidth, winHeight);
 		ss.str("");
 		ss << "CONTROLS";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[4], menu.menuG[4], 1.f), menu.menuWordSize[4], menu.menuX[0], 3.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[1], menu.menuG[1], 1.f), menu.menuWordSize[1], menu.menuX[2], 3.f, winWidth, winHeight);
 		ss.str("");
 		ss << "MAIN MENU";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[5], menu.menuG[5], 1.f), menu.menuWordSize[5], menu.menuX[0], 2.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[2], menu.menuG[2], 1.f), menu.menuWordSize[2], menu.menuX[2], 2.f, winWidth, winHeight);
 		ss.str("");
 		ss << "QUIT";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[6], menu.menuG[6], 1.f), menu.menuWordSize[6], menu.menuX[0], 1.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[3], menu.menuG[3], 1.f), menu.menuWordSize[3], menu.menuX[2], 1.f, winWidth, winHeight);
 		ss.str("");
 	}
 	else if (menu.menuState == Menu::CONTROLS)
-	{ }
+	{ 
+		ss << "CONTROLS";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 6.f, 7.5f, 15.f, winWidth, winHeight);
+		ss.str("");
+		ss << "W - Move Forward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 21.f, winWidth, winHeight);
+		ss.str("");
+		ss << "A - Move Left";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 20.f, winWidth, winHeight);
+		ss.str("");
+		ss << "S - Move Backward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 19.f, winWidth, winHeight);
+		ss.str("");
+		ss << "D - Move Right";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 18.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Up - Character Forward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 17.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Down - Character Backward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 16.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Left - Rotate Left";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 15.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Right - Rotate Right";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 14.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Q - Ascend";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 13.f, winWidth, winHeight);
+		ss.str("");
+		ss << "E - Descend";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 12.f, winWidth, winHeight);
+		ss.str("");
+		ss << "B - Switch Cam";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 11.f, winWidth, winHeight);
+		ss.str("");
+		ss << "F - Interact";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 10.f, winWidth, winHeight);
+		ss.str("");
+		ss << "0 - Play Minigame";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 9.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Minigame";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 6.f, 7.5f, 5.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Left - Move Left";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 6.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Right - Move Right";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 5.f, winWidth, winHeight);
+		ss.str("");
+		ss << "BACK";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[3], 1.f, winWidth, winHeight);
+		ss.str("");
+	}
+	else if (menu.menuState == Menu::HOWTOPLAY)
+	{
+		ss << "HOW TO PLAY";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 6.f, 6.f, 15.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Minigame 1";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 6.f, 7.5f, 13.f, winWidth, winHeight);
+		ss.str("");
+		ss << "A/Left - Move Left";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 18.f, winWidth, winHeight);
+		ss.str("");
+		ss << "D/Right - Move Right";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 17.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Minigame 2";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 6.f, 7.5f, 9.f, winWidth, winHeight);
+		ss.str("");
+		ss << "W/Up - Move Forward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 12.f, winWidth, winHeight);
+		ss.str("");
+		ss << "A/Left - Move Left";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 11.f, winWidth, winHeight);
+		ss.str("");
+		ss << "S/Down - Move Backward";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 10.f, winWidth, winHeight);
+		ss.str("");
+		ss << "D/Right - Move Right";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 9.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Spacebar/Enter - Jump";
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 3.f, 8.f, winWidth, winHeight);
+		ss.str("");
+		ss << "BACK";
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(menu.menuR[0], menu.menuG[0], 1.f), menu.menuWordSize[0], menu.menuX[4], 1.f, winWidth, winHeight);
+		ss.str("");
+	}
 }
 
 void MotorScene::RenderIdleScreen()
