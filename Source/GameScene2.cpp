@@ -41,9 +41,9 @@ void GameScene2::InitLight() const {
 
 void GameScene2::InitMeshes() {
 	meshList[unsigned int(MESH::REDHITBOX)] = MeshBuilder::GenerateCuboid(Color(1, 0, 0), 1, 1, 1);
-	meshList[unsigned int(MESH::REDHITBOX)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
+	meshList[unsigned int(MESH::REDHITBOX)]->textureID = LoadTGA("Resources/TGAs/bomb.tga");
 	meshList[unsigned int(MESH::WHITEHITBOX)] = MeshBuilder::GenerateCuboid(Color(1, 1, 1), 1, 1, 1);
-	meshList[unsigned int(MESH::WHITEHITBOX)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
+	meshList[unsigned int(MESH::WHITEHITBOX)]->textureID = LoadTGA("Resources/TGAs/ground.tga");
 	meshList[unsigned int(MESH::LEFT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
 	meshList[unsigned int(MESH::LEFT)]->textureID = LoadTGA("Resources/TGAs/skybox.tga");
 	meshList[unsigned int(MESH::RIGHT)] = MeshBuilder::GenerateQuad(Color(1.f, 1.f, 1.f), 1.f, 1.f);
@@ -93,6 +93,7 @@ void GameScene2::CreateInstances()
 	object[DEATHZONE].setScale(800, 10, 800);
 	object[DEATHZONE].setTranslation(0, -100, 0);
 	object[DEATHZONE].setDimension(1600, 10, 1600);
+	object[DEATHZONE].setRender(false);
 
 	for (int i = 0; i < 20; ++i)
 	{
