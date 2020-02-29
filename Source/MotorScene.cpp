@@ -187,7 +187,7 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::SPEAKER)] = MeshBuilder::GenerateOBJ("Resources/OBJs/speaker.obj");
 	meshList[unsigned int(MESH::SPEAKER)]->textureID = LoadTGA("Resources/TGAs/speaker.tga");
-}
+
 
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
@@ -243,7 +243,7 @@ void MotorScene::Init(){ //Init scene
 	light[0].power = 1.f;
 	Ani1 = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
-	//engine->play2D("Resources/Sound/bgm.mp3", true); //play thru out the scene and loops
+	
 
 	//play 3d sound //sound gets softer when further away frm speakers
 	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
@@ -274,7 +274,7 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 		if(leftRight != 0){
 			delete leftRight;
 		}
-		engine->drop();
+		
 	}
 	if (speaker1)
 		speaker1->drop();
@@ -566,12 +566,6 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	modelStack.Translate(0.f, 100.f, 0.f);
 	modelStack.Scale(2.f, 2.f, 2.f);
 	RenderSkybox(!light[0].power);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-		modelStack.Translate(0.f, 100.f, 0.f);
-		modelStack.Scale(2.f, 2.f, 2.f);
-		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
 	//modelStack.PushMatrix();
