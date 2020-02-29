@@ -114,6 +114,7 @@ void Vehicle::update(double dt)
 		object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2));
 		keyPressed = true;
 	}
+
 	if (!isRotationMode)
 	{
 		if (keyPress[LEFT_KEY] && !disabledKey[LEFT_KEY])//accelerate left
