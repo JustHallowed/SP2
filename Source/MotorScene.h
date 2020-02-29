@@ -106,8 +106,6 @@ class MotorScene final: public Scene{
 	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(), createStage(), createSpeaker(), UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const, RenderAnimation(Mesh*, std::string, Color) const;;
 	void npcCheck(int instance, const char* audioFileName);
 	void carCheck(int instance, const char* audioFileName);
-	void createStage();
-	void createSpeaker();
 
 public:
 	~MotorScene() override{}
