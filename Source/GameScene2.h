@@ -39,5 +39,5 @@ class GameScene2 final : public Scene {
 	void updateObstacleState(double dt), resetGame(), updateGame(double dt);
 public:
 	~GameScene2() override {}
-	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
+	void Init() override, Update(double, float, const unsigned char*) override, Render(double, int, int) override, Exit(Scene*) override;
 };

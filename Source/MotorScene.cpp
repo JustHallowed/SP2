@@ -381,7 +381,7 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	}
 }
 
-void MotorScene::Update(double dt, float FOV) { //Update scene
+void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //Update scene
 	for (int i = 0; i < 7; ++i)
 	{
 		if (Application::IsKeyPressed(keys[i])) {

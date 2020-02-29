@@ -152,7 +152,7 @@ void GameScene2::Exit(Scene* newScene) { //Exit scene
 	}
 }
 
-void GameScene2::Update(double dt, float FOV) { //Update scene
+void GameScene2::Update(double dt, float FOV, const unsigned char* buttons) { //Update scene
 	for (int i = 0; i < 7; ++i) {
 		if (Application::IsKeyPressed(keys[i])) {
 			switch (keys[i]) {

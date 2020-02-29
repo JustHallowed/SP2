@@ -27,5 +27,5 @@ public:
 	static char* getTyped(){
 		return typed;
 	}
-	virtual void Init() = 0, Update(double, float) = 0, Render(double, int, int) = 0, Exit(Scene*) = 0;
+	virtual void Init() = 0, Update(double, float, const unsigned char*) = 0, Render(double, int, int) = 0, Exit(Scene*) = 0;
 };

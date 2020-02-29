@@ -55,5 +55,5 @@ class GhostScene final: public Scene{
 	void createPlatforms(), createUFOs(), createRobot1(), UpdateMainChar(double), UpdateMainTranslateXZ(double), UpdateMainRotateY(double), UpdateMainTranslateY(double), RenderMainChar(), renderObject(Object* obj);
 public:
 	~GhostScene() override{}
-	void Init() override, Update(double, float) override, Render(double, int, int) override, Exit(Scene*) override;
+	void Init() override, Update(double, float, const unsigned char*) override, Render(double, int, int) override, Exit(Scene*) override;
 };
