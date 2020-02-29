@@ -23,6 +23,7 @@ void Menu::Init()
 	menuX[1] = -11.f;
 	menuActive = true;
 	menuBounceTime = 0.0;
+	currentSelection = 1;
 }
 
 void Menu::Update(double dt)
@@ -47,6 +48,16 @@ void Menu::Update(double dt)
 			break;
 		}
 	}
+	if (!menuActive)
+	{
+		if (Application::IsKeyPressed('P'))
+		{
+			menuState = PAUSE;
+			menuActive = true;
+			currentSelection = 1;
+		}
+
+	}
 }
 
 void Menu::menu1()
@@ -55,6 +66,17 @@ void Menu::menu1()
 		--menuX[1];
 	if (menuX[0] != 1)
 		++menuX[0];
+
+	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 3)
+	{
+		++currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+	}
+	else if (Application::IsKeyPressed(VK_UP) && menuBounceTime <= elapsedTime && currentSelection > 1)
+	{
+		--currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+	}
 	POINT p;
 	if (GetCursorPos(&p))
 	{
@@ -67,75 +89,48 @@ void Menu::menu1()
 			//PLAY
 			if (p.x > 65 && p.x < 265 && p.y > 730 && p.y < 766)
 			{
-				if (menuR[0] <= 1.f)
-				{
-					menuR[0] += 0.4f;
-					menuG[0] += 0.1f;
-					menuWordSize[0] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					menuActive = false;
-					menuState = CLOSED;
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[0] >= 0.2f)
-				{
-					menuR[0] -= 0.4f;
-					menuG[0] -= 0.1f;
-					menuWordSize[0] -= 0.1f;
-				}
+				currentSelection = 1;
 			}
 			//OPTIONS
-			if (p.x > 67 && p.x < 447 && p.y > 789 && p.y < 826)
+			else if (p.x > 67 && p.x < 447 && p.y > 789 && p.y < 826)
 			{
-				if (menuR[1] <= 1.f)
-				{
-					menuR[1] += 0.4f;
-					menuG[1] += 0.1f;
-					menuWordSize[1] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					menuState = MENU_2;
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[1] >= 0.2f)
-				{
-					menuR[1] -= 0.4f;
-					menuG[1] -= 0.1f;
-					menuWordSize[1] -= 0.1f;
-				}
+				currentSelection = 2;
 			}
 			//QUIT
-			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
+			else if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
 			{
-				if (menuR[2] <= 1.f)
-				{
-					menuR[2] += 0.4f;
-					menuG[2] += 0.1f;
-					menuWordSize[2] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					exit(0);
-				}
+				currentSelection = 3;
 			}
-			else
-			{
-				if (menuR[2] >= 0.2f)
-				{
-					menuR[2] -= 0.4f;
-					menuG[2] -= 0.1f;
-					menuWordSize[2] -= 0.1f;
-				}
-			}
+		}
+	}
+
+	if (currentSelection == 1)
+	{
+		selected(0);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			menuActive = false;
+		}
+	}
+	else if (currentSelection == 2)
+	{
+		selected(1);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			menuState = MENU_2;
+			currentSelection = 1;
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+	else if (currentSelection == 3)
+	{
+		selected(2);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			exit(0);
 		}
 	}
 }
@@ -146,6 +141,18 @@ void Menu::menu2()
 		--menuX[0];
 	if (menuX[1] != 1)
 		++menuX[1];
+
+	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 3)
+	{
+		++currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+	}
+	else if (Application::IsKeyPressed(VK_UP) && menuBounceTime <= elapsedTime && currentSelection > 1)
+	{
+		--currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+
+	}
 	POINT p;
 	if (GetCursorPos(&p))
 	{
@@ -158,81 +165,67 @@ void Menu::menu2()
 			//CONTROLS
 			if (p.x > 65 && p.x < 500 && p.y > 730 && p.y < 766)
 			{
-				if (menuR[0] <= 1.f)
-				{
-					menuR[0] += 0.4f;
-					menuG[0] += 0.1f;
-					menuWordSize[0] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					//code for controls
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[0] >= 0.2f)
-				{
-					menuR[0] -= 0.4f;
-					menuG[0] -= 0.1f;
-					menuWordSize[0] -= 0.1f;
-				}
+				currentSelection = 1;
 			}
 			//FULLSCREEN
-			if (p.x > 67 && p.x < 622 && p.y > 789 && p.y < 826)
+			else if (p.x > 67 && p.x < 622 && p.y > 789 && p.y < 826)
 			{
-				if (menuR[1] <= 1.f)
-				{
-					menuR[1] += 0.4f;
-					menuG[1] += 0.1f;
-					menuWordSize[1] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					//fullscreen toggle
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[1] >= 0.2f)
-				{
-					menuR[1] -= 0.4f;
-					menuG[1] -= 0.1f;
-					menuWordSize[1] -= 0.1f;
-				}
+				currentSelection = 2;
 			}
 			//QUIT
-			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
+			else if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
 			{
-				if (menuR[2] <= 1.f)
-				{
-					menuR[2] += 0.4f;
-					menuG[2] += 0.1f;
-					menuWordSize[2] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					menuState = MENU_1;
-					menuBounceTime = elapsedTime + 0.4;
-				}
+				currentSelection = 3;
 			}
-			else
-			{
-				if (menuR[2] >= 0.2f)
-				{
-					menuR[2] -= 0.4f;
-					menuG[2] -= 0.1f;
-					menuWordSize[2] -= 0.1f;
-				}
-			}
+		}
+	}
+	if (currentSelection == 1)
+	{
+		selected(0);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			//controls
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+	else if (currentSelection == 2)
+	{
+		selected(1);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			//FULLLSCREEN
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+	else if (currentSelection == 3)
+	{
+		selected(2);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			menuState = MENU_1;
+			currentSelection = 1;
+			menuBounceTime = elapsedTime + 0.4;
 		}
 	}
 }
 
 void Menu::pause()
 {
+	if (Application::IsKeyPressed(VK_DOWN) && menuBounceTime <= elapsedTime && currentSelection < 4)
+	{
+		++currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+	}
+	else if (Application::IsKeyPressed(VK_UP) && menuBounceTime <= elapsedTime && currentSelection > 1)
+	{
+		--currentSelection;
+		menuBounceTime = elapsedTime + 0.1;
+
+
+	}
 	POINT p;
 	if (GetCursorPos(&p))
 	{
@@ -245,99 +238,65 @@ void Menu::pause()
 			//RESUME
 			if (p.x > 65 && p.x < 392 && p.y > 670 && p.y < 708)
 			{
-				if (menuR[3] <= 1.f)
-				{
-					menuR[3] += 0.4f;
-					menuG[3] += 0.1f;
-					menuWordSize[3] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					menuActive = false;
-					menuState = CLOSED;
-				}
-			}
-			else
-			{
-				if (menuR[3] >= 0.2f)
-				{
-					menuR[3] -= 0.4f;
-					menuG[3] -= 0.1f;
-					menuWordSize[3] -= 0.1f;
-				}
-
+				currentSelection = 1;
 			}
 			//CONTROLS
-			if (p.x > 65 && p.x < 500 && p.y > 730 && p.y < 766)
+			else if (p.x > 65 && p.x < 500 && p.y > 730 && p.y < 766)
 			{
-				if (menuR[4] <= 1.f)
-				{
-					menuR[4] += 0.4f;
-					menuG[4] += 0.1f;
-					menuWordSize[4] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					//code for controls
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[4] >= 0.2f)
-				{
-					menuR[4] -= 0.4f;
-					menuG[4] -= 0.1f;
-					menuWordSize[4] -= 0.1f;
-				}
+				currentSelection = 2;
 			}
 			//MAIN MENU
-			if (p.x > 67 && p.x < 622 && p.y > 789 && p.y < 826)
+			else if (p.x > 67 && p.x < 622 && p.y > 789 && p.y < 826)
 			{
-				if (menuR[5] <= 1.f)
-				{
-					menuR[5] += 0.4f;
-					menuG[5] += 0.1f;
-					menuWordSize[5] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					menuState = MENU_1;
-					menuBounceTime = elapsedTime + 0.4;
-				}
-			}
-			else
-			{
-				if (menuR[5] >= 0.2f)
-				{
-					menuR[5] -= 0.4f;
-					menuG[5] -= 0.1f;
-					menuWordSize[5] -= 0.1f;
-				}
+				currentSelection = 3;
 			}
 			//QUIT
 			if (p.x > 67 && p.x < 268 && p.y > 854 && p.y < 884)
 			{
-				if (menuR[6] <= 1.f)
-				{
-					menuR[6] += 0.4f;
-					menuG[6] += 0.1f;
-					menuWordSize[6] += 0.1f;
-				}
-				if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime)
-				{
-					exit(0);
-				}
+				currentSelection = 4;
 			}
-			else
-			{
-				if (menuR[6] >= 0.2f)
-				{
-					menuR[6] -= 0.4f;
-					menuG[6] -= 0.1f;
-					menuWordSize[6] -= 0.1f;
-				}
-			}
+		}
+	}
+
+	if (currentSelection == 1)
+	{
+		selected(3);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			//resume
+			menuActive = false;
+		}
+	}
+	else if (currentSelection == 2)
+	{
+		selected(4);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			//CONTROLS
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+	else if (currentSelection == 3)
+	{
+		selected(5);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			//MAIN MENU
+			menuState = MENU_1;
+			currentSelection = 1;
+			menuBounceTime = elapsedTime + 0.4;
+		}
+	}
+	else if (currentSelection == 4)
+	{
+		selected(6);
+		if ((GetKeyState(VK_LBUTTON) & 0x100) != 0 && menuActive && menuBounceTime <= elapsedTime
+			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
+		{
+			exit(0);
 		}
 	}
 }
@@ -345,3 +304,26 @@ void Menu::pause()
 void Menu::controls()
 {
 }
+
+void Menu::selected(int x)
+{
+	for (int i = 0; i < 7; ++i)
+	{
+		if (i != x)
+		{
+			if (menuR[i] >= 0.2f)
+			{
+				menuR[i] -= 0.4f;
+				menuG[i] -= 0.1f;
+				menuWordSize[i] -= 0.1f;
+			}
+		}
+	}
+	if (menuR[x] <= 1.f)
+	{
+		menuR[x] += 0.4f;
+		menuG[x] += 0.1f;
+		menuWordSize[x] += 0.1f;
+	}
+}
+
