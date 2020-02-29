@@ -47,7 +47,7 @@ void SceneManager::SetNextSceneID(int newID){
 	nextSceneID = newID;
 }
 
-void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* axes){ //Update current scene
+void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* axes, const unsigned char* buttons){ //Update current scene
 	double dt = app.m_timer.getElapsedTime();
 	elapsedTime += dt;
 	if(Application::IsKeyPressed('C') && switchBounceTime <= elapsedTime){
@@ -59,23 +59,17 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* a
 		}
 		switchBounceTime = elapsedTime + 0.5;
 	}
-	if(Application::IsKeyPressed(VK_F11) && screenBounceTime <= elapsedTime){ //Toggle fullscreen
+	if((Application::IsKeyPressed('F') || (buttons != 0 && bool(buttons[6]))) && screenBounceTime <= elapsedTime){ //Toggle fullscreen
 		if(app.fullscreen){
-			glfwSetWindowMonitor(m_window, 0, int(app.mode->width / 4), int(app.mode->height / 30), int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4, GLFW_DONT_CARE);
+			glfwSetWindowMonitor(m_window, 0, int(app.mode->width * 7 / 24), int(app.mode->height / 30), int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4, GLFW_DONT_CARE);
 		} else{
 			glfwSetWindowMonitor(m_window, glfwGetPrimaryMonitor(), 0, 0, int(app.mode->width), int(app.mode->height), GLFW_DONT_CARE);
 		}
 		app.fullscreen = !app.fullscreen;
 		screenBounceTime = elapsedTime + 0.5;
 	}
-	if(Application::IsKeyPressed(VK_END)){ //Reset scene
-		camera.pos = camera.defaultPos;
-		camera.target = camera.defaultTarget;
-		camera.up = camera.defaultUp;
-		FOV = 45.f;
-	}
-	camera.Update(dt, axes);
-	sceneStorage[currSceneID]->Update(dt, FOV);
+	camera.Update(dt, axes, buttons);
+	sceneStorage[currSceneID]->Update(dt, FOV, buttons);
 	sceneStorage[currSceneID]->Render(dt, int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4);
 	glfwSwapBuffers(m_window);
 	glfwPollEvents(); //Get and organize events like kb and mouse input, window resizing, etc.
