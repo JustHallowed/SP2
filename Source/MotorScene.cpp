@@ -147,56 +147,158 @@ void MotorScene::InitMeshes(){
 	//5 ufos
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
+	meshList[unsigned int(MESH::UFO_BASE)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UFO_BASE)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UFO_BASE)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UFO_BASE)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::UFO_PURPLE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_PURPLE)]->textureID = LoadTGA("Resources/TGAs/ufo_1.tga");
+	meshList[unsigned int(MESH::UFO_PURPLE)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UFO_PURPLE)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UFO_PURPLE)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UFO_PURPLE)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
+	meshList[unsigned int(MESH::UFO_RED)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UFO_RED)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UFO_RED)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UFO_RED)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::UFO_BLUE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BLUE)]->textureID = LoadTGA("Resources/TGAs/ufo_6.tga");
+	meshList[unsigned int(MESH::UFO_BLUE)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UFO_BLUE)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UFO_BLUE)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UFO_BLUE)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::UFO_PINK)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_PINK)]->textureID = LoadTGA("Resources/TGAs/ufo_7.tga");
+	meshList[unsigned int(MESH::UFO_PINK)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UFO_PINK)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UFO_PINK)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UFO_PINK)]->material.kShininess = 4.f;
 
 	//normal vehicles
 	meshList[unsigned int(MESH::GY_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/guanyu_car.obj");
 	meshList[unsigned int(MESH::GY_CAR)]->textureID = LoadTGA("Resources/TGAs/guanyu_car.tga");
+	meshList[unsigned int(MESH::GY_CAR)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::GY_CAR)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::GY_CAR)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::GY_CAR)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::EH_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/enhui_car.obj");
 	meshList[unsigned int(MESH::EH_CAR)]->textureID = LoadTGA("Resources/TGAs/enhui_car.tga");
+	meshList[unsigned int(MESH::EH_CAR)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::EH_CAR)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::EH_CAR)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::EH_CAR)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::LF_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/loopy_vehicle.obj");
 	meshList[unsigned int(MESH::LF_CAR)]->textureID = LoadTGA("Resources/TGAs/loopy_vehicle.tga");
+	meshList[unsigned int(MESH::LF_CAR)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::LF_CAR)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::LF_CAR)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::LF_CAR)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::YW_CAR)] = MeshBuilder::GenerateOBJ("Resources/OBJs/yuwei_car.obj");
 	meshList[unsigned int(MESH::YW_CAR)]->textureID = LoadTGA("Resources/TGAs/yuwei_car.tga");
+	meshList[unsigned int(MESH::YW_CAR)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::YW_CAR)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::YW_CAR)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::YW_CAR)]->material.kShininess = 4.f;
 
 	//base mesh
 	meshList[unsigned int(MESH::PLATFORM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/platform.obj");
 	meshList[unsigned int(MESH::PLATFORM)]->textureID = LoadTGA("Resources/TGAs/platform.tga");
+	meshList[unsigned int(MESH::PLATFORM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::PLATFORM)]->material.kShininess = 2.f;
+
 	meshList[unsigned int(MESH::ROBOT_BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_body.obj");
 	meshList[unsigned int(MESH::ROBOT_BODY)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::ROBOT_ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_arm.obj");
 	meshList[unsigned int(MESH::ROBOT_ARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::ROBOT_FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_forearm.obj");
 	meshList[unsigned int(MESH::ROBOT_FOREARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_upperleg.obj");
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::STAGE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stage.obj");
 	meshList[unsigned int(MESH::STAGE)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
+
 	meshList[unsigned int(MESH::STAND)] = MeshBuilder::GenerateOBJ("Resources/OBJs/stand.obj");
 	meshList[unsigned int(MESH::STAND)]->textureID = LoadTGA("Resources/TGAs/stage.tga");
 
 	meshList[unsigned int(MESH::SPEAKER)] = MeshBuilder::GenerateOBJ("Resources/OBJs/speaker.obj");
 	meshList[unsigned int(MESH::SPEAKER)]->textureID = LoadTGA("Resources/TGAs/speaker.tga");
+	meshList[unsigned int(MESH::SPEAKER)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::SPEAKER)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::SPEAKER)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::SPEAKER)]->material.kShininess = 2.f;
+
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::ARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ARM)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::ARM)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::ARM)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
 	meshList[unsigned int(MESH::FOREARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::FOREARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::FOREARM)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::FOREARM)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::FOREARM)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharBody.obj");
 	meshList[unsigned int(MESH::BODY)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::BODY)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::BODY)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::BODY)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::BODY)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::LOWER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharLowerLeg.obj");
 	meshList[unsigned int(MESH::LOWER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::LOWER_LEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::LOWER_LEG)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::LOWER_LEG)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::LOWER_LEG)]->material.kShininess = 4.f;
+
 	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharUpperLeg.obj");
 	meshList[unsigned int(MESH::UPPER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
+	meshList[unsigned int(MESH::UPPER_LEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UPPER_LEG)]->material.kDiffuse.Set(0.3f, 0.3f, 0.3f);
+	meshList[unsigned int(MESH::UPPER_LEG)]->material.kSpecular.Set(0.9f, 0.9f, 0.9f);
+	meshList[unsigned int(MESH::UPPER_LEG)]->material.kShininess = 4.f;
 }
 
 void MotorScene::CreateInstances(){
@@ -224,6 +326,7 @@ void MotorScene::Init(){ //Init scene
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	iCamera.Init(Vector3(0.f, 20.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	light[0].power = 1.f;
 	InitLight();
 	InitMeshes();
 	menu.Init();
@@ -238,7 +341,6 @@ void MotorScene::Init(){ //Init scene
 	debugBounceTime = lightBounceTime = interactBounceTime = splitBounceTime = timePressed = swingBounceTime = 0.0;
 	inRange[ROBOT_BODY1] = 0;
 	interacted[ROBOT_BODY1] = 0;
-	light[0].power = 1.f;
 	Ani1 = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 	
@@ -947,7 +1049,6 @@ void MotorScene::RenderMainChar(){
 }
 
 void MotorScene::RenderLight(){
-
 	if(light[0].type == Light::LIGHT_TYPE::DIRECTIONAL){
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
@@ -1577,6 +1678,8 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
+				if (interacted[instance])
+					engine->play2D(audioFileName);
 				//when interact wif car, car light on
 				if (instance==6)
 				{
