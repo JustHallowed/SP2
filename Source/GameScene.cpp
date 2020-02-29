@@ -56,9 +56,12 @@ void GameScene::InitMeshes() {
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
-
+	meshList[unsigned int(MESH::HEALTHBAR)] = MeshBuilder::GenerateText(1,4);
+	meshList[unsigned int(MESH::HEALTHBAR)]->textureID = LoadTGA("Resources/TGAs/healthbar.tga");
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
+	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
+	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
 }
 void GameScene::CreateInstances()
 {
@@ -66,11 +69,17 @@ void GameScene::CreateInstances()
 	object[UFO_BASE1].setTranslation(0, 0.6, 35);
 	object[UFO_BASE1].setScale(4);
 	object[UFO_BASE1].setDimension(25, 20, 20);
-	player.setObject(&object[UFO_BASE1], false);
+	player1.setObject(&object[UFO_BASE1], false);
+
+	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
+	object[UFO_RED1].setTranslation(0, 300.6, 35);
+	object[UFO_RED1].setScale(4);
+	object[UFO_RED1].setDimension(25, 20, 20);
+	player2.setObject(&object[UFO_RED1], false);
 
 	object[ENDWALL].setMesh(meshList[unsigned int(MESH::REDHITBOX)]);
 	object[ENDWALL].setTranslation(0, 0, -300);
-	object[ENDWALL].setDimension(500, 500, 30);
+	object[ENDWALL].setDimension(500, 1300, 30);
 
 	object[BOTTOM1].setMesh(meshList[unsigned(MESH::BOTTOM)]);
 	object[BOTTOM1].setTranslation(0.f, 0.f, 600.f);
@@ -128,11 +137,65 @@ void GameScene::CreateInstances()
 
 	object[BOUNDARYLEFT].setMesh(meshList[(unsigned)MESH::REDHITBOX]);
 	object[BOUNDARYLEFT].setTranslation(75, 0.f, 50.f);
-	object[BOUNDARYLEFT].setDimension(3, 100.f, 100.f);
+	object[BOUNDARYLEFT].setDimension(3, 1300.f, 100.f);
 
 	object[BOUNDARYRIGHT].setMesh(meshList[(unsigned)MESH::REDHITBOX]);
 	object[BOUNDARYRIGHT].setTranslation(-75, 0.f, 50.f);
-	object[BOUNDARYRIGHT].setDimension(3, 100.f, 100.f);
+	object[BOUNDARYRIGHT].setDimension(3, 1300.f, 100.f);
+
+	object[BOTTOM3].setMesh(meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM3].setTranslation(0.f, 301.f, 600.f);
+	object[BOTTOM3].setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM3].setRotation(-90, 'x');
+	object[BOTTOM3].setRotation(90, 'z');
+
+	object[LEFT3].setMesh(meshList[unsigned(MESH::LEFT)]);
+	object[LEFT3].setTranslation(-75, 75.f, 0.f);
+	object[LEFT3].setScale(1200.f, 150.f, 50.f);
+	object[LEFT3].setRotation(90.f, 'y');
+	object[LEFT3].setRotation(180.f, 'z');
+	Object::bind(&object[BOTTOM3], &object[LEFT3], false, true);
+
+	object[RIGHT3].setMesh(meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT3].setTranslation(75, 75.f, 0.f);
+	object[RIGHT3].setScale(1200.f, 150.f, 50.f);
+	object[RIGHT3].setRotation(-90.f, 'y');
+	object[RIGHT3].setRotation(180.f, 'z');
+	Object::bind(&object[BOTTOM3], &object[RIGHT3], false, true);
+
+	object[TOP3].setMesh(meshList[unsigned(MESH::TOP)]);
+	object[TOP3].setTranslation(0.f, 150.f, 0.f);
+	object[TOP3].setScale(1200.f, 150.f, 50.f);
+	object[TOP3].setRotation(90.f, 'x');
+	object[TOP3].setRotation(270.f, 'z');
+	Object::bind(&object[BOTTOM3], &object[TOP3], false, true);
+
+	object[BOTTOM4].setMesh(meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM4].setTranslation(0.f, 301.f, 1800.f);
+	object[BOTTOM4].setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM4].setRotation(-90, 'x');
+	object[BOTTOM4].setRotation(90, 'z');
+
+	object[LEFT4].setMesh(meshList[unsigned(MESH::LEFT)]);
+	object[LEFT4].setTranslation(-75, 75.f, 0.f);
+	object[LEFT4].setScale(1200.f, 150.f, 50.f);
+	object[LEFT4].setRotation(90.f, 'y');
+	object[LEFT4].setRotation(180.f, 'z');
+	Object::bind(&object[BOTTOM4], &object[LEFT4], false, true);
+
+	object[RIGHT4].setMesh(meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT4].setTranslation(75, 75.f, 0.f);
+	object[RIGHT4].setScale(1200.f, 150.f, 50.f);
+	object[RIGHT4].setRotation(-90.f, 'y');
+	object[RIGHT4].setRotation(180.f, 'z');
+	Object::bind(&object[BOTTOM4], &object[RIGHT4], false, true);
+
+	object[TOP4].setMesh(meshList[unsigned(MESH::TOP)]);
+	object[TOP4].setTranslation(0.f, 150.f, 0.f);
+	object[TOP4].setScale(1200.f, 150.f, 50.f);
+	object[TOP4].setRotation(90.f, 'x');
+	object[TOP4].setRotation(270.f, 'z');
+	Object::bind(&object[BOTTOM4], &object[TOP4], false, true);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -156,20 +219,27 @@ void GameScene::Init() { //Init scene
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 0.6f, 50.f), Vector3(0.f, 1.f, 0.f));
+	camera2.Init(Vector3(0.f, 330.f, -50.f), Vector3(0.f, 300.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = 0.0;
+	debugBounceTime = lightBounceTime = timeSinceLastObstacle = 0.0;
 	survivalTime = 0;
-	hitPoints = 3;
+	p2HitPoints = p1HitPoints = 3;
+
 	srand(time(NULL));
-	player.disableKey(0);//disable movement in z and y axis
-	player.disableKey(2);
-	player.disableKey(4);
-	player.disableKey(5);
+	player1.disableKey(0);//disable movement in z and y axis
+	player1.disableKey(2);
+	player1.disableKey(4);
+	player1.disableKey(5);
+
+	player2.disableKey(0);//disable movement in z and y axis
+	player2.disableKey(2);
+	player2.disableKey(4);
+	player2.disableKey(5);
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene
@@ -190,6 +260,8 @@ void GameScene::Exit(Scene* newScene) { //Exit scene
 	{
 		delete inactiveObstacleQueue.at(i);
 	}
+	inactiveObstacleQueue.clear();
+	activeObstacleQueue.clear();
 }
 
 void GameScene::Update(double dt, float FOV) { //Update scene
@@ -218,7 +290,7 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 		showLightSphere = !showLightSphere;
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if (Application::IsKeyPressed('R')) { //Show/Hide light sphere
+	if (Application::IsKeyPressed('R')) { 
 		resetGame();
 	}
 	if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
@@ -226,18 +298,9 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 		debugBounceTime = elapsedTime + 0.5;
 	}
 
-	if (bulletBounceTime <= elapsedTime && bulletGenerator.currAmt < bulletGenerator.maxAmt) {
-		Particle* p = bulletGenerator.particlePool[bulletGenerator.GetIndex()];
-		p->color = Color(1.f, 0.f, 0.f);
-		p->dir = Vector3(0, 1, 0);
-		p->life = 1.f;
-		p->pos = Vector3(0, 0, 0) + p->dir * 2.5f + Vector3(0.f, 7.5f, 0.f);
-		++bulletGenerator.currAmt;
-		bulletBounceTime = elapsedTime + 0.2;
-	}
-	bulletGenerator.UpdateParticles(dt);
 
-	player.update(dt);
+	player1.update(dt);
+	player2.update(dt);
 
 	updateGame(dt);
 
@@ -248,16 +311,10 @@ void GameScene::Update(double dt, float FOV) { //Update scene
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if(&object[i] == player.getObject()||object[i].getDimension().y == 0)
+		if(&object[i] == player1.getObject()|| &object[i] == player2.getObject()||object[i].getDimension().y == 0)
 		continue;
-		object[UFO_BASE1].updateCollision(&object[i], dt);
-	}
-
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getDimension().y == 0 || &object[i] == player.getObject())
-			continue;
-		object[UFO_BASE1].updateCollision(&object[i], dt);
+		player1.getObject()->updateCollision(&object[i], dt);
+		player2.getObject()->updateCollision(&object[i], dt);
 	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
@@ -277,11 +334,19 @@ void GameScene::updateGame(double dt)
 
 	updateObstacleState(dt);
 
-	if (camera.pos.x< object[UFO_BASE1].getPos().x || camera.pos.x > object[UFO_BASE1].getPos().x)//camera follow player
+	if (camera.pos.x< player1.getObject()->getPos().x || camera.pos.x > player1.getObject()->getPos().x)//camera follow player
 	{
-		float cameraXDisplacement = camera.pos.x - object[UFO_BASE1].getPos().x;
+		float cameraXDisplacement = camera.pos.x - player1.getObject()->getPos().x;
 		camera.pos.x -= cameraXDisplacement * 5 * dt;
-		camera.target.Set(object[UFO_BASE1].getPos().x / 2, object[UFO_BASE1].getPos().y, object[UFO_BASE1].getPos().z);
+		camera.target.Set(player1.getObject()->getPos().x / 2, player1.getObject()->getPos().y, player1.getObject()->getPos().z);
+	}
+
+
+	if (camera2.pos.x< player2.getObject()->getPos().x || camera2.pos.x > player2.getObject()->getPos().x)//camera follow player
+	{
+		float camera2XDisplacement = camera2.pos.x - player2.getObject()->getPos().x;
+		camera2.pos.x -= camera2XDisplacement * 5 * dt;
+		camera2.target.Set(player2.getObject()->getPos().x / 2, player2.getObject()->getPos().y, player2.getObject()->getPos().z);
 	}
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)//check if obstacle hit player
@@ -290,8 +355,18 @@ void GameScene::updateGame(double dt)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
-			--hitPoints;
-			if (hitPoints <= 0)
+			--p1HitPoints;
+			if (p1HitPoints < 0)
+			{
+				resetGame();
+			}
+		}
+		if (object[UFO_RED1].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		{
+			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
+			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
+			--p2HitPoints;
+			if (p2HitPoints < 0)
 			{
 				resetGame();
 			}
@@ -311,8 +386,20 @@ void GameScene::updateGame(double dt)
 		object[BOTTOM2].setTranslation(object[BOTTOM2].getTranslation().x, object[BOTTOM2].getTranslation().y, object[BOTTOM2].getTranslation().z + 2400);
 	}
 
+	if (object[BOTTOM3].getTranslation().z < -600)//loops ground
+	{
+		object[BOTTOM3].setTranslation(object[BOTTOM3].getTranslation().x, object[BOTTOM3].getTranslation().y, object[BOTTOM3].getTranslation().z + 2400);
+	}
+	if (object[BOTTOM4].getTranslation().z < -600)
+	{
+		object[BOTTOM4].setTranslation(object[BOTTOM4].getTranslation().x, object[BOTTOM4].getTranslation().y, object[BOTTOM4].getTranslation().z + 2400);
+	}
+
 	object[BOTTOM1].moveBy(0, 0, -obstacleSpeed);//moves ground
 	object[BOTTOM2].moveBy(0, 0, -obstacleSpeed);
+
+	object[BOTTOM3].moveBy(0, 0, -obstacleSpeed);//moves ground
+	object[BOTTOM4].moveBy(0, 0, -obstacleSpeed);
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
@@ -329,10 +416,13 @@ void GameScene::updateGame(double dt)
 
 void GameScene::resetGame()
 {
-	hitPoints = 3;
+	
+	p1HitPoints = p2HitPoints = 3;
 	survivalTime = 0;
 	object[UFO_BASE1].setTranslation(0, 0.6, 35);
 	object[UFO_BASE1].setVelocity(0, 0.0, 0);
+	object[UFO_RED1].setTranslation(0, 300.6, 35);
+	object[UFO_RED1].setVelocity(0, 0.0, 0);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
@@ -351,7 +441,7 @@ void GameScene::updateObstacleState(double dt)
 		return;
 	}
 	timeSinceLastObstacle = 0;
-	bool slotTaken[3] = { 0, };
+	bool slotTaken[2][3] = { 0, };
 	for (int i = 0; i < 2; ++i)
 	{
 		if (inactiveObstacleQueue.size() > 0)
@@ -367,26 +457,69 @@ void GameScene::updateObstacleState(double dt)
 			switch (rand() % 3)
 			{
 			case 0:
-				if (!slotTaken[0])
+				if (!slotTaken[0][0])
 				{
-					slotTaken[0] = true;
+					slotTaken[0][0] = true;
 					activeObstacleQueue.back()->setTranslation(0, 5, 1500);
 					retry = false;
 				}
 				break;
 			case 1:
-				if (!slotTaken[1])
+				if (!slotTaken[0][1])
 				{
-					slotTaken[1] = true;
+					slotTaken[0][1] = true;
 					activeObstacleQueue.back()->setTranslation(-40.1f, 5, 1500);
 					retry = false;
 				}
 				break;
 			case 2:
-				if (!slotTaken[2])
+				if (!slotTaken[0][2])
 				{
-					slotTaken[2] = true;
+					slotTaken[0][2] = true;
 					activeObstacleQueue.back()->setTranslation(40.1f, 5, 1500);
+					retry = false;
+				}
+				break;
+			default: std::cout << "random number at void GameScene::updateObstacleState(double dt) out of range" << std::endl; //error:random number out of range
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		if (inactiveObstacleQueue.size() > 0)
+		{
+			activeObstacleQueue.push_back(inactiveObstacleQueue.back());
+			inactiveObstacleQueue.pop_back();
+		}
+		else break;
+
+		bool retry = true;
+		while (retry)//randomises obstacle slot placement
+		{
+			switch (rand() % 3)
+			{
+			case 0:
+				if (!slotTaken[1][0])
+				{
+					slotTaken[1][0] = true;
+					activeObstacleQueue.back()->setTranslation(0, 305, 1500);
+					retry = false;
+				}
+				break;
+			case 1:
+				if (!slotTaken[1][1])
+				{
+					slotTaken[1][1] = true;
+					activeObstacleQueue.back()->setTranslation(-40.1f,305, 1500);
+					retry = false;
+				}
+				break;
+			case 2:
+				if (!slotTaken[1][2])
+				{
+					slotTaken[1][2] = true;
+					activeObstacleQueue.back()->setTranslation(40.1f, 305, 1500);
 					retry = false;
 				}
 				break;
@@ -470,6 +603,8 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3- p1HitPoints,1, 0.2, 29, winWidth, winHeight);
+	
 }
 
 void GameScene::RenderLight() {
@@ -714,4 +849,40 @@ void GameScene::renderObject(Object* obj)
 		modelStack.Scale(obj->getScale().x, obj->getScale().y, obj->getScale().z);
 		RenderMesh(obj->getMesh(), true);
 	}
+
 }
+	void GameScene::RenderAnimationOnScreen(Mesh * mesh, int frame, float size, float x, float y, int winWidth, int winHeight)
+	{
+		if (!mesh || mesh->textureID <= 0) { //Proper error check return
+			glDisable(GL_DEPTH_TEST);
+		}
+		Mtx44 ortho;
+		ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
+		projectionStack.PushMatrix();
+		projectionStack.LoadMatrix(ortho);
+		viewStack.PushMatrix();
+		viewStack.LoadIdentity(); //No need cam for ortho mode
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity(); //Reset modelStack
+		modelStack.Translate(x, y, 0);
+		modelStack.Scale(size, size, size);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
+		glActiveTexture(GL_TEXTURE0);
+		if (mesh != nullptr)
+		{
+			glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+		}
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		mesh->Render(frame * 6, 6);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+		glEnable(GL_DEPTH_TEST);
+	}
