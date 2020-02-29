@@ -56,7 +56,7 @@ void GameScene::InitMeshes() {
 	meshList[unsigned int(MESH::LIGHT_SPHERE)] = MeshBuilder::GenerateSphere(Color(1.f, 1.f, 1.f), 9, 36, 1.f);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)] = MeshBuilder::GenerateText(16, 16);
 	meshList[unsigned int(MESH::TEXT_ON_SCREEN)]->textureID = LoadTGA("Resources/TGAs/FontOnScreen.tga");
-	meshList[unsigned int(MESH::HEALTHBAR)] = MeshBuilder::GenerateText(1,4);
+	meshList[unsigned int(MESH::HEALTHBAR)] = MeshBuilder::GenerateText(4,1);
 	meshList[unsigned int(MESH::HEALTHBAR)]->textureID = LoadTGA("Resources/TGAs/healthbar.tga");
 	meshList[unsigned int(MESH::UFO_BASE)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_BASE)]->textureID = LoadTGA("Resources/TGAs/ufo_base.tga");
@@ -544,82 +544,6 @@ void GameScene::Render(double dt, int winWidth, int winHeight)
 void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 {
 	viewStack.LoadIdentity();
-	viewStack.LookAt(camera2.pos.x, camera2.pos.y, camera2.pos.z,
-		camera2.target.x, camera2.target.y, camera2.target.z,
-		camera2.up.x, camera2.up.y, camera2.up.z);
-	modelStack.LoadIdentity();
-
-	RenderLight();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 50.f, 380.f);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	//RenderSkybox(!light[0].power);
-	modelStack.PopMatrix();
-
-	for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
-	{
-		if (activeObstacleQueue.at(i) != nullptr)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(activeObstacleQueue.at(i)->getPos().x, activeObstacleQueue.at(i)->getPos().y, activeObstacleQueue.at(i)->getPos().z);
-			modelStack.Scale(activeObstacleQueue.at(i)->getScale().x, activeObstacleQueue.at(i)->getScale().y, activeObstacleQueue.at(i)->getScale().z);
-			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
-			modelStack.PopMatrix();
-		}
-	}
-
-	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getDimension().y > 0)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
-			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
-			modelStack.PopMatrix();
-		}
-	}*/
-	//render all objects
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getParent() == nullptr)
-		{
-			modelStack.PushMatrix();
-			renderObject(&object[i]);
-			modelStack.PopMatrix();
-		}
-	}
-
-	std::ostringstream ss;
-	if (showDebugInfo) {
-		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
-		ss.str("");
-		ss << std::setprecision(3);
-		ss << "Elapsed: " << elapsedTime;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
-		ss.str("");
-		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-
-	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p1HitPoints, 1, 0.2, 29, winWidth, winHeight);
-}
-
-void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
-{
-	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
 		camera.target.x, camera.target.y, camera.target.z,
 		camera.up.x, camera.up.y, camera.up.z);
@@ -690,7 +614,83 @@ void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
-	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p2HitPoints, 1, 0.2, 29, winWidth, winHeight);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p1HitPoints, 35.f, 20.f, 0.2, 29, winWidth, winHeight);
+}
+void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
+{
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera2.pos.x, camera2.pos.y, camera2.pos.z,
+		camera2.target.x, camera2.target.y, camera2.target.z,
+		camera2.up.x, camera2.up.y, camera2.up.z);
+	modelStack.LoadIdentity();
+
+	RenderLight();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0.f, 50.f, 380.f);
+	modelStack.Scale(2.f, 2.f, 2.f);
+	//RenderSkybox(!light[0].power);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
+	{
+		if (activeObstacleQueue.at(i) != nullptr)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(activeObstacleQueue.at(i)->getPos().x, activeObstacleQueue.at(i)->getPos().y, activeObstacleQueue.at(i)->getPos().z);
+			modelStack.Scale(activeObstacleQueue.at(i)->getScale().x, activeObstacleQueue.at(i)->getScale().y, activeObstacleQueue.at(i)->getScale().z);
+			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
+			modelStack.PopMatrix();
+		}
+	}
+
+	//displays hitboxes
+	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getDimension().y > 0)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
+			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+			RenderMesh(meshList[unsigned int(MESH::REDHITBOX)], false);
+			modelStack.PopMatrix();
+		}
+	}*/
+	//render all objects
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i].getParent() == nullptr)
+		{
+			modelStack.PushMatrix();
+			renderObject(&object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+
+	std::ostringstream ss;
+	if (showDebugInfo) {
+		ss << std::fixed << std::setprecision(2);
+		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		ss.str("");
+		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		ss.str("");
+		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
+		ss.str("");
+		ss << std::setprecision(3);
+		ss << "Elapsed: " << elapsedTime;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 1.f, winWidth, winHeight);
+		ss.str("");
+		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
+
+	}
+	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p2HitPoints, 35.f,20.f, 0.2, 29, winWidth, winHeight);
 }
 
 void GameScene::RenderLight() {
@@ -937,7 +937,7 @@ void GameScene::renderObject(Object* obj)
 	}
 
 }
-	void GameScene::RenderAnimationOnScreen(Mesh * mesh, int frame, float size, float x, float y, int winWidth, int winHeight)
+	void GameScene::RenderAnimationOnScreen(Mesh * mesh, int frame, float sizeX, float sizeY, float x, float y, int winWidth, int winHeight)
 	{
 		if (!mesh || mesh->textureID <= 0) { //Proper error check return
 			glDisable(GL_DEPTH_TEST);
@@ -951,7 +951,7 @@ void GameScene::renderObject(Object* obj)
 		modelStack.PushMatrix();
 		modelStack.LoadIdentity(); //Reset modelStack
 		modelStack.Translate(x, y, 0);
-		modelStack.Scale(size, size, size);
+		modelStack.Scale(sizeX, sizeY, 1);
 		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
