@@ -111,6 +111,6 @@ class MotorScene final: public Scene{
 
 public:
 	~MotorScene() override{}
-	void Init() override, Update(double, float, const unsigned char*) override, Render(double, int, int) override, Exit(Scene*) override;
+	void Init() override, Update(double, float, const unsigned char* = 0) override, Render(double, int, int) override, Exit(Scene*) override;
 	void RenderScreen(double, int, int), RenderMenu(int, int), RenderIdleScreen();
 };

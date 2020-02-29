@@ -43,5 +43,5 @@ class GameScene final : public Scene {
 	void updateObstacleState(double dt), resetGame(), updateGame(double dt), RenderAnimationOnScreen(Mesh*, int, float, float, float, float, int, int);
 public:
 	~GameScene() override {}
-	void Init() override, Update(double, float, const unsigned char*) override, Render(double, int, int) override, RenderScreen1(double, int, int), RenderScreen2(double, int, int), Exit(Scene*) override;
+	void Init() override, Update(double, float, const unsigned char* = 0) override, Render(double, int, int) override, RenderScreen1(double, int, int), RenderScreen2(double, int, int), Exit(Scene*) override;
 };

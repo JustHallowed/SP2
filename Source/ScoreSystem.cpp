@@ -55,6 +55,30 @@ ScoreManager::~ScoreManager(){
 	delete dDevice;
 }
 
+std::string ScoreManager::retrieveNameScoreData(bool showType){
+	std::string dataStr("");
+	if(!head){
+		dataStr += "No names and scores to show.\n";
+		return dataStr;
+	}
+	curr = head;
+	if(showType){ //Print nameScore data from lowest to highest
+		while(curr != 0){
+			dataStr += curr->getNameScore().first + ": " + std::to_string(curr->getNameScore().second) + '\n';
+			curr = curr->getNext();
+		}
+	} else{ //Print nameScore data from highest to lowest
+		while(curr->getNext() != 0){
+			curr = curr->getNext();
+		}
+		while(curr != 0){
+			dataStr += curr->getNameScore().first + ": " + std::to_string(curr->getNameScore().second) + '\n';
+			curr = curr->getPrev();
+		}
+	}
+	return dataStr;
+}
+
 ScoreNode* ScoreManager::Arrange(ScoreNode* head, ScoreNode* subHead) const{ //Merge 2 sub-LLs
 	if(!head){
 		return subHead;
@@ -106,28 +130,6 @@ void ScoreManager::addNameScore(std::pair<std::string, unsigned short> newNameSc
 void ScoreManager::sortNameScoreData(){
 	if(head != 0){
 		MergeSort(head)->setPrev(0);
-	}
-}
-
-void ScoreManager::showNameScoreData(bool showType){
-	if(!head){
-		printf("No names and scores to show.\n");
-		return;
-	}
-	curr = head;
-	if(showType){ //Print nameScore data from lowest to highest
-		while(curr != 0){
-			std::cout << curr->getNameScore().first << ": " << curr->getNameScore().second << std::endl;
-			curr = curr->getNext();
-		}
-	} else{ //Print nameScore data from highest to lowest
-		while(curr->getNext() != 0){
-			curr = curr->getNext();
-		}
-		while(curr != 0){
-			std::cout << curr->getNameScore().first << ": " << curr->getNameScore().second << std::endl;
-			curr = curr->getPrev();
-		}
 	}
 }
 

@@ -22,5 +22,6 @@ public:
 	ScoreManager();
 	~ScoreManager();
 	ScoreNode *Arrange(ScoreNode*, ScoreNode*) const, *DivideList(ScoreNode*) const, *MergeSort(ScoreNode*&) const;
-	void addNameScore(std::pair<std::string, unsigned short>), showNameScoreData(bool), tapOnBackup(int), putData(int), sortNameScoreData(), createNewBackup(int), storeNewData();
+	std::string retrieveNameScoreData(bool);
+	void addNameScore(std::pair<std::string, unsigned short>), tapOnBackup(int), putData(int), sortNameScoreData(), createNewBackup(int), storeNewData();
 };

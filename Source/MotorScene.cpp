@@ -34,7 +34,6 @@ double MotorScene::CalcFrameRate() const{
 void MotorScene::GetNameScoreData(bool showType) const{
 	scoreMan->addNameScore(std::make_pair("Sam", 0));
 	scoreMan->sortNameScoreData();
-	scoreMan->showNameScoreData(showType);
 }
 
 void MotorScene::InitLight() const{
