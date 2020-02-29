@@ -6,7 +6,7 @@
 #include "GameScene.h"
 #include "GameScene2.h"
 
-bool firstMouse = 1;
+bool firstMouse = 1, gameOver = 0;
 const unsigned char FPS = 90;
 extern const unsigned int frameTime = 1000 / FPS; //Time for each frame
 extern bool hideCursor = 1;
@@ -28,8 +28,10 @@ Application* Application::getApp(){
 }
 
 bool Application::IsKeyPressed(unsigned short key){
-	return (GetAsyncKeyState(key) & 0x8001) != 0;
+	void(GetAsyncKeyState(key)); //Prevent saving of inputs when gameOver
+	return (gameOver && key != 13 ? 0 : (GetAsyncKeyState(key) & 0x8001) != 0);
 }
+
 
 void Application::Run(){
 	return getApp()->IRun();
@@ -114,10 +116,10 @@ Application::Application(){
 
 	fullscreen = 0;
 	mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	SetWindowPos(GetConsoleWindow(), 0, 0, 0, int(mode->width / 4), int(mode->height * 7 / 8), 0);
+	SetWindowPos(GetConsoleWindow(), 0, 0, 0, int(mode->width * 7 / 24), int(mode->height * 7 / 8), 0);
 	m_window = glfwCreateWindow(int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4, "Framework", 0, 0); //Create a window and create its OpenGL context
 	glfwSetWindowSizeCallback(m_window, resize_callback);
-	glfwSetWindowPos(m_window, int(mode->width / 4), int(mode->height / 30));
+	glfwSetWindowPos(m_window, int(mode->width * 7 / 24), int(mode->height / 30));
 
 	if(!m_window){ //If the window can't be created...
 		fprintf(stderr, "Failed to open GLFW window.\n");
@@ -140,6 +142,7 @@ Application::Application(){
 	glfwSetCursorPosCallback(m_window, mouse_callback);
 	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 	glfwSetScrollCallback(m_window, scroll_callback);
+
 	SceneManager::getScMan()->AddScene(new MotorScene);
 	SceneManager::getScMan()->AddScene(new GameScene);
 	SceneManager::getScMan()->AddScene(new GameScene2);
@@ -159,7 +162,8 @@ void Application::IRun(){
 	while(!glfwWindowShouldClose(m_window)){ //Main Loop
 		if(glfwJoystickPresent(GLFW_JOYSTICK_1)){
 			const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-			SceneManager::getScMan()->Update(*this, m_window, axes); //Update current scene
+			const unsigned char* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
+			SceneManager::getScMan()->Update(*this, m_window, axes, buttons); //Update current scene
 		} else{
 			SceneManager::getScMan()->Update(*this, m_window); //Update current scene
 		}

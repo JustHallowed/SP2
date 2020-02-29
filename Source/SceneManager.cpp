@@ -59,7 +59,7 @@ void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* a
 		}
 		switchBounceTime = elapsedTime + 0.5;
 	}
-	if((Application::IsKeyPressed('F') || (buttons != 0 && bool(buttons[6]))) && screenBounceTime <= elapsedTime){ //Toggle fullscreen
+	if((Application::IsKeyPressed(VK_F11) || (buttons != 0 && bool(buttons[6]))) && screenBounceTime <= elapsedTime){ //Toggle fullscreen
 		if(app.fullscreen){
 			glfwSetWindowMonitor(m_window, 0, int(app.mode->width * 7 / 24), int(app.mode->height / 30), int(app.mode->width * 2 / 3), int(app.mode->width * 2 / 3) * 3 / 4, GLFW_DONT_CARE);
 		} else{
