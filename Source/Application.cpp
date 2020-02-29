@@ -140,9 +140,9 @@ Application::Application(){
 	glfwSetCursorPosCallback(m_window, mouse_callback);
 	glfwSetMouseButtonCallback(m_window, mouse_button_callback);
 	glfwSetScrollCallback(m_window, scroll_callback);
-	SceneManager::getScMan()->AddScene(new GameScene2);
-	SceneManager::getScMan()->AddScene(new GameScene);
 	SceneManager::getScMan()->AddScene(new MotorScene);
+	SceneManager::getScMan()->AddScene(new GameScene);
+	SceneManager::getScMan()->AddScene(new GameScene2);
 	SceneManager::getScMan()->AddScene(new GhostScene);
 }
 

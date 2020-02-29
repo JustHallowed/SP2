@@ -187,8 +187,6 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::SPEAKER)] = MeshBuilder::GenerateOBJ("Resources/OBJs/speaker.obj");
 	meshList[unsigned int(MESH::SPEAKER)]->textureID = LoadTGA("Resources/TGAs/speaker.tga");
-}
-
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
@@ -347,19 +345,19 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 		object[i].resetCollision();
 	}
 
-	for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
-	{
-		if (object[j].getDimension().y == 0 || object[j].getMesh() == nullptr)
-			continue;
-		for (int i = 0; i < NUM_INSTANCES; ++i)
-		{
-			if (i <= j)
-				i = j + 1;
-			if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
-				continue;
-			object[j].updateCollision(&object[i], dt);
-		}
-	}
+	//for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
+	//{
+	//	if (object[j].getDimension().y == 0 || object[j].getMesh() == nullptr)
+	//		continue;
+	//	for (int i = 0; i < NUM_INSTANCES; ++i)
+	//	{
+	//		if (i <= j)
+	//			i = j + 1;
+	//		if (object[i].getDimension().y == 0 || object[j].getMesh() == nullptr)
+	//			continue;
+	//		object[j].updateCollision(&object[i], dt);
+	//	}
+	//}
 
 	object[PLATFORM1].addRotation(1, 'y');
 
@@ -580,7 +578,7 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//modelStack.PopMatrix();
 
 	//displays hitboxes
-	/*for (int i = 0; i < NUM_INSTANCES; ++i)
+	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
 		if (object[i].getDimension().y > 0)
 		{
@@ -590,10 +588,10 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 			modelStack.Rotate(object[i].getAngle().y, 0, 1, 0);
 			modelStack.Rotate(object[i].getAngle().x, 1, 0, 0);
 			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
-			RenderMesh(meshList[unsigned int(MESH::HITBOXWHITE)], false);
+			RenderMesh(meshList[unsigned int(MESH::HITBOXRED)], false);
 			modelStack.PopMatrix();
 		}
-	}*/
+	}
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
