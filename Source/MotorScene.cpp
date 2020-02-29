@@ -300,20 +300,24 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 				break;
 			}
 			case '0': {
+
+				if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+				{
 					SceneManager::getScMan()->SetNextScene(); //Change scene
 					printf("\n\n");
-					for(auto itr = upDown->begin(); itr != upDown->end(); ++itr){
+					for (auto itr = upDown->begin(); itr != upDown->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = leftRight->begin(); itr != leftRight->end(); ++itr){
+					for (auto itr = leftRight->begin(); itr != leftRight->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 					std::cout << std::endl;
-					for(auto itr = jump->begin(); itr != jump->end(); ++itr){
+					for (auto itr = jump->begin(); itr != jump->end(); ++itr) {
 						std::cout << itr->first << '\t' << itr->second << '\n';
 					}
 				}
+			}
 			}
 		}
 	}
@@ -384,9 +388,11 @@ void MotorScene::Update(double dt, float FOV) { //Update scene
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY3, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
-	carCheck(EH_CAR1, "Resources/Sound/engine.mp3");
-	carCheck(LF_CAR1, "Resources/Sound/carkey.mp3");
-	carCheck(YW_CAR1, "Resources/Sound/carchime.mp3");
+	carCheck(PLATFORM7, "Resources/Sound/engine.mp3");
+	carCheck(PLATFORM8, "Resources/Sound/carkey.mp3");
+	carCheck(PLATFORM9, "Resources/Sound/carchime.mp3");
+	carCheck(PLATFORM1, "");
+
 	//Billboarding for particles
 	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
 	pAngleXZ = Math::RadianToDegree(acos(pFrontXZ.Dot(Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z)) /
@@ -632,6 +638,9 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
+	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [0] to play game", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
+
 	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
 
@@ -751,22 +760,14 @@ void MotorScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	}
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
-	//if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1]);
+	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
+
+	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
-	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
-	{
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		RenderMeshOnScreen(meshList[unsigned int(MESH::TEXTBOX)], 60.f, 20.f, 80.f, 20.f, winWidth, winHeight);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		ss << "Wow! These cars! ";
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(0.2f, 0.8f, 1.f), 4.f, 7.f, 6.f, winWidth, winHeight);
-		ss.str("");
-	}
+
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);  
 
-	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f,0.5,1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -1567,7 +1568,7 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 	Vector3 posToObject = object[instance].getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].checkDist(camera.pos) < 20.f)
+	if (object[instance].checkDist(camera.pos) < 30.f)
 	{
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{
@@ -1613,24 +1614,24 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 		interacted[instance] = 0;
 		if (instance == 6)
 		{
-					light[1].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].power"), light[1].power);
-		light[2].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].power"), light[2].power);
+			light[1].power = 0.f;
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[1].power"), light[1].power);
+			light[2].power = 0.f;
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[2].power"), light[2].power);
 		}
 		if (instance == 7)
 		{
-				light[3].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].power"), light[3].power);
-		light[4].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].power"), light[4].power);
+			light[3].power = 0.f;
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[3].power"), light[3].power);
+			light[4].power = 0.f;
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[4].power"), light[4].power);
 		}
 		if (instance == 8)
 		{
 			light[5].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].power"), light[5].power);
-		light[6].power = 0.f;
-		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].power"), light[6].power);
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[5].power"), light[5].power);
+			light[6].power = 0.f;
+			glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[6].power"), light[6].power);
 		}
 	}
 }
