@@ -429,12 +429,13 @@ void GameScene::resetGame()
 		activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 	}
 	camera.pos.Set(0.f, 30.f, -50.f), camera.target.Set(0.f, 5.f, 50.f), camera.up.Set(0.f, 1.f, 0.f);
+	camera2.pos.Set(0.f, 330.f, -50.f), camera.target.Set(0.f, 305.f, 50.f), camera.up.Set(0.f, 1.f, 0.f);
 }
 void GameScene::updateObstacleState(double dt)
 {
 	float spawnInterval = 5 - survivalTime / 15; //increases rate of obstacle spawn as time passes
 	if (spawnInterval < 1)
-		spawnInterval = 0.7;
+		spawnInterval = 1;
 	if (timeSinceLastObstacle < spawnInterval) //checks for whether to spawn new obstacle
 	{
 		timeSinceLastObstacle += dt;
