@@ -32,7 +32,6 @@ protected:
 	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
 	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis);
 	bool hasEdgeIntersection(Object* b);
-	float getAngle(Vector3 A, Vector3 B);
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 public:
 	Object();
@@ -89,7 +88,7 @@ public:
 	static void bind(Object* parent, Object* child, bool followParentRotation, bool followParentScale);//binds two objects
 	//unbinds child from parent
 	static void unbind(Object* child);
-	float getDist(Vector3 playerpos);
+	float getAngle(Vector3 A, Vector3 B);
 	float checkDist(Vector3 playerpos);
 };
 
