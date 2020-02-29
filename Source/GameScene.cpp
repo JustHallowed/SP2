@@ -241,6 +241,9 @@ void GameScene::Init() { //Init scene
 	player2.disableKey(2);
 	player2.disableKey(4);
 	player2.disableKey(5);
+
+	camera.canMove = false;
+	camera2.canMove = false;
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene
@@ -263,6 +266,8 @@ void GameScene::Exit(Scene* newScene) { //Exit scene
 	}
 	inactiveObstacleQueue.clear();
 	activeObstacleQueue.clear();
+	camera.canMove = true;
+	camera2.canMove = true;
 }
 
 void GameScene::Update(double dt, float FOV) { //Update scene

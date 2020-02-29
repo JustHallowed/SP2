@@ -6,10 +6,7 @@ class Camera final{ //Singleton
 	enum class MODE{
 		FOCUS, FREE
 	};
-	enum DIRECTION{
-		POSX,POSZ,NEGX,NEGZ,NUM_AXIS,
-	};
-	bool canMove[NUM_AXIS];
+	bool canMove;
 	friend class Application;
 	friend class MotorScene;
 	friend class GhostScene;
