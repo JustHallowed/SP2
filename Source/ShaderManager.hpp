@@ -6,7 +6,7 @@ class ShaderManager final{ //Singleton
     ShaderManager(ShaderManager&&); //Private move ctor
     ShaderManager& operator=(const ShaderManager&){}; //Private copy assignment operator
     ShaderManager& operator=(ShaderManager&&) noexcept{}; //Private move assignment operator
-    unsigned int vsID[2], fsID[2];
+    unsigned int vsID[1], fsID[1];
 public:
     ~ShaderManager();
     static ShaderManager& getShaderMan();
