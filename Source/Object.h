@@ -30,8 +30,9 @@ protected:
 	void unbindChild(Object* child);//removes child from child vector
 	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
 	bool hasFaceIntersection(Object* b, float* greatestFaceIntersectionA, Vector3* collidingFaceAxisA,
-		float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis);
+	float* greatestFaceIntersectionB, Vector3* collidingFaceAxisB, Vector3* penetration, Vector3* rotationAxis);
 	bool hasEdgeIntersection(Object* b);
+	float getAngle(Vector3 A, Vector3 B);
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 public:
 	Object();
@@ -89,7 +90,6 @@ public:
 	//unbinds child from parent
 	static void unbind(Object* child);
 	float getDist(Vector3 playerpos);
-	float getAngle(Vector3 A, Vector3 B);
 	float checkDist(Vector3 playerpos);
 };
 
