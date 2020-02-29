@@ -640,10 +640,10 @@ void MotorScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	if (inRange[PLATFORM7] && !interacted[PLATFORM7] || inRange[PLATFORM8] && !interacted[PLATFORM8] || inRange[PLATFORM9] && !interacted[PLATFORM9])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to interact", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && !interacted[ROBOT_BODY1] || inRange[ROBOT_BODY2] && !interacted[ROBOT_BODY2] || inRange[ROBOT_BODY3] && !interacted[ROBOT_BODY3])
-		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [E] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
+		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [F] to talk", Color(0.5f, 0.5, 1.f), 4.f, 8.f, 8.f, winWidth, winHeight);
 
 	if (inRange[ROBOT_BODY1] && interacted[ROBOT_BODY1])
 	{
@@ -1547,7 +1547,7 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
 			inRange[instance] = true;
-			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
@@ -1579,7 +1579,7 @@ void MotorScene::carCheck(int instance, const char* audioFileName)
 		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
 		{
 			inRange[instance] = true;
-			if (Application::IsKeyPressed('E') && interactBounceTime <= elapsedTime)
+			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
 			{
 				interacted[instance] = !interacted[instance];
 				interactBounceTime = elapsedTime + 0.4;
