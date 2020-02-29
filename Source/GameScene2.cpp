@@ -126,8 +126,8 @@ void GameScene2::Init() { //Init scene
 	survivalTime = 0;
 	p1BombCharge, p2BombCharge = 1;
 	srand(time(NULL));
-	player1.disableKey(5);//disable fly
-	player2.disableKey(5);
+	player1.disableKey(4);//disable fly
+	player2.disableKey(4);
 	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
 }
 
