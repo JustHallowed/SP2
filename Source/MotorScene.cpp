@@ -272,11 +272,11 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 		if(leftRight != 0){
 			delete leftRight;
 		}
-	if (speaker1)
-		speaker1->drop();
-	if (speaker2)
-		speaker2->drop();
-	engine->drop();
+		if(speaker1)
+			speaker1->drop();
+		if(speaker2)
+			speaker2->drop();
+		engine->drop();
 	}
 }
 
