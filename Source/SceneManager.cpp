@@ -50,13 +50,13 @@ void SceneManager::SetNextSceneID(int newID){
 void SceneManager::Update(Application& app, GLFWwindow* m_window, const float* axes, const unsigned char* buttons){ //Update current scene
 	double dt = app.m_timer.getElapsedTime();
 	elapsedTime += dt;
+	if(hideCursor){
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide window cursor
+	} else{
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); //Show window cursor
+	}
 	if(Application::IsKeyPressed('C') && switchBounceTime <= elapsedTime){
 		hideCursor = !hideCursor;
-		if(hideCursor){
-			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide window cursor
-		} else{
-			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); //Show window cursor
-		}
 		switchBounceTime = elapsedTime + 0.5;
 	}
 	if((Application::IsKeyPressed(VK_F11) || (buttons != 0 && bool(buttons[6]))) && screenBounceTime <= elapsedTime){ //Toggle fullscreen

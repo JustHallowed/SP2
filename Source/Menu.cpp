@@ -1,6 +1,7 @@
 #include "Menu.h"
 #include "Application.h"
 
+extern bool hideCursor;
 extern double elapsedTime;
 
 Menu::Menu()
@@ -79,6 +80,7 @@ void Menu::menu1()
 		--currentSelection;
 		menuBounceTime = elapsedTime + 0.1;
 	}
+
 	POINT p;
 	if (GetCursorPos(&p))
 	{
@@ -113,6 +115,7 @@ void Menu::menu1()
 			|| Application::IsKeyPressed(VK_RETURN) && menuActive && menuBounceTime <= elapsedTime)
 		{
 			menuActive = false;
+			hideCursor = 1;
 		}
 	}
 	else if (currentSelection == 2)

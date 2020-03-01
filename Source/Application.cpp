@@ -6,10 +6,9 @@
 #include "GameScene.h"
 #include "GameScene2.h"
 
-bool firstMouse = 1, gameOver = 0;
+bool firstMouse = 1, gameOver = 0, hideCursor = 0;
 const unsigned char FPS = 90;
 extern const unsigned int frameTime = 1000 / FPS; //Time for each frame
-extern bool hideCursor = 1;
 extern Camera camera;
 extern double elapsedTime;
 extern float FOV = 45.f;
@@ -134,7 +133,6 @@ Application::Application(){
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 	}
 
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Hide window cursor
 	glfwSetInputMode(m_window, GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 	if(glfwRawMouseMotionSupported()){
 		glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE); //Enable raw (unscaled and unaccelerated) mouse motion
