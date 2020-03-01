@@ -1618,7 +1618,8 @@ void MotorScene::animateNpc(int instance)
 
 	if (interacted[instance])
 	{
-		object[instance].addRotation(angle - 5, 'y');
+		if (angle > 3)
+		object[instance].addRotation(angle, 'y');
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');
