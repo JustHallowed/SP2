@@ -63,6 +63,7 @@ void GameScene::InitMeshes() {
 	meshList[unsigned int(MESH::UFO_RED)] = MeshBuilder::GenerateOBJ("Resources/OBJs/ufo.obj");
 	meshList[unsigned int(MESH::UFO_RED)]->textureID = LoadTGA("Resources/TGAs/ufo_2.tga");
 }
+
 void GameScene::CreateInstances()
 {
 	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
@@ -213,17 +214,13 @@ void GameScene::CreateInstances()
 void GameScene::Init() { //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
-	glEnable(GL_CULL_FACE); //Enable back-face cullingyg
-	glEnable(GL_BLEND); //Enable blend
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST); //Enable depth test
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 0.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	camera2.Init(Vector3(0.f, 330.f, -50.f), Vector3(0.f, 300.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
-	bulletGenerator.InitParticles();
+	//bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
 	debugBounceTime = lightBounceTime = timeSinceLastObstacle = 0.0;
@@ -247,27 +244,28 @@ void GameScene::Init() { //Init scene
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene
-	for (int i = 0; i < int(MESH::NUM_GEOMETRY); ++i) {
-		if (meshList[i] != 0) {
+	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
+		if(meshList[i] != 0){
 			delete meshList[i];
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
-	if (dynamic_cast<GameScene*>(newScene) != this) {
+	if(dynamic_cast<GameScene*>(newScene) != this){
 		newScene->Init();
+	} else{
+		for(int i = 0; i < activeObstacleQueue.size(); ++i)
+		{
+			delete activeObstacleQueue.at(i);
+		}
+		for(int i = 0; i < inactiveObstacleQueue.size(); ++i)
+		{
+			delete inactiveObstacleQueue.at(i);
+		}
+		inactiveObstacleQueue.clear();
+		activeObstacleQueue.clear();
+		camera.canMove = true;
+		camera2.canMove = true;
 	}
-	for (int i = 0; i < activeObstacleQueue.size(); ++i)
-	{
-		delete activeObstacleQueue.at(i);
-	}
-	for (int i = 0; i < inactiveObstacleQueue.size(); ++i)
-	{
-		delete inactiveObstacleQueue.at(i);
-	}
-	inactiveObstacleQueue.clear();
-	activeObstacleQueue.clear();
-	camera.canMove = true;
-	camera2.canMove = true;
 }
 
 void GameScene::Update(double dt, float FOV, const unsigned char* buttons) { //Update scene

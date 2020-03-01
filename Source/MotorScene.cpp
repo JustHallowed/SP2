@@ -329,6 +329,7 @@ void MotorScene::Init(){ //Init scene
 	Switch = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
 	nameScoreData = "";
+	light[0].power = 1.f;
 
 	//play 3d sound //sound gets softer when further away frm speakers
 	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);

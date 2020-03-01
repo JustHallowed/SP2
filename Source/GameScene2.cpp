@@ -133,22 +133,23 @@ void GameScene2::Init() { //Init scene
 }
 
 void GameScene2::Exit(Scene* newScene) { //Exit scene
-	for (int i = 0; i < int(MESH::NUM_GEOMETRY); ++i) {
-		if (meshList[i] != 0) {
+	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
+		if(meshList[i] != 0){
 			delete meshList[i];
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
-	if (dynamic_cast<GameScene2*>(newScene) != this) {
+	if(dynamic_cast<GameScene2*>(newScene) != this){
 		newScene->Init();
-	}
-	for (int i = 0; i < activeObstacleQueue.size(); ++i)
-	{
-		delete activeObstacleQueue.at(i);
-	}
-	for (int i = 0; i < inactiveObstacleQueue.size(); ++i)
-	{
-		delete inactiveObstacleQueue.at(i);
+	} else{
+		for(int i = 0; i < activeObstacleQueue.size(); ++i)
+		{
+			delete activeObstacleQueue.at(i);
+		}
+		for(int i = 0; i < inactiveObstacleQueue.size(); ++i)
+		{
+			delete inactiveObstacleQueue.at(i);
+		}
 	}
 }
 

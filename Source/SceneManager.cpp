@@ -28,19 +28,15 @@ void SceneManager::AddScene(Scene* newScene){
 	sceneStorage.emplace_back(newScene);
 	if(sceneStorage.size() == 1){
 		sceneStorage[currSceneID]->Init();
-	} else{
-		SceneManager::getScMan()->SetNextSceneID(sceneStorage.size() - 1);
 	}
 }
 
 void SceneManager::SetNextScene(){
+	getScMan()->SetNextSceneID((currSceneID + 1 == sceneStorage.size() ? 0 : currSceneID + 1));
 	if(sceneStorage.size() > 1){
 		sceneStorage[currSceneID]->Exit(sceneStorage[nextSceneID]);
 	}
 	currSceneID = nextSceneID;
-	if(++nextSceneID == sceneStorage.size()){
-		nextSceneID = 0;
-	}
 }
 
 void SceneManager::SetNextSceneID(int newID){
