@@ -516,13 +516,12 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	iCamera.Update(dt);
 	UpdateMainChar(dt, buttons);
 
-	constexpr auto VK_ENTER = 13;
 	if(Application::IsKeyPressed('X') && !gameOver && lightBounceTime <= elapsedTime){
 		gameOver = 1;
 		memset(Scene::getTyped(), '\0', 10);
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if(Application::IsKeyPressed(VK_ENTER) && gameOver && Scene::getTyped()[0] != '\0' && lightBounceTime <= elapsedTime){
+	if(Application::IsKeyPressed(VK_RETURN) && gameOver && Scene::getTyped()[0] != '\0' && lightBounceTime <= elapsedTime){
 		gameOver = 0;
 		scoreMan->addNameScore(std::make_pair(Scene::getTyped(), 25));
 		scoreMan->sortNameScoreData();
