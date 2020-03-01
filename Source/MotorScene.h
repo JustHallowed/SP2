@@ -6,8 +6,9 @@
 #include "ParticleSystem.h"
 #include "ScoreSystem.h"
 #include "Object.h"
-#include "Vehicle.h"
+#include "ObjectFactory.h"
 #include "Menu.h"
+#include "Enum.h"
 #include "IdleCamera.h"
 
 
@@ -85,7 +86,7 @@ class MotorScene final: public Scene{
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
 	bool Switch;
-	Object object[NUM_INSTANCES];
+	Object* object[NUM_INSTANCES];
 	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
 		Light('s', 13.f, 6.f, -8.f, 1.f, 1.f, 0.f, Vector3(0, 0, 1)), //eh car

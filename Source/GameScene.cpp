@@ -66,137 +66,135 @@ void GameScene::InitMeshes() {
 
 void GameScene::CreateInstances()
 {
-	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(0, 0.6, 35);
-	object[UFO_BASE1].setScale(4);
-	object[UFO_BASE1].setDimension(25, 20, 20);
-	player1.setObject(&object[UFO_BASE1], false);
+	object[UFO_BASE1] = ObjectFactory::createObject(OBJ_VEHICLE, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BASE1]->setTranslation(0, 0.6, 35);
+	object[UFO_BASE1]->setScale(4);
+	object[UFO_BASE1]->setDimension(25, 20, 20);
+	
+	object[UFO_RED1] = ObjectFactory::createObject(OBJ_VEHICLE, meshList[unsigned int(MESH::UFO_RED)]);
+	object[UFO_RED1]->setTranslation(0, 300.6, 35);
+	object[UFO_RED1]->setScale(4);
+	object[UFO_RED1]->setDimension(25, 20, 20);
 
-	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(0, 300.6, 35);
-	object[UFO_RED1].setScale(4);
-	object[UFO_RED1].setDimension(25, 20, 20);
-	player2.setObject(&object[UFO_RED1], false);
+	object[ENDWALL]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::REDHITBOX)]);
+	object[ENDWALL]->setTranslation(0, 0, -300);
+	object[ENDWALL]->setDimension(500, 1300, 30);
 
-	object[ENDWALL].setMesh(meshList[unsigned int(MESH::REDHITBOX)]);
-	object[ENDWALL].setTranslation(0, 0, -300);
-	object[ENDWALL].setDimension(500, 1300, 30);
+	object[BOTTOM1]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM1]->setTranslation(0.f, 0.f, 600.f);
+	object[BOTTOM1]->setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM1]->setRotation(-90, 'x');
+	object[BOTTOM1]->setRotation(90, 'z');
 
-	object[BOTTOM1].setMesh(meshList[unsigned(MESH::BOTTOM)]);
-	object[BOTTOM1].setTranslation(0.f, 0.f, 600.f);
-	object[BOTTOM1].setScale(1200.f, 150.f, 50.f);
-	object[BOTTOM1].setRotation(-90, 'x');
-	object[BOTTOM1].setRotation(90, 'z');
+	object[LEFT1]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::LEFT)]);
+	object[LEFT1]->setTranslation(-75, 75.f, 0.f);
+	object[LEFT1]->setScale(1200.f, 150.f, 50.f);
+	object[LEFT1]->setRotation(90.f, 'y');
+	object[LEFT1]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM1], object[LEFT1], false, true);
 
-	object[LEFT1].setMesh(meshList[unsigned(MESH::LEFT)]);
-	object[LEFT1].setTranslation(-75, 75.f, 0.f);
-	object[LEFT1].setScale(1200.f, 150.f, 50.f);
-	object[LEFT1].setRotation(90.f, 'y');
-	object[LEFT1].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM1], &object[LEFT1], false, true);
+	object[RIGHT1]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT1]->setTranslation(75, 75.f, 0.f);
+	object[RIGHT1]->setScale(1200.f, 150.f, 50.f);
+	object[RIGHT1]->setRotation(-90.f, 'y');
+	object[RIGHT1]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM1], object[RIGHT1], false, true);
 
-	object[RIGHT1].setMesh(meshList[unsigned(MESH::RIGHT)]);
-	object[RIGHT1].setTranslation(75, 75.f, 0.f);
-	object[RIGHT1].setScale(1200.f, 150.f, 50.f);
-	object[RIGHT1].setRotation(-90.f, 'y');
-	object[RIGHT1].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM1], &object[RIGHT1], false, true);
+	object[TOP1]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::TOP)]);
+	object[TOP1]->setTranslation(0.f, 150.f, 0.f);
+	object[TOP1]->setScale(1200.f, 150.f, 50.f);
+	object[TOP1]->setRotation(90.f, 'x');
+	object[TOP1]->setRotation(270.f, 'z');
+	Object::bind(object[BOTTOM1], object[TOP1], false, true);
 
-	object[TOP1].setMesh(meshList[unsigned(MESH::TOP)]);
-	object[TOP1].setTranslation(0.f, 150.f, 0.f);
-	object[TOP1].setScale(1200.f, 150.f, 50.f);
-	object[TOP1].setRotation(90.f, 'x');
-	object[TOP1].setRotation(270.f, 'z');
-	Object::bind(&object[BOTTOM1], &object[TOP1], false, true);
+	object[BOTTOM2]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM2]->setTranslation(0.f, 0.f, 1800.f);
+	object[BOTTOM2]->setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM2]->setRotation(-90, 'x');
+	object[BOTTOM2]->setRotation(90, 'z');
 
-	object[BOTTOM2].setMesh(meshList[unsigned(MESH::BOTTOM)]);
-	object[BOTTOM2].setTranslation(0.f, 0.f, 1800.f);
-	object[BOTTOM2].setScale(1200.f, 150.f, 50.f);
-	object[BOTTOM2].setRotation(-90, 'x');
-	object[BOTTOM2].setRotation(90, 'z');
+	object[LEFT2]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::LEFT)]);
+	object[LEFT2]->setTranslation(-75, 75.f, 0.f);
+	object[LEFT2]->setScale(1200.f, 150.f, 50.f);
+	object[LEFT2]->setRotation(90.f, 'y');
+	object[LEFT2]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM2], object[LEFT2], false, true);
 
-	object[LEFT2].setMesh(meshList[unsigned(MESH::LEFT)]);
-	object[LEFT2].setTranslation(-75, 75.f, 0.f);
-	object[LEFT2].setScale(1200.f, 150.f, 50.f);
-	object[LEFT2].setRotation(90.f, 'y');
-	object[LEFT2].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM2], &object[LEFT2], false, true);
+	object[RIGHT2]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT2]->setTranslation(75, 75.f, 0.f);
+	object[RIGHT2]->setScale(1200.f, 150.f, 50.f);
+	object[RIGHT2]->setRotation(-90.f, 'y');
+	object[RIGHT2]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM2], object[RIGHT2], false, true);
 
-	object[RIGHT2].setMesh(meshList[unsigned(MESH::RIGHT)]);
-	object[RIGHT2].setTranslation(75, 75.f, 0.f);
-	object[RIGHT2].setScale(1200.f, 150.f, 50.f);
-	object[RIGHT2].setRotation(-90.f, 'y');
-	object[RIGHT2].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM2], &object[RIGHT2], false, true);
+	object[TOP2]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::TOP)]);
+	object[TOP2]->setTranslation(0.f, 150.f, 0.f);
+	object[TOP2]->setScale(1200.f, 150.f, 50.f);
+	object[TOP2]->setRotation(90.f, 'x');
+	object[TOP2]->setRotation(270.f, 'z');
+	Object::bind(object[BOTTOM2], object[TOP2], false, true);
 
-	object[TOP2].setMesh(meshList[unsigned(MESH::TOP)]);
-	object[TOP2].setTranslation(0.f, 150.f, 0.f);
-	object[TOP2].setScale(1200.f, 150.f, 50.f);
-	object[TOP2].setRotation(90.f, 'x');
-	object[TOP2].setRotation(270.f, 'z');
-	Object::bind(&object[BOTTOM2], &object[TOP2], false, true);
+	object[BOUNDARYLEFT]= ObjectFactory::createObject(OBJ_EMPTY, meshList[(unsigned)MESH::REDHITBOX]);
+	object[BOUNDARYLEFT]->setTranslation(75, 0.f, 50.f);
+	object[BOUNDARYLEFT]->setDimension(3, 1300.f, 100.f);
 
-	object[BOUNDARYLEFT].setMesh(meshList[(unsigned)MESH::REDHITBOX]);
-	object[BOUNDARYLEFT].setTranslation(75, 0.f, 50.f);
-	object[BOUNDARYLEFT].setDimension(3, 1300.f, 100.f);
+	object[BOUNDARYRIGHT]= ObjectFactory::createObject(OBJ_EMPTY, meshList[(unsigned)MESH::REDHITBOX]);
+	object[BOUNDARYRIGHT]->setTranslation(-75, 0.f, 50.f);
+	object[BOUNDARYRIGHT]->setDimension(3, 1300.f, 100.f);
 
-	object[BOUNDARYRIGHT].setMesh(meshList[(unsigned)MESH::REDHITBOX]);
-	object[BOUNDARYRIGHT].setTranslation(-75, 0.f, 50.f);
-	object[BOUNDARYRIGHT].setDimension(3, 1300.f, 100.f);
+	object[BOTTOM3]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM3]->setTranslation(0.f, 301.f, 600.f);
+	object[BOTTOM3]->setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM3]->setRotation(-90, 'x');
+	object[BOTTOM3]->setRotation(90, 'z');
 
-	object[BOTTOM3].setMesh(meshList[unsigned(MESH::BOTTOM)]);
-	object[BOTTOM3].setTranslation(0.f, 301.f, 600.f);
-	object[BOTTOM3].setScale(1200.f, 150.f, 50.f);
-	object[BOTTOM3].setRotation(-90, 'x');
-	object[BOTTOM3].setRotation(90, 'z');
+	object[LEFT3]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::LEFT)]);
+	object[LEFT3]->setTranslation(-75, 75.f, 0.f);
+	object[LEFT3]->setScale(1200.f, 150.f, 50.f);
+	object[LEFT3]->setRotation(90.f, 'y');
+	object[LEFT3]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM3], object[LEFT3], false, true);
 
-	object[LEFT3].setMesh(meshList[unsigned(MESH::LEFT)]);
-	object[LEFT3].setTranslation(-75, 75.f, 0.f);
-	object[LEFT3].setScale(1200.f, 150.f, 50.f);
-	object[LEFT3].setRotation(90.f, 'y');
-	object[LEFT3].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM3], &object[LEFT3], false, true);
+	object[RIGHT3]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT3]->setTranslation(75, 75.f, 0.f);
+	object[RIGHT3]->setScale(1200.f, 150.f, 50.f);
+	object[RIGHT3]->setRotation(-90.f, 'y');
+	object[RIGHT3]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM3], object[RIGHT3], false, true);
 
-	object[RIGHT3].setMesh(meshList[unsigned(MESH::RIGHT)]);
-	object[RIGHT3].setTranslation(75, 75.f, 0.f);
-	object[RIGHT3].setScale(1200.f, 150.f, 50.f);
-	object[RIGHT3].setRotation(-90.f, 'y');
-	object[RIGHT3].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM3], &object[RIGHT3], false, true);
+	object[TOP3]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::TOP)]);
+	object[TOP3]->setTranslation(0.f, 150.f, 0.f);
+	object[TOP3]->setScale(1200.f, 150.f, 50.f);
+	object[TOP3]->setRotation(90.f, 'x');
+	object[TOP3]->setRotation(270.f, 'z');
+	Object::bind(object[BOTTOM3], object[TOP3], false, true);
 
-	object[TOP3].setMesh(meshList[unsigned(MESH::TOP)]);
-	object[TOP3].setTranslation(0.f, 150.f, 0.f);
-	object[TOP3].setScale(1200.f, 150.f, 50.f);
-	object[TOP3].setRotation(90.f, 'x');
-	object[TOP3].setRotation(270.f, 'z');
-	Object::bind(&object[BOTTOM3], &object[TOP3], false, true);
+	object[BOTTOM4]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::BOTTOM)]);
+	object[BOTTOM4]->setTranslation(0.f, 301.f, 1800.f);
+	object[BOTTOM4]->setScale(1200.f, 150.f, 50.f);
+	object[BOTTOM4]->setRotation(-90, 'x');
+	object[BOTTOM4]->setRotation(90, 'z');
 
-	object[BOTTOM4].setMesh(meshList[unsigned(MESH::BOTTOM)]);
-	object[BOTTOM4].setTranslation(0.f, 301.f, 1800.f);
-	object[BOTTOM4].setScale(1200.f, 150.f, 50.f);
-	object[BOTTOM4].setRotation(-90, 'x');
-	object[BOTTOM4].setRotation(90, 'z');
+	object[LEFT4]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::LEFT)]);
+	object[LEFT4]->setTranslation(-75, 75.f, 0.f);
+	object[LEFT4]->setScale(1200.f, 150.f, 50.f);
+	object[LEFT4]->setRotation(90.f, 'y');
+	object[LEFT4]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM4], object[LEFT4], false, true);
 
-	object[LEFT4].setMesh(meshList[unsigned(MESH::LEFT)]);
-	object[LEFT4].setTranslation(-75, 75.f, 0.f);
-	object[LEFT4].setScale(1200.f, 150.f, 50.f);
-	object[LEFT4].setRotation(90.f, 'y');
-	object[LEFT4].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM4], &object[LEFT4], false, true);
+	object[RIGHT4]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::RIGHT)]);
+	object[RIGHT4]->setTranslation(75, 75.f, 0.f);
+	object[RIGHT4]->setScale(1200.f, 150.f, 50.f);
+	object[RIGHT4]->setRotation(-90.f, 'y');
+	object[RIGHT4]->setRotation(180.f, 'z');
+	Object::bind(object[BOTTOM4], object[RIGHT4], false, true);
 
-	object[RIGHT4].setMesh(meshList[unsigned(MESH::RIGHT)]);
-	object[RIGHT4].setTranslation(75, 75.f, 0.f);
-	object[RIGHT4].setScale(1200.f, 150.f, 50.f);
-	object[RIGHT4].setRotation(-90.f, 'y');
-	object[RIGHT4].setRotation(180.f, 'z');
-	Object::bind(&object[BOTTOM4], &object[RIGHT4], false, true);
-
-	object[TOP4].setMesh(meshList[unsigned(MESH::TOP)]);
-	object[TOP4].setTranslation(0.f, 150.f, 0.f);
-	object[TOP4].setScale(1200.f, 150.f, 50.f);
-	object[TOP4].setRotation(90.f, 'x');
-	object[TOP4].setRotation(270.f, 'z');
-	Object::bind(&object[BOTTOM4], &object[TOP4], false, true);
+	object[TOP4]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned(MESH::TOP)]);
+	object[TOP4]->setTranslation(0.f, 150.f, 0.f);
+	object[TOP4]->setScale(1200.f, 150.f, 50.f);
+	object[TOP4]->setRotation(90.f, 'x');
+	object[TOP4]->setRotation(270.f, 'z');
+	Object::bind(object[BOTTOM4], object[TOP4], false, true);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -226,17 +224,18 @@ void GameScene::Init() { //Init scene
 	debugBounceTime = lightBounceTime = timeSinceLastObstacle = 0.0;
 	survivalTime = 0;
 	p2HitPoints = p1HitPoints = 3;
+	player1 = object[UFO_BASE1];
+	player2 = object[UFO_RED1];
+	static_cast<Vehicle*>(player1)->disableKey(0);//disable movement in z and y axis
+	static_cast<Vehicle*>(player1)->disableKey(2);
+	static_cast<Vehicle*>(player1)->disableKey(4);
+	static_cast<Vehicle*>(player1)->disableKey(5);
 
-	player1.disableKey(0);//disable movement in z and y axis
-	player1.disableKey(2);
-	player1.disableKey(4);
-	player1.disableKey(5);
-
-	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
-	player2.disableKey(0);//disable movement in z and y axis
-	player2.disableKey(2);
-	player2.disableKey(4);
-	player2.disableKey(5);
+	static_cast<Vehicle*>(player2)->setKeys('W', 'A', 'S', 'D', 0, 0);
+	static_cast<Vehicle*>(player2)->disableKey(0);//disable movement in z and y axis
+	static_cast<Vehicle*>(player2)->disableKey(2);
+	static_cast<Vehicle*>(player2)->disableKey(4);
+	static_cast<Vehicle*>(player2)->disableKey(5);
 
 	camera.canMove = false;
 	camera2.canMove = false;
@@ -246,6 +245,13 @@ void GameScene::Exit(Scene* newScene) { //Exit scene
 	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
 		if(meshList[i] != 0){
 			delete meshList[i];
+		}
+	}
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i] != nullptr)
+		{
+			delete object[i];
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
@@ -302,27 +308,29 @@ void GameScene::Update(double dt, float FOV, const unsigned char* buttons) { //U
 	}
 
 
-	player1.update(dt);
-	player2.update(dt);
+	static_cast<Vehicle*>(player1)->update(dt);
+	static_cast<Vehicle*>(player2)->update(dt);
 
 	updateGame(dt);
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		object[i].resetCollision();
+		if(object[i] != nullptr)
+		object[i]->resetCollision();
 	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if(&object[i] == player1.getObject()|| &object[i] == player2.getObject()||object[i].getDimension().y == 0)
+		if (object[i] == player1 || object[i] == player2 || object[i] == nullptr || object[i]->getDimension().y == 0)
 		continue;
-		player1.getObject()->updateCollision(&object[i], dt);
-		player2.getObject()->updateCollision(&object[i], dt);
+		player1->updateCollision(object[i], dt);
+		player2->updateCollision(object[i], dt);
 	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		object[i].updatePosition(dt);
+		if (object[i] != nullptr)
+		object[i]->updatePosition(dt);
 	}
 
 	Mtx44 projection;
@@ -337,24 +345,24 @@ void GameScene::updateGame(double dt)
 
 	updateObstacleState(dt);
 
-	if (camera.pos.x< player1.getObject()->getPos().x || camera.pos.x > player1.getObject()->getPos().x)//camera follow player
+	if (camera.pos.x< player1->getPos().x || camera.pos.x > player1->getPos().x)//camera follow player
 	{
-		float cameraXDisplacement = camera.pos.x - player1.getObject()->getPos().x;
+		float cameraXDisplacement = camera.pos.x - player1->getPos().x;
 		camera.pos.x -= cameraXDisplacement * 5 * dt;
-		camera.target.Set(player1.getObject()->getPos().x / 2, player1.getObject()->getPos().y, player1.getObject()->getPos().z);
+		camera.target.Set(player1->getPos().x / 2, player1->getPos().y, player1->getPos().z);
 	}
 
 
-	if (camera2.pos.x< player2.getObject()->getPos().x || camera2.pos.x > player2.getObject()->getPos().x)//camera follow player
+	if (camera2.pos.x< player2->getPos().x || camera2.pos.x > player2->getPos().x)//camera follow player
 	{
-		float camera2XDisplacement = camera2.pos.x - player2.getObject()->getPos().x;
+		float camera2XDisplacement = camera2.pos.x - player2->getPos().x;
 		camera2.pos.x -= camera2XDisplacement * 5 * dt;
-		camera2.target.Set(player2.getObject()->getPos().x / 2, player2.getObject()->getPos().y, player2.getObject()->getPos().z);
+		camera2.target.Set(player2->getPos().x / 2, player2->getPos().y, player2->getPos().z);
 	}
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)//check if obstacle hit player
 	{
-		if (object[UFO_BASE1].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		if (object[UFO_BASE1]->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -364,7 +372,7 @@ void GameScene::updateGame(double dt)
 				resetGame();
 			}
 		}
-		if (object[UFO_RED1].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		if (object[UFO_RED1]->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -380,35 +388,35 @@ void GameScene::updateGame(double dt)
 	if (obstacleSpeed > 200)//speed limit
 		obstacleSpeed = 200;
 
-	if (object[BOTTOM1].getTranslation().z < -600)//loops ground
+	if (object[BOTTOM1]->getTranslation().z < -600)//loops ground
 	{
-		object[BOTTOM1].setTranslation(object[BOTTOM1].getTranslation().x, object[BOTTOM1].getTranslation().y, object[BOTTOM1].getTranslation().z + 2400);
+		object[BOTTOM1]->setTranslation(object[BOTTOM1]->getTranslation().x, object[BOTTOM1]->getTranslation().y, object[BOTTOM1]->getTranslation().z + 2400);
 	}
-	if (object[BOTTOM2].getTranslation().z < -600)
+	if (object[BOTTOM2]->getTranslation().z < -600)
 	{
-		object[BOTTOM2].setTranslation(object[BOTTOM2].getTranslation().x, object[BOTTOM2].getTranslation().y, object[BOTTOM2].getTranslation().z + 2400);
-	}
-
-	if (object[BOTTOM3].getTranslation().z < -600)//loops ground
-	{
-		object[BOTTOM3].setTranslation(object[BOTTOM3].getTranslation().x, object[BOTTOM3].getTranslation().y, object[BOTTOM3].getTranslation().z + 2400);
-	}
-	if (object[BOTTOM4].getTranslation().z < -600)
-	{
-		object[BOTTOM4].setTranslation(object[BOTTOM4].getTranslation().x, object[BOTTOM4].getTranslation().y, object[BOTTOM4].getTranslation().z + 2400);
+		object[BOTTOM2]->setTranslation(object[BOTTOM2]->getTranslation().x, object[BOTTOM2]->getTranslation().y, object[BOTTOM2]->getTranslation().z + 2400);
 	}
 
-	object[BOTTOM1].moveBy(0, 0, -obstacleSpeed);//moves ground
-	object[BOTTOM2].moveBy(0, 0, -obstacleSpeed);
+	if (object[BOTTOM3]->getTranslation().z < -600)//loops ground
+	{
+		object[BOTTOM3]->setTranslation(object[BOTTOM3]->getTranslation().x, object[BOTTOM3]->getTranslation().y, object[BOTTOM3]->getTranslation().z + 2400);
+	}
+	if (object[BOTTOM4]->getTranslation().z < -600)
+	{
+		object[BOTTOM4]->setTranslation(object[BOTTOM4]->getTranslation().x, object[BOTTOM4]->getTranslation().y, object[BOTTOM4]->getTranslation().z + 2400);
+	}
 
-	object[BOTTOM3].moveBy(0, 0, -obstacleSpeed);//moves ground
-	object[BOTTOM4].moveBy(0, 0, -obstacleSpeed);
+	object[BOTTOM1]->moveBy(0, 0, -obstacleSpeed);//moves ground
+	object[BOTTOM2]->moveBy(0, 0, -obstacleSpeed);
+
+	object[BOTTOM3]->moveBy(0, 0, -obstacleSpeed);//moves ground
+	object[BOTTOM4]->moveBy(0, 0, -obstacleSpeed);
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		activeObstacleQueue.at(i)->moveBy(0, 0, -obstacleSpeed);//Moves obstacle
 
-		if (object[ENDWALL].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)//puts obstacles that didn't hit player back to inactive
+		if (object[ENDWALL]->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)//puts obstacles that didn't hit player back to inactive
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -422,10 +430,10 @@ void GameScene::resetGame()
 	
 	p1HitPoints = p2HitPoints = 3;
 	survivalTime = 0;
-	object[UFO_BASE1].setTranslation(0, 0.6, 35);
-	object[UFO_BASE1].setVelocity(0, 0.0, 0);
-	object[UFO_RED1].setTranslation(0, 300.6, 35);
-	object[UFO_RED1].setVelocity(0, 0.0, 0);
+	object[UFO_BASE1]->setTranslation(0, 0.6, 35);
+	object[UFO_BASE1]->setVelocity(0, 0.0, 0);
+	object[UFO_RED1]->setTranslation(0, 300.6, 35);
+	object[UFO_RED1]->setVelocity(0, 0.0, 0);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
@@ -586,10 +594,10 @@ void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getParent() == nullptr)
+		if (object[i]!= nullptr && object[i]->getParent() == nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(&object[i]);
+			renderObject(object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -603,7 +611,7 @@ void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		ss << "velocity: " << player1->getVelocity().x << ", " << player1->getVelocity().y << ", " << player1->getVelocity().z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
@@ -661,10 +669,10 @@ void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getParent() == nullptr)
+		if (object[i]!= nullptr && object[i]->getParent() == nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(&object[i]);
+			renderObject(object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -678,7 +686,7 @@ void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		ss << "velocity: " << player2->getVelocity().x << ", " << player2->getVelocity().y << ", " << player2->getVelocity().z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);

@@ -68,32 +68,30 @@ void GameScene2::InitMeshes() {
 }
 void GameScene2::CreateInstances()
 {
-	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(150, 0,0);
-	object[UFO_BASE1].setScale(4);
-	object[UFO_BASE1].setDimension(25, 20, 20);
-	object[UFO_BASE1].setHasGravity(true);
-	player1.setObject(&object[UFO_BASE1], false);
-	player1.disableAnimation(true);
+	object[UFO_BASE1]= ObjectFactory::createObject(OBJ_RIGIDBODY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BASE1]->setTranslation(150, 0,0);
+	object[UFO_BASE1]->setScale(4);
+	object[UFO_BASE1]->setDimension(25, 20, 20);
+	object[UFO_BASE1]->setHasGravity(true);
 
-	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(-150, 0,0);
-	object[UFO_RED1].setScale(4);
-	object[UFO_RED1].setDimension(25, 20, 20);
-	object[UFO_RED1].setHasGravity(true);
-	player2.setObject(&object[UFO_RED1], false);
-	player2.disableAnimation(true);
 
-	object[GROUND].setMesh(meshList[unsigned int(MESH::WHITEHITBOX)]);
-	object[GROUND].setScale(400, 10, 400);
-	object[GROUND].setTranslation(0, -30, 0);
-	object[GROUND].setDimension(400, 10, 400);
+	object[UFO_RED1] = ObjectFactory::createObject(OBJ_RIGIDBODY, meshList[unsigned int(MESH::UFO_RED)]);
+	object[UFO_RED1]->setTranslation(-150, 0,0);
+	object[UFO_RED1]->setScale(4);
+	object[UFO_RED1]->setDimension(25, 20, 20);
+	object[UFO_RED1]->setHasGravity(true);
 
-	object[DEATHZONE].setMesh(meshList[unsigned int(MESH::REDHITBOX)]);
-	object[DEATHZONE].setScale(800, 10, 800);
-	object[DEATHZONE].setTranslation(0, -100, 0);
-	object[DEATHZONE].setDimension(1600, 10, 1600);
-	object[DEATHZONE].setRender(false);
+
+	object[GROUND] = ObjectFactory::createObject(OBJ_EMPTY,  meshList[unsigned int(MESH::WHITEHITBOX)]);
+	object[GROUND]->setScale(400, 10, 400);
+	object[GROUND]->setTranslation(0, -30, 0);
+	object[GROUND]->setDimension(400, 10, 400);
+
+	object[DEATHZONE] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::REDHITBOX)]);
+	object[DEATHZONE]->setScale(800, 10, 800);
+	object[DEATHZONE]->setTranslation(0, -100, 0);
+	object[DEATHZONE]->setDimension(1600, 10, 1600);
+	object[DEATHZONE]->setRender(false);
 
 	for (int i = 0; i < 20; ++i)
 	{
@@ -121,9 +119,14 @@ void GameScene2::Init() { //Init scene
 	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = 0.0;
 	survivalTime = 0;
 	p1BombCharge, p2BombCharge = 1;
-	player1.disableKey(4);//disable fly
-	player2.disableKey(4);
-	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
+	player1 = object[UFO_BASE1];
+	player2 = object[UFO_RED1];
+	static_cast<Vehicle*>(player1)->disableKey(4);//disable fly
+	static_cast<Vehicle*>(player1)->disableAnimation(true);
+	static_cast<Vehicle*>(player2)->disableKey(4);
+	static_cast<Vehicle*>(player2)->setKeys('W', 'A', 'S', 'D', 0, 0);
+	static_cast<Vehicle*>(player2)->disableAnimation(true);
+	static_cast<Vehicle*>(player2)->disableKey(4);
 }
 
 void GameScene2::Exit(Scene* newScene){ //Exit scene
@@ -143,6 +146,13 @@ void GameScene2::Exit(Scene* newScene){ //Exit scene
 		for(int i = 0; i < inactiveObstacleQueue.size(); ++i)
 		{
 			delete inactiveObstacleQueue.at(i);
+		}
+	}
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i] != nullptr)
+		{
+			delete object[i];
 		}
 	}
 }
@@ -183,31 +193,32 @@ void GameScene2::Update(double dt, float FOV, const unsigned char* buttons) { //
 
 	camera.pos.Set(0.f, 330.f, -500.f), camera.target.Set(0.f, 1.f, 0.f), camera.up.Set(0.f, 0.f, 1.f);
 
-	player1.update(dt);
-	player2.update(dt);
+	static_cast<Vehicle*>(player1)->update(dt);
+	static_cast<Vehicle*>(player2)->update(dt);
 
 	updateGame(dt);
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		object[i].resetCollision();
+		if(object[i]!=nullptr)
+		object[i]->resetCollision();
 	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (&object[i] == player1.getObject() || &object[i] == player2.getObject() || object[i].getDimension().y == 0)
+		if (object[i] == nullptr || object[i] == player1 || object[i] == player2 || object[i]->getDimension().y == 0)
 			continue;
-		if (player1.getObject()->updateCollision(&object[i], dt) && &object[i] == &object[DEATHZONE])
+		if (player1->updateCollision(object[i], dt) && object[i] == object[DEATHZONE])
 		{
-			player1.getObject()->setTranslation(0, 0, 0);
+			player1->setTranslation(0, 0, 0);
 			if (p1BombCharge - 2 < 0)
 				p1BombCharge = 0;
 			else
 			p1BombCharge -= 2;
 		}
-		if(player2.getObject()->updateCollision(&object[i], dt) && &object[i] == &object[DEATHZONE])
+		if(player2->updateCollision(object[i], dt) && &object[i] == &object[DEATHZONE])
 		{
-			player2.getObject()->setTranslation(0, 0, 0);
+			player2->setTranslation(0, 0, 0);
 			if (p2BombCharge - 2 < 0)
 				p2BombCharge = 0;
 			else
@@ -219,7 +230,8 @@ void GameScene2::Update(double dt, float FOV, const unsigned char* buttons) { //
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		object[i].updatePosition(dt);
+		if(object[i] != nullptr)
+		object[i]->updatePosition(dt);
 	}
 
 	Mtx44 projection;
@@ -233,10 +245,10 @@ void GameScene2::updateGame(double dt)
 	spaceBounceTime += dt;
 	enterBounceTime += dt;
 	survivalTime += dt;
-	if (object[GROUND].getDimension().x > 100)
+	if (object[GROUND]->getDimension().x > 100)
 	{
-		object[GROUND].setDimension(object[GROUND].getDimension().x - dt*5 , object[GROUND].getDimension().y, object[GROUND].getDimension().z - dt*5 );
-		object[GROUND].setScale(object[GROUND].getScale().x - dt*5 , object[GROUND].getScale().y, object[GROUND].getScale().z - dt*5 );
+		object[GROUND]->setDimension(object[GROUND]->getDimension().x - dt*5 , object[GROUND]->getDimension().y, object[GROUND]->getDimension().z - dt*5 );
+		object[GROUND]->setScale(object[GROUND]->getScale().x - dt*5 , object[GROUND]->getScale().y, object[GROUND]->getScale().z - dt*5 );
 	}
 	updateObstacleState(dt);
 
@@ -257,9 +269,9 @@ void GameScene2::updateGame(double dt)
 		if (p2BombCharge > 0)
 		{
 			float force = 8;
-			Vector3 T = (player1.getObject()->getPos() - player2.getObject()->getPos()).Normalized();//unit vector p2 to p1
-			player1.getObject()->setVelocity(player1.getObject()->getVelocity().x + T.x * force, player1.getObject()->getVelocity().y + force, player1.getObject()->getVelocity().z + T.z * force);
-			player2.getObject()->setVelocity(player2.getObject()->getVelocity().x, player2.getObject()->getVelocity().y + force, player2.getObject()->getVelocity().z);
+			Vector3 T = (player1->getPos() - player2->getPos()).Normalized();//unit vector p2 to p1
+			player1->setVelocity(player1->getVelocity().x + T.x * force, player1->getVelocity().y + force, player1->getVelocity().z + T.z * force);
+			player2->setVelocity(player2->getVelocity().x, player2->getVelocity().y + force, player2->getVelocity().z);
 			--p2BombCharge;
 		}
 	}
@@ -274,23 +286,23 @@ void GameScene2::updateGame(double dt)
 		if (p1BombCharge > 0)
 		{
 			float force = 8;
-			Vector3 T = (player2.getObject()->getPos() - player1.getObject()->getPos()).Normalized();//unit vector p1 to p2
-			player2.getObject()->setVelocity(player2.getObject()->getVelocity().x + T.x * force, player2.getObject()->getVelocity().y + force, player2.getObject()->getVelocity().z + T.z * force);
-			player1.getObject()->setVelocity(player1.getObject()->getVelocity().x, player1.getObject()->getVelocity().y + force, player1.getObject()->getVelocity().z);
+			Vector3 T = (player2->getPos() - player1->getPos()).Normalized();//unit vector p1 to p2
+			player2->setVelocity(player2->getVelocity().x + T.x * force, player2->getVelocity().y + force, player2->getVelocity().z + T.z * force);
+			player1->setVelocity(player1->getVelocity().x, player1->getVelocity().y + force, player1->getVelocity().z);
 			--p1BombCharge;
 		}
 	}
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)//check if player hit obstacle
 	{
-		if (player1.getObject()->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		if (player1->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 			++p1BombCharge;
 			continue;
 		}
-		if (player2.getObject()->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
+		if (player2->updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -304,11 +316,11 @@ void GameScene2::resetGame()
 {
 	p1BombCharge, p2BombCharge = 1;
 	survivalTime = 0;
-	object[UFO_BASE1].setTranslation(150,0 ,0 );
-	object[UFO_BASE1].setVelocity(0, 0.0, 0);
+	object[UFO_BASE1]->setTranslation(150,0 ,0 );
+	object[UFO_BASE1]->setVelocity(0, 0.0, 0);
 	
-	object[UFO_RED1].setTranslation(-150, 0, 0);
-	object[UFO_RED1].setVelocity(0, 0.0, 0);
+	object[UFO_RED1]->setTranslation(-150, 0, 0);
+	object[UFO_RED1]->setVelocity(0, 0.0, 0);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
@@ -334,13 +346,13 @@ void GameScene2::updateObstacleState(double dt)
 	}
 	timeSinceLastObstacle = 0;
 	float x, z;
-	x = rand() % (int)object[GROUND].getDimension().x - (int)object[GROUND].getDimension().x/2;
-	z = rand() % (int)object[GROUND].getDimension().x - (int)object[GROUND].getDimension().z/2;
+	x = rand() % (int)object[GROUND]->getDimension().x - (int)object[GROUND]->getDimension().x/2;
+	z = rand() % (int)object[GROUND]->getDimension().x - (int)object[GROUND]->getDimension().z/2;
 	activeObstacleQueue.back()->setTranslation(x, 0, z);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
-		if (abs(activeObstacleQueue.at(i)->getPos().x) > object[GROUND].getDimension().x / 2 ||
-			abs(activeObstacleQueue.at(i)->getPos().z) > object[GROUND].getDimension().z / 2)
+		if (abs(activeObstacleQueue.at(i)->getPos().x) > object[GROUND]->getDimension().x / 2 ||
+			abs(activeObstacleQueue.at(i)->getPos().z) > object[GROUND]->getDimension().z / 2)
 		{
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
@@ -391,10 +403,10 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 	//render all objects
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getParent() == nullptr)
+		if (object[i] != nullptr && object[i]->getParent() == nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(&object[i]);
+			renderObject(object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -408,7 +420,7 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
 		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		ss << "velocity: " << player1->getVelocity().x << ", " << player1->getVelocity().y << ", " << player1->getVelocity().z;
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);

@@ -5,7 +5,7 @@
 #include "Light.h"
 #include "ParticleSystem.h"
 #include "Object.h"
-#include "Vehicle.h"
+
 
 class GhostScene final: public Scene{
 	enum class MESH{

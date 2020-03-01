@@ -18,7 +18,24 @@ Object::Object()
 	grounded = false;
 	gravity = false;
 }
-
+Object::Object(Mesh* mesh)
+{
+	meshType = mesh;
+	parent = nullptr;
+	pos.SetZero();
+	translation.SetZero();
+	angle.SetZero();
+	scale.Set(1, 1, 1);
+	render = true;
+	clockwise = false;
+	parentRotation = false;
+	parentScale = false;
+	interactable = false;
+	movable = false;
+	hasMoved = false;
+	grounded = false;
+	gravity = false;
+}
 Object::~Object()
 {
 }

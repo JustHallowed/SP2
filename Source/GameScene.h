@@ -5,7 +5,9 @@
 #include "Light.h"
 #include "ParticleSystem.h"
 #include "Object.h"
-#include "Vehicle.h"
+#include "ObjectFactory.h"
+#include "ObjectTypes.h"
+#include "Enum.h"
 
 class GameScene final : public Scene {
 	enum class MESH {
@@ -30,12 +32,13 @@ class GameScene final : public Scene {
 	double CalcFrameRate() const;
 	float survivalTime;
 	int p1HitPoints, p2HitPoints;
-	Object object[NUM_INSTANCES];
+	Object* object[NUM_INSTANCES];
 	Light light[1]{ Light(0.f, 192.f, 0.f) };
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter bulletGenerator;
-	Vehicle player1, player2;
+	Object* player1;
+	Object* player2;
 	Camera camera2;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);

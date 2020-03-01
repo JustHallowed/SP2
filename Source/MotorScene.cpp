@@ -283,7 +283,7 @@ void MotorScene::InitMeshes(){
 	meshList[unsigned int(MESH::LOWER_LEG)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::LOWER_LEG)]->material.kShininess = 4.f;
 
-	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharUpperLeg.obj");
+	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ	("Resources/OBJs/MainCharUpperLeg.obj");
 	meshList[unsigned int(MESH::UPPER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
 	meshList[unsigned int(MESH::UPPER_LEG)]->material.kAmbient.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::UPPER_LEG)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
@@ -344,6 +344,13 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
 		if(meshList[i] != 0){
 			delete meshList[i];
+		}
+	}
+	for (int i = 0; i < NUM_INSTANCES; ++i)
+	{
+		if (object[i] != nullptr)
+		{
+			delete object[i];
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
@@ -461,7 +468,7 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 
 
 	for (int i = 0; i < NUM_INSTANCES; ++i){
-		object[i].resetCollision();
+		object[i]->resetCollision();
 	}
 
 	//for (int j = 0; j < NUM_INSTANCES; ++j)//update all collisions of objects in scene
@@ -478,7 +485,7 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	//	}
 	//}
 
-	object[PLATFORM1].addRotation(1, 'y');
+	object[PLATFORM1]->addRotation(1, 'y');
 
 	if (Application::IsKeyPressed('E'))
 	{
@@ -682,14 +689,14 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 	//displays hitboxes
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getDimension().y > 0)
+		if (object[i]->getDimension().y > 0)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(object[i].getPos().x, object[i].getPos().y, object[i].getPos().z);
-			modelStack.Rotate(object[i].getAngle().z, 0, 0, 1);
-			modelStack.Rotate(object[i].getAngle().y, 0, 1, 0);
-			modelStack.Rotate(object[i].getAngle().x, 1, 0, 0);
-			modelStack.Scale(object[i].getDimension().x, object[i].getDimension().y, object[i].getDimension().z);
+			modelStack.Translate(object[i]->getPos().x, object[i]->getPos().y, object[i]->getPos().z);
+			modelStack.Rotate(object[i]->getAngle().z, 0, 0, 1);
+			modelStack.Rotate(object[i]->getAngle().y, 0, 1, 0);
+			modelStack.Rotate(object[i]->getAngle().x, 1, 0, 0);
+			modelStack.Scale(object[i]->getDimension().x, object[i]->getDimension().y, object[i]->getDimension().z);
 			RenderMesh(meshList[unsigned int(MESH::HITBOXRED)], false);
 			modelStack.PopMatrix();
 		}
@@ -697,9 +704,9 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 
 	//render all objects
 	for(int i = 0; i < NUM_INSTANCES; ++i){
-		if(object[i].getParent() == nullptr){
+		if(object[i]->getParent() == nullptr){
 			modelStack.PushMatrix();
-			renderObject(&object[i]);
+			renderObject(object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -965,10 +972,10 @@ void MotorScene::RenderIdleScreen()
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
-		if (object[i].getParent() == nullptr)
+		if (object[i]->getParent() == nullptr)
 		{
 			modelStack.PushMatrix();
-			renderObject(&object[i]);
+			renderObject(object[i]);
 			modelStack.PopMatrix();
 		}
 	}
@@ -1327,263 +1334,263 @@ void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, f
 
 void MotorScene::createPlatforms(){
 	//5 copies of platform
-	object[PLATFORM1].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM1].setTranslation(-35, 0.5, 0);
-	object[PLATFORM1].setScale(3);
-	object[PLATFORM1].setDimension(30, 30, 30);
+	object[PLATFORM1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM1]->setTranslation(-35, 0.5, 0);
+	object[PLATFORM1]->setScale(3);
+	object[PLATFORM1]->setDimension(30, 30, 30);
 
-	object[PLATFORM2].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM2].setTranslation(10, 0.5, 70);
-	object[PLATFORM2].setRotation(45, 'y');
-	object[PLATFORM2].setScale(3);
-	object[PLATFORM2].setDimension(30, 30, 30);
+	object[PLATFORM2] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM2]->setTranslation(10, 0.5, 70);
+	object[PLATFORM2]->setRotation(45, 'y');
+	object[PLATFORM2]->setScale(3);
+	object[PLATFORM2]->setDimension(30, 30, 30);
 
-	object[PLATFORM3].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM3].setTranslation(-80, 0.5, 70);
-	object[PLATFORM3].setRotation(-45, 'y');
-	object[PLATFORM3].setScale(3);
-	object[PLATFORM3].setDimension(30, 30, 30);
+	object[PLATFORM3] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM3]->setTranslation(-80, 0.5, 70);
+	object[PLATFORM3]->setRotation(-45, 'y');
+	object[PLATFORM3]->setScale(3);
+	object[PLATFORM3]->setDimension(30, 30, 30);
 
-	object[PLATFORM4].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM4].setTranslation(10, 0.5, -70);
-	object[PLATFORM4].setRotation(-45, 'y');
-	object[PLATFORM4].setScale(3);
-	object[PLATFORM4].setDimension(30, 30, 30);
+	object[PLATFORM4] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM4]->setTranslation(10, 0.5, -70);
+	object[PLATFORM4]->setRotation(-45, 'y');
+	object[PLATFORM4]->setScale(3);
+	object[PLATFORM4]->setDimension(30, 30, 30);
 
-	object[PLATFORM5].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM5].setTranslation(-80, 0.5, -70);
-	object[PLATFORM5].setRotation(45, 'y');
-	object[PLATFORM5].setScale(3);
-	object[PLATFORM5].setDimension(30, 30, 30);
+	object[PLATFORM5] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM5]->setTranslation(-80, 0.5, -70);
+	object[PLATFORM5]->setRotation(45, 'y');
+	object[PLATFORM5]->setScale(3);
+	object[PLATFORM5]->setDimension(30, 30, 30);
 
-	object[PLATFORM6].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM6].setTranslation(-35, 0.5, -70);
-	object[PLATFORM6].setScale(3);
-	object[PLATFORM6].setDimension(30, 30, 30);
+	object[PLATFORM6] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM6]->setTranslation(-35, 0.5, -70);
+	object[PLATFORM6]->setScale(3);
+	object[PLATFORM6]->setDimension(30, 30, 30);
 
-	object[PLATFORM7].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM7].setTranslation(10, 0.5, 0);
-	object[PLATFORM7].setRotation(90, 'y');
-	object[PLATFORM7].setScale(3);
-	object[PLATFORM7].setDimension(30, 30, 30);
+	object[PLATFORM7] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM7]->setTranslation(10, 0.5, 0);
+	object[PLATFORM7]->setRotation(90, 'y');
+	object[PLATFORM7]->setScale(3);
+	object[PLATFORM7]->setDimension(30, 30, 30);
 
-	object[PLATFORM8].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM8].setTranslation(-35, 0.5, 70);
-	object[PLATFORM8].setScale(3);
-	object[PLATFORM8].setDimension(30, 30, 30);
+	object[PLATFORM8] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM8]->setTranslation(-35, 0.5, 70);
+	object[PLATFORM8]->setScale(3);
+	object[PLATFORM8]->setDimension(30, 30, 30);
 
-	object[PLATFORM9].setMesh(meshList[unsigned int(MESH::PLATFORM)]);
-	object[PLATFORM9].setTranslation(-80, 0.5, 0);
-	object[PLATFORM9].setRotation(90, 'y');
-	object[PLATFORM9].setScale(3);
-	object[PLATFORM9].setDimension(30, 30, 30);
+	object[PLATFORM9] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::PLATFORM)]);
+	object[PLATFORM9]->setTranslation(-80, 0.5, 0);
+	object[PLATFORM9]->setRotation(90, 'y');
+	object[PLATFORM9]->setScale(3);
+	object[PLATFORM9]->setDimension(30, 30, 30);
 }
 
 void MotorScene::createUFOs(){
 	//5 copies of ufo in ref to individual platform
-	object[UFO_BASE1].setMesh(meshList[unsigned int(MESH::UFO_BASE)]);
-	object[UFO_BASE1].setTranslation(0.f, 0.6f, 0.f);
+	object[UFO_BASE1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BASE1]->setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
-	Object::bind(&object[PLATFORM1], &object[UFO_BASE1], true, true);
+	Object::bind(object[PLATFORM1], object[UFO_BASE1], true, true);
 
-	object[UFO_PURPLE1].setMesh(meshList[unsigned int(MESH::UFO_PURPLE)]);
-	object[UFO_PURPLE1].setTranslation(0.f, 0.6f, 0.f);
+	object[UFO_PURPLE1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_PURPLE1]->setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
-	Object::bind(&object[PLATFORM2], &object[UFO_PURPLE1], true, true);
+	Object::bind(object[PLATFORM2], object[UFO_PURPLE1], true, true);
 
-	object[UFO_RED1].setMesh(meshList[unsigned int(MESH::UFO_RED)]);
-	object[UFO_RED1].setTranslation(0.f, 0.6f, 0.f);
+	object[UFO_RED1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_RED1]->setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
-	Object::bind(&object[PLATFORM3], &object[UFO_RED1], true, true);
+	Object::bind(object[PLATFORM3], object[UFO_RED1], true, true);
 
-	object[UFO_BLUE1].setMesh(meshList[unsigned int(MESH::UFO_BLUE)]);
-	object[UFO_BLUE1].setTranslation(0.f, 0.6f, 0.f);
+	object[UFO_BLUE1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_BLUE1]->setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
-	Object::bind(&object[PLATFORM4], &object[UFO_BLUE1], true, true);
+	Object::bind(object[PLATFORM4], object[UFO_BLUE1], true, true);
 
-	object[UFO_PINK1].setMesh(meshList[unsigned int(MESH::UFO_PINK)]);
-	object[UFO_PINK1].setTranslation(0.f, 0.6f, 0.f);
+	object[UFO_PINK1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::UFO_BASE)]);
+	object[UFO_PINK1]->setTranslation(0.f, 0.6f, 0.f);
 	//ufo in ref to platform
-	Object::bind(&object[PLATFORM5], &object[UFO_PINK1], true, true);
+	Object::bind(object[PLATFORM5], object[UFO_PINK1], true, true);
 }
 
 void MotorScene::createRobot1(){
 	//robot parts for 1 robot
-	object[ROBOT_BODY1].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY1].setTranslation(-10, 5.2, 50);
-	object[ROBOT_BODY1].setScale(2);
-	object[ROBOT_BODY1].setRotation(45, 'y');
-	object[ROBOT_BODY1].setDimension(6, 15, 6);
+	object[ROBOT_BODY1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY1]->setTranslation(-10, 5.2, 50);
+	object[ROBOT_BODY1]->setScale(2);
+	object[ROBOT_BODY1]->setRotation(45, 'y');
+	object[ROBOT_BODY1]->setDimension(6, 15, 6);
 
-	object[ROBOT_ARM1].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM1].setTranslation(-1.f, 2.f, 0.f);
-	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM1], true, true);
+	object[ROBOT_ARM1] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM1]->setTranslation(-1.f, 2.f, 0.f);
+	Object::bind(object[ROBOT_BODY1], object[ROBOT_ARM1], true, true);
 
-	object[ROBOT_ARM2].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM2].setTranslation(1.f, 2.f, 0.f);
-	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_ARM2], true, true);
+	object[ROBOT_ARM2] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_ARM2]->setTranslation(1.f, 2.f, 0.f);
+	Object::bind(object[ROBOT_BODY1], object[ROBOT_ARM2], true, true);
 
-	object[ROBOT_FOREARM1].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM1].setTranslation(0.f, -1.f, 0.f);
-	Object::bind(&object[ROBOT_ARM1], &object[ROBOT_FOREARM1], true, true);
+	object[ROBOT_FOREARM1] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM1]->setTranslation(0.f, -1.f, 0.f);
+	Object::bind(object[ROBOT_ARM1], object[ROBOT_FOREARM1], true, true);
 
-	object[ROBOT_FOREARM2].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM2].setRotation(190, 'y');
-	object[ROBOT_FOREARM2].setTranslation(0.f, -1.f, 0.f);
-	Object::bind(&object[ROBOT_ARM2], &object[ROBOT_FOREARM2], true, true);
+	object[ROBOT_FOREARM2] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM2]->setRotation(190, 'y');
+	object[ROBOT_FOREARM2]->setTranslation(0.f, -1.f, 0.f);
+	Object::bind(object[ROBOT_ARM2], object[ROBOT_FOREARM2], true, true);
 
-	object[ROBOT_UPPERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG1].setTranslation(-0.45f, -0.05f, 0.f);
-	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG1], true, true);
+	object[ROBOT_UPPERLEG1] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG1]->setTranslation(-0.45f, -0.05f, 0.f);
+	Object::bind(object[ROBOT_BODY1], object[ROBOT_UPPERLEG1], true, true);
 
-	object[ROBOT_UPPERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG2].setTranslation(0.45f, -0.05f, 0.f);
-	Object::bind(&object[ROBOT_BODY1], &object[ROBOT_UPPERLEG2], true, true);
+	object[ROBOT_UPPERLEG2] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG2]->setTranslation(0.45f, -0.05f, 0.f);
+	Object::bind(object[ROBOT_BODY1], object[ROBOT_UPPERLEG2], true, true);
 
-	object[ROBOT_LOWERLEG1].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG1].setTranslation(0.f, -1.15f, 0.f);
-	Object::bind(&object[ROBOT_UPPERLEG1], &object[ROBOT_LOWERLEG1], true, true);
+	object[ROBOT_LOWERLEG1] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG1]->setTranslation(0.f, -1.15f, 0.f);
+	Object::bind(object[ROBOT_UPPERLEG1], object[ROBOT_LOWERLEG1], true, true);
 
-	object[ROBOT_LOWERLEG2].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG2].setTranslation(0.f, -1.15f, 0.f);
-	Object::bind(&object[ROBOT_UPPERLEG2], &object[ROBOT_LOWERLEG2], true, true);
+	object[ROBOT_LOWERLEG2] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG2]->setTranslation(0.f, -1.15f, 0.f);
+	Object::bind(object[ROBOT_UPPERLEG2], object[ROBOT_LOWERLEG2], true, true);
 }
 
 void MotorScene::createVehicles()
 {
 	//GY CAR
-	object[GY_CAR1].setMesh(meshList[unsigned int(MESH::GY_CAR)]);
-	object[GY_CAR1].setTranslation(0, 0.6, 0);
-	Object::bind(&object[PLATFORM6], &object[GY_CAR1], true, true);
+	object[GY_CAR1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::GY_CAR)]);
+	object[GY_CAR1]->setTranslation(0, 0.6, 0);
+	Object::bind(object[PLATFORM6], object[GY_CAR1], true, true);
 
 	//EH CAR
-	object[EH_CAR1].setMesh(meshList[unsigned int(MESH::EH_CAR)]);
-	object[EH_CAR1].setTranslation(0, 0.6, 0);
-	Object::bind(&object[PLATFORM7], &object[EH_CAR1], true, true);
+	object[EH_CAR1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::EH_CAR)]);
+	object[EH_CAR1]->setTranslation(0, 0.6, 0);
+	Object::bind(object[PLATFORM7], object[EH_CAR1], true, true);
 
 	//LF CAR
-	object[LF_CAR1].setMesh(meshList[unsigned int(MESH::LF_CAR)]);
-	object[LF_CAR1].setTranslation(0, 0.6, 0);
-	Object::bind(&object[PLATFORM8], &object[LF_CAR1], true, true);
+	object[LF_CAR1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::LF_CAR)]);
+	object[LF_CAR1]->setTranslation(0, 0.6, 0);
+	Object::bind(object[PLATFORM8], object[LF_CAR1], true, true);
 
 	//YW CAR
-	object[YW_CAR1].setMesh(meshList[unsigned int(MESH::YW_CAR)]);
-	object[YW_CAR1].setTranslation(0, 0.6, 0);
-	Object::bind(&object[PLATFORM9], &object[YW_CAR1], true, true);
+	object[YW_CAR1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::YW_CAR)]);
+	object[YW_CAR1]->setTranslation(0, 0.6, 0);
+	Object::bind(object[PLATFORM9], object[YW_CAR1], true, true);
 }
 
 void MotorScene::createRobot2()
 {
-	object[ROBOT_BODY2].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY2].setTranslation(-90, 5.2, 50);
-	object[ROBOT_BODY2].setScale(2);
-	object[ROBOT_BODY2].setRotation(90, 'y');
-	object[ROBOT_BODY2].setDimension(6, 15, 6);
+	object[ROBOT_BODY2] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY2]->setTranslation(-90, 5.2, 50);
+	object[ROBOT_BODY2]->setScale(2);
+	object[ROBOT_BODY2]->setRotation(90, 'y');
+	object[ROBOT_BODY2]->setDimension(6, 15, 6);
 
-	object[ROBOT_ARM3].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM3].setTranslation(-1, 2, 0);
-	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM3], true, true);
+	object[ROBOT_ARM3] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM3]->setTranslation(-1, 2, 0);
+	Object::bind(object[ROBOT_BODY2], object[ROBOT_ARM3], true, true);
 
-	object[ROBOT_ARM4].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM4].setTranslation(1, 2, 0);
-	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_ARM4], true, true);
+	object[ROBOT_ARM4] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM4]->setTranslation(1, 2, 0);
+	Object::bind(object[ROBOT_BODY2], object[ROBOT_ARM4], true, true);
 
-	object[ROBOT_FOREARM3].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM3].setTranslation(0, -1, 0);
-	Object::bind(&object[ROBOT_ARM3], &object[ROBOT_FOREARM3], true, true);
+	object[ROBOT_FOREARM3] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM3]->setTranslation(0, -1, 0);
+	Object::bind(object[ROBOT_ARM3], object[ROBOT_FOREARM3], true, true);
 
-	object[ROBOT_FOREARM4].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM4].setRotation(190, 'y');
-	object[ROBOT_FOREARM4].setTranslation(0, -1, 0);
-	Object::bind(&object[ROBOT_ARM4], &object[ROBOT_FOREARM4], true, true);
+	object[ROBOT_FOREARM4] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM4]->setRotation(190, 'y');
+	object[ROBOT_FOREARM4]->setTranslation(0, -1, 0);
+	Object::bind(object[ROBOT_ARM4], object[ROBOT_FOREARM4], true, true);
 
-	object[ROBOT_UPPERLEG3].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG3].setTranslation(-0.45, -0.05, 0);
-	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_UPPERLEG3], true, true);
+	object[ROBOT_UPPERLEG3] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG3]->setTranslation(-0.45, -0.05, 0);
+	Object::bind(object[ROBOT_BODY2], object[ROBOT_UPPERLEG3], true, true);
 
-	object[ROBOT_UPPERLEG4].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG4].setTranslation(0.45, -0.05, 0);
-	Object::bind(&object[ROBOT_BODY2], &object[ROBOT_UPPERLEG4], true, true);
+	object[ROBOT_UPPERLEG4] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG4]->setTranslation(0.45, -0.05, 0);
+	Object::bind(object[ROBOT_BODY2], object[ROBOT_UPPERLEG4], true, true);
 
-	object[ROBOT_LOWERLEG3].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG3].setTranslation(0, -1.15, 0);
-	Object::bind(&object[ROBOT_UPPERLEG3], &object[ROBOT_LOWERLEG3], true, true);
+	object[ROBOT_LOWERLEG3] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG3]->setTranslation(0, -1.15, 0);
+	Object::bind(object[ROBOT_UPPERLEG3], object[ROBOT_LOWERLEG3], true, true);
 
-	object[ROBOT_LOWERLEG4].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG4].setTranslation(0, -1.15, 0);
-	Object::bind(&object[ROBOT_UPPERLEG4], &object[ROBOT_LOWERLEG4], true, true);
+	object[ROBOT_LOWERLEG4] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG4]->setTranslation(0, -1.15, 0);
+	Object::bind(object[ROBOT_UPPERLEG4], object[ROBOT_LOWERLEG4], true, true);
 }
 
 void MotorScene::createRobot3()
 {
-	object[ROBOT_BODY3].setMesh(meshList[unsigned int(MESH::ROBOT_BODY)]);
-	object[ROBOT_BODY3].setTranslation(-90, 2.6, 45);
-	object[ROBOT_BODY3].setScale(1.25);
-	object[ROBOT_BODY3].setRotation(90, 'y');
-	object[ROBOT_BODY3].setDimension(4, 12, 4);
+	object[ROBOT_BODY3] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::ROBOT_BODY)]);
+	object[ROBOT_BODY3]->setTranslation(-90, 2.6, 45);
+	object[ROBOT_BODY3]->setScale(1.25);
+	object[ROBOT_BODY3]->setRotation(90, 'y');
+	object[ROBOT_BODY3]->setDimension(4, 12, 4);
 
-	object[ROBOT_ARM5].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM5].setTranslation(-1, 2, 0);
-	object[ROBOT_ARM5].setScale(0.75);
-	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM5], true, true);
+	object[ROBOT_ARM5] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM5]->setTranslation(-1, 2, 0);
+	object[ROBOT_ARM5]->setScale(0.75);
+	Object::bind(object[ROBOT_BODY3], object[ROBOT_ARM5], true, true);
 
-	object[ROBOT_ARM6].setMesh(meshList[unsigned int(MESH::ROBOT_ARM)]);
-	object[ROBOT_ARM6].setTranslation(1, 2, 0);
-	object[ROBOT_ARM6].setScale(0.75);
-	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_ARM6], true, true);
+	object[ROBOT_ARM6] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_ARM)]);
+	object[ROBOT_ARM6]->setTranslation(1, 2, 0);
+	object[ROBOT_ARM6]->setScale(0.75);
+	Object::bind(object[ROBOT_BODY3], object[ROBOT_ARM6], true, true);
 
-	object[ROBOT_FOREARM5].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM5].setTranslation(0, -1, 0);
-	Object::bind(&object[ROBOT_ARM5], &object[ROBOT_FOREARM5], true, true);
+	object[ROBOT_FOREARM5] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM5]->setTranslation(0, -1, 0);
+	Object::bind(object[ROBOT_ARM5], object[ROBOT_FOREARM5], true, true);
 
-	object[ROBOT_FOREARM6].setMesh(meshList[unsigned int(MESH::ROBOT_FOREARM)]);
-	object[ROBOT_FOREARM6].setRotation(190, 'y');
-	object[ROBOT_FOREARM6].setTranslation(0, -1, 0);
-	Object::bind(&object[ROBOT_ARM6], &object[ROBOT_FOREARM6], true, true);
+	object[ROBOT_FOREARM6] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_FOREARM)]);
+	object[ROBOT_FOREARM6]->setRotation(190, 'y');
+	object[ROBOT_FOREARM6]->setTranslation(0, -1, 0);
+	Object::bind(object[ROBOT_ARM6], object[ROBOT_FOREARM6], true, true);
 
-	object[ROBOT_UPPERLEG5].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG5].setTranslation(-0.45, -0.05, 0);
-	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_UPPERLEG5], true, true);
+	object[ROBOT_UPPERLEG5] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG5]->setTranslation(-0.45, -0.05, 0);
+	Object::bind(object[ROBOT_BODY3], object[ROBOT_UPPERLEG5], true, true);
 
-	object[ROBOT_UPPERLEG6].setMesh(meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
-	object[ROBOT_UPPERLEG6].setTranslation(0.45, -0.05, 0);
-	Object::bind(&object[ROBOT_BODY3], &object[ROBOT_UPPERLEG6], true, true);
+	object[ROBOT_UPPERLEG6] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_UPPERLEG)]);
+	object[ROBOT_UPPERLEG6]->setTranslation(0.45, -0.05, 0);
+	Object::bind(object[ROBOT_BODY3], object[ROBOT_UPPERLEG6], true, true);
 
-	object[ROBOT_LOWERLEG5].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG5].setTranslation(0, -1.15, 0);
-	Object::bind(&object[ROBOT_UPPERLEG5], &object[ROBOT_LOWERLEG5], true, true);
+	object[ROBOT_LOWERLEG5] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG5]->setTranslation(0, -1.15, 0);
+	Object::bind(object[ROBOT_UPPERLEG5], object[ROBOT_LOWERLEG5], true, true);
 
-	object[ROBOT_LOWERLEG6].setMesh(meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
-	object[ROBOT_LOWERLEG6].setTranslation(0, -1.15, 0);
-	Object::bind(&object[ROBOT_UPPERLEG6], &object[ROBOT_LOWERLEG6], true, true);
+	object[ROBOT_LOWERLEG6] = ObjectFactory::createObject(OBJ_JOINT, meshList[unsigned int(MESH::ROBOT_LOWERLEG)]);
+	object[ROBOT_LOWERLEG6]->setTranslation(0, -1.15, 0);
+	Object::bind(object[ROBOT_UPPERLEG6], object[ROBOT_LOWERLEG6], true, true);
 }
 
 void MotorScene::createStage()
 {
-	object[STAGE1].setMesh(meshList[unsigned int(MESH::STAGE)]);
-	object[STAGE1].setTranslation(65, 0.5, 0);
-	object[STAGE1].setScale(5.5, 8, 8);
-	object[STAGE1].setDimension(60, 16, 140);
+	object[STAGE1]= ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::STAGE)]);
+	object[STAGE1]->setTranslation(65, 0.5, 0);
+	object[STAGE1]->setScale(5.5, 8, 8);
+	object[STAGE1]->setDimension(60, 16, 140);
 
-	object[STAND1].setMesh(meshList[unsigned int(MESH::STAND)]);
-	object[STAND1].setTranslation(65, 0.8, 0);
-	object[STAND1].setScale(5.5, 8, 8);
-	object[STAND1].setDimension(10, 60, 16);
+	object[STAND1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::STAND)]);
+	object[STAND1]->setTranslation(65, 0.8, 0);
+	object[STAND1]->setScale(5.5, 8, 8);
+	object[STAND1]->setDimension(10, 60, 16);
 }
 
 void MotorScene::createSpeaker()
 {
-	object[SPEAKER1].setMesh(meshList[unsigned int(MESH::SPEAKER)]);
-	object[SPEAKER1].setRotation(-115, 'y');
-	object[SPEAKER1].setScale(10);
-	object[SPEAKER1].setTranslation(65, 0.5, 85);
-	object[SPEAKER1].setDimension(20, 80, 20);
+	object[SPEAKER1] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::SPEAKER)]);
+	object[SPEAKER1]->setRotation(-115, 'y');
+	object[SPEAKER1]->setScale(10);
+	object[SPEAKER1]->setTranslation(65, 0.5, 85);
+	object[SPEAKER1]->setDimension(20, 80, 20);
 
-	object[SPEAKER2].setMesh(meshList[unsigned int(MESH::SPEAKER)]);
-	object[SPEAKER2].setRotation(-65, 'y');
-	object[SPEAKER2].setScale(10);
-	object[SPEAKER2].setTranslation(65, 0.5, -85);
-	object[SPEAKER2].setDimension(20, 80, 20);
+	object[SPEAKER2] = ObjectFactory::createObject(OBJ_EMPTY, meshList[unsigned int(MESH::SPEAKER)]);
+	object[SPEAKER2]->setRotation(-65, 'y');
+	object[SPEAKER2]->setScale(10);
+	object[SPEAKER2]->setTranslation(65, 0.5, -85);
+	object[SPEAKER2]->setDimension(20, 80, 20);
 }
 
 void MotorScene::renderObject(Object* obj){
@@ -1624,12 +1631,12 @@ void MotorScene::renderObject(Object* obj){
 
 void MotorScene::npcCheck(int instance, const char* audioFileName)
 {	//finds angle in between two vectors
-	Vector3 posToObject = object[instance].getPos() - camera.pos;
+	Vector3 posToObject = object[instance]->getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].checkDist(camera.pos) < 20.f)
+	if (object[instance]->checkDist(camera.pos) < 20.f)
 	{
-		if (object[instance].getAngle(posToObject,posToTarget) < 0.25) //30degrees
+		if (object[instance]->getAngle(posToObject,posToTarget) < 0.25) //30degrees
 		{
 			inRange[instance] = true;
 			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)
@@ -1655,50 +1662,50 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 
 void MotorScene::animateNpc(int instance)
 {
-	Vector3 objectToPlayer = camera.pos - object[instance].getPos();
-	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
-		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
-	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
+	Vector3 objectToPlayer = camera.pos - object[instance]->getPos();
+	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance]->getAngle().y)), 0,
+		cos(Math::DegreeToRadian(-object[instance]->getAngle().y))).Normalized();
+	float angle = object[instance]->getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
 
 	if (interacted[instance])
 	{
 		if (angle > 10)
-			object[instance].addRotation(angle, 'y');
-		object[instance + 3].setRotation(-90, 'y');
-		object[instance + 3].setRotation(-40, 'x');
-		object[instance + 4 ].setRotation(-90, 'y');
-		object[instance + 4].setRotation(-40, 'x');
+			object[instance]->addRotation(angle, 'y');
+		object[instance + 3]->setRotation(-90, 'y');
+		object[instance + 3]->setRotation(-40, 'x');
+		object[instance + 4 ]->setRotation(-90, 'y');
+		object[instance + 4]->setRotation(-40, 'x');
 
-		if (object[instance + 1].getAngle().x <= -90)
+		if (object[instance + 1]->getAngle().x <= -90)
 		{
 			Switch = true;
 		}
-		else if (object[instance + 1].getAngle().x >= -45)
+		else if (object[instance + 1]->getAngle().x >= -45)
 		{
 			Switch = false;
 		}
 		if (Switch)
 		{
-			object[instance + 1].addRotation(3, 'x');
-			object[instance + 2].addRotation(3, 'x');
+			object[instance + 1]->addRotation(3, 'x');
+			object[instance + 2]->addRotation(3, 'x');
 		}
 		else
 		{
-			object[instance + 1].addRotation(-3, 'x');
-			object[instance + 2].addRotation(-3, 'x');
+			object[instance + 1]->addRotation(-3, 'x');
+			object[instance + 2]->addRotation(-3, 'x');
 		}
 	}
 	else
 	{
-		object[instance + 3].setRotation(0, 'x');
-		object[instance + 3].setRotation(0, 'y');
-		object[instance + 4].setRotation(0, 'x');
-		object[instance + 4].setRotation(180, 'y');
+		object[instance + 3]->setRotation(0, 'x');
+		object[instance + 3]->setRotation(0, 'y');
+		object[instance + 4]->setRotation(0, 'x');
+		object[instance + 4]->setRotation(180, 'y');
 
-		if (object[instance + 1].getAngle().x < 0)
+		if (object[instance + 1]->getAngle().x < 0)
 		{
-			object[instance + 1].addRotation(1, 'x');
-			object[instance + 2].addRotation(1, 'x');
+			object[instance + 1]->addRotation(1, 'x');
+			object[instance + 2]->addRotation(1, 'x');
 		}
 	}
 }
@@ -1706,12 +1713,12 @@ void MotorScene::animateNpc(int instance)
 void MotorScene::carCheck(int instance, const char* audioFileName)
 {
 	//finds angle in between two vectors
-	Vector3 posToObject = object[instance].getPos() - camera.pos;
+	Vector3 posToObject = object[instance]->getPos() - camera.pos;
 	Vector3 posToTarget = camera.target - camera.pos;
 
-	if (object[instance].checkDist(camera.pos) < 30.f)
+	if (object[instance]->checkDist(camera.pos) < 30.f)
 	{
-		if (object[instance].getAngle(posToObject, posToTarget) < 0.5)
+		if (object[instance]->getAngle(posToObject, posToTarget) < 0.5)
 		{
 			inRange[instance] = true;
 			if (Application::IsKeyPressed('F') && interactBounceTime <= elapsedTime)

@@ -25,7 +25,7 @@ protected:
 	bool movable;//if object can be displaced by other objects
 	bool hasMoved;//if object moved this frame
 	bool grounded; //if object is on the ground
-	bool gravity;
+	bool gravity; //if object is affected by gravity
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 	void unbindChild(Object* child);//removes child from child vector
 	void findCollisionDirection(Object* b, Vector3* uniqueAxisA, Vector3* uniqueAxisB);
@@ -35,6 +35,7 @@ protected:
 	//////////////////////////////////////////////DONT'T//TOUCH//////////////////////////////////////////////////////////
 public:
 	Object();
+	Object(Mesh* mesh);
 	~Object();
 	//setters
 	void setPos(float x, float y, float z);

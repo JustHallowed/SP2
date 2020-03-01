@@ -1,11 +1,11 @@
-#include "Vehicle.h"
+#include "ObjectTypes.h"
 
-Vehicle::Vehicle()
+Vehicle::Vehicle(Mesh* mesh)
 {
-	object = nullptr;
+	meshType = mesh;
 	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = keyPressed = false;
-	disabledKey[0] = disabledKey[1] = disabledKey[2] = disabledKey[3] = disabledKey[4] = disabledKey[5] = false;
-	isRotationMode = animation = true;
+	isRotationMode = disabledKey[0] = disabledKey[1] = disabledKey[2] = disabledKey[3] = disabledKey[4] = disabledKey[5] = false;
+	animation = true;
 	keyCode[FRONT_KEY] = VK_UP;
 	keyCode[LEFT_KEY] = VK_LEFT;
 	keyCode[BACK_KEY] = VK_DOWN;
@@ -13,15 +13,7 @@ Vehicle::Vehicle()
 	keyCode[UP_KEY] = VK_SPACE;
 	keyCode[DOWN_KEY] = VK_SHIFT;
 }
-Object* Vehicle::getObject() const
-{
-	return object;
-}
-void Vehicle::setObject(Object* object, bool isRotationMode)
-{
-	this->object = object;
-	this->isRotationMode = isRotationMode;
-}
+
 void Vehicle::disableKey(int keyCode)
 {
 	disabledKey[keyCode] = true;
@@ -44,12 +36,12 @@ void Vehicle::update(double dt)
 	float accelerationConstant = 4;	//acceleration multiplier
 	float maxVelocity = 2;	//maximum velocity vehicle can travel
 	Vector3 front, right, movementDir;	//vehicle fromt, direction of movement
-	if (object->getVelocity() != Vector3(0, 0, 0))
-		movementDir = object->getVelocity().Normalized();
+	if (velocity != Vector3(0, 0, 0))
+		movementDir = velocity.Normalized();
 
 	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = false;
 
-	object->setAcceleration(0, 0, 0);
+	setAcceleration(0, 0, 0);
 
 	//sets keypress boolean
 	if (Application::IsKeyPressed(keyCode[FRONT_KEY]))
@@ -81,37 +73,37 @@ void Vehicle::update(double dt)
 	{
 		if (keyPress[LEFT_KEY] && !disabledKey[LEFT_KEY])//turn left
 		{
-			object->addRotation(80 * dt, 'y');
+			addRotation(80 * dt, 'y');
 		}
 		if (keyPress[RIGHT_KEY] && !disabledKey[RIGHT_KEY])//turn right
 		{
-			object->addRotation(-80 * dt, 'y');
+			addRotation(-80 * dt, 'y');
 		}
 	}
 
-	front = Vector3(sin(Math::DegreeToRadian(object->getAngle().y)), 0, cos(Math::DegreeToRadian(-object->getAngle().y))).Normalized();
+	front = Vector3(sin(Math::DegreeToRadian(angle.y)), 0, cos(Math::DegreeToRadian(-angle.y))).Normalized();
 	right = front.Cross(Vector3(0, 1, 0));
 	//friction
 	//if (!keyPressed) //if no movement key is pressed in the previous frame
 	//{
 	//	//to prevent movement caused by friction
 	//	Vector3 friction = (movementDir * accelerationConstant * 0.5f * dt);
-	//	if (abs(object->getVelocity().x - friction.x) < abs(friction.x) ||
-	//		abs(object->getVelocity().y - friction.y) < abs(friction.y) ||
-	//		abs(object->getVelocity().z - friction.z) < abs(friction.z))
+	//	if (abs(velocity .x - friction.x) < abs(friction.x) ||
+	//		abs(velocity .y - friction.y) < abs(friction.y) ||
+	//		abs(velocity .z - friction.z) < abs(friction.z))
 	//	{
 	//	object->setVelocity(0, 0, 0);
 	//	movementDir.SetZero();
 	//	}
 	//}
-	if (object->getVelocity().Length() != 0)
-		object->setAcceleration(object->getAcceleration() - (object->getVelocity().Length() / maxVelocity) * (movementDir * accelerationConstant * 2));
+	if (velocity .Length() != 0)
+		acceleration = (acceleration - (velocity .Length() / maxVelocity) * (movementDir * accelerationConstant * 2));
 
 
 	keyPressed = false;
 	if (keyPress[FRONT_KEY] && !disabledKey[FRONT_KEY])//accelerate front
 	{
-		object->setAcceleration(object->getAcceleration() + (front * accelerationConstant * 2));
+		acceleration = (acceleration + (front * accelerationConstant * 2));
 		keyPressed = true;
 	}
 
@@ -119,57 +111,76 @@ void Vehicle::update(double dt)
 	{
 		if (keyPress[LEFT_KEY] && !disabledKey[LEFT_KEY])//accelerate left
 		{
-			object->setAcceleration(object->getAcceleration() + (-right * accelerationConstant * 2));
+			acceleration = (acceleration + (-right * accelerationConstant * 2));
 			keyPressed = true;
 
-			if (animation && object->getAngle().z > -10)
+			if (animation && angle.z > -10)
 			{
-				object->addRotation(-object->getVelocity().x / 2, 'z');
+				addRotation(-velocity .x / 2, 'z');
 			}
 		}
 		if (!keyPress[LEFT_KEY])
 		{
-			if (object->getAngle().z < 0)
+			if (angle.z < 0)
 			{
-				object->addRotation(1, 'z');
+				addRotation(1, 'z');
 			}
 		}
 		if (keyPress[RIGHT_KEY] && !disabledKey[RIGHT_KEY])//accelerate right
 		{
-			object->setAcceleration(object->getAcceleration() + (right * accelerationConstant * 2));
+			acceleration = (acceleration + (right * accelerationConstant * 2));
 			keyPressed = true;
 
-			if (animation && object->getAngle().z < 10)
+			if (animation && angle.z < 10)
 			{
-				object->addRotation(-object->getVelocity().x / 2, 'z');
+				addRotation(-velocity .x / 2, 'z');
 			}
 		}
 		if (!keyPress[RIGHT_KEY])
 		{
-			if (object->getAngle().z > 0)
+			if (angle.z > 0)
 			{
-				object->addRotation(-1, 'z');
+				addRotation(-1, 'z');
 			}
 		}
 
 		if (keyPress[BACK_KEY] && !disabledKey[BACK_KEY])//accelerate back
 		{
-			object->setAcceleration(object->getAcceleration() - (front * accelerationConstant * 2));
+			acceleration =(acceleration - (front * accelerationConstant * 2));
 			keyPressed = true;
 		}
 		if (keyPress[UP_KEY] && !disabledKey[UP_KEY])//accelerate up
 		{
-			object->setAcceleration(object->getAcceleration() + (Vector3(0, 1, 0) * accelerationConstant * 1.5));
+			acceleration = (acceleration + (Vector3(0, 1, 0) * accelerationConstant * 1.5));
 			keyPressed = true;
 		}
 		if (keyPress[DOWN_KEY] && !disabledKey[DOWN_KEY])//accelerate down
 		{
-			object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant));
+			acceleration = (acceleration + (Vector3(0, -1, 0) * accelerationConstant));
 			keyPressed = true;
 		}
 	}
-	if(object->hasGravity()&&!object->isGrounded()&&!keyPress[UP_KEY])
-	object->setAcceleration(object->getAcceleration().x, object->getAcceleration().y - accelerationConstant * 5, object->getAcceleration().z);
+	if(hasGravity()&&!isGrounded()&&!keyPress[UP_KEY])
+		acceleration = (acceleration.x, acceleration.y - accelerationConstant * 5, acceleration.z);
 	
-	object->setVelocity(object->getVelocity() + object->getAcceleration() * dt);
+	velocity = (velocity  + acceleration * dt);
+}
+//================================================================================================================================
+
+
+Joint::Joint(Mesh* mesh)
+{
+	meshType = mesh;
+	parentRotation = true;
+	parentScale = true;
+}
+//================================================================================================================================
+
+
+RigidBody::RigidBody(Mesh* mesh)
+{
+	meshType = mesh;
+	dimension.y = -1;
+	gravity = true;
+	movable = true;
 }
