@@ -704,6 +704,7 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
 	}
 
 	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
@@ -1611,11 +1612,11 @@ void MotorScene::animateNpc(int instance)
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
 	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
-
+	if (instance == 36)
+	std::cout << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << angle;
 	if (interacted[instance])
 	{
-		if (angle > 10)
-			object[instance].addRotation(angle, 'y');
+		object[instance].addRotation(angle - 5, 'y');
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');
