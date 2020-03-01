@@ -1614,12 +1614,18 @@ void MotorScene::animateNpc(int instance, double dt)
 	Vector3 objectToPlayer = camera.pos - object[instance].getPos();
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
+	Vector3 cross = objectToPlayer.Cross(objectFront);
 	float angle = Math::RadianToDegree(object[instance].getAngle(objectFront, objectToPlayer));
 
 	if (interacted[instance])
 	{
 		if (angle > 12)
-		object[instance].addRotation(1000 * dt, 'y');
+		{
+			if (cross.y < 0)
+				object[instance].addRotation(250 * dt, 'y');
+			else if (cross.y > 0)
+				object[instance].addRotation(-250 * dt, 'y');
+		}
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');
