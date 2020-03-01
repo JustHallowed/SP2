@@ -594,16 +594,10 @@ void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	}
 
 	std::ostringstream ss;
-	if (showDebugInfo) {
+	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
+		ss << "Velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
 		ss << "Elapsed: " << elapsedTime;
@@ -611,8 +605,6 @@ void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-
 	}
 	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p1HitPoints, 35.f, 20.f, 0.2, 29, winWidth, winHeight);
 }
@@ -668,16 +660,10 @@ void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 	}
 
 	std::ostringstream ss;
-	if (showDebugInfo) {
+	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
+		ss << "Velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
 		ss << "Elapsed: " << elapsedTime;
@@ -685,8 +671,6 @@ void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-
 	}
 	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p2HitPoints, 35.f,20.f, 0.2, 29, winWidth, winHeight);
 }

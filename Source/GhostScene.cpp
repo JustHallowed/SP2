@@ -628,10 +628,10 @@ void GhostScene::Render(double dt, int winWidth, int winHeight){
 		ss.str("");
 		ss << std::setprecision(2);
 		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);
 		ss.str("");
 		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 34), winWidth, winHeight);
 	}
 }
 

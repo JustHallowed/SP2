@@ -4,7 +4,7 @@
 extern Camera camera;
 extern double elapsedTime;
 
-double GameScene2::CalcFrameRate() const {
+double GameScene2::CalcFrameRate() const{
 	static double FPS, FramesPerSecond = 0.0, lastTime = 0.0;
 	double valueFPS, currTime = GetTickCount64() * 0.001;
 	++FramesPerSecond;
@@ -398,14 +398,11 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 	std::ostringstream ss;
 	if (showDebugInfo) {
 		ss << std::fixed << std::setprecision(2);
-		ss << "Cam target: " << camera.target.x << ", " << camera.target.y << ", " << camera.target.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		ss << "Player 1's charge: " << p1BombCharge;
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);
 		ss.str("");
-		ss << "Cam pos: " << camera.pos.x << ", " << camera.pos.y << ", " << camera.pos.z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
-		ss.str("");
-		ss << "velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 27.f, winWidth, winHeight);
+		ss << "Velocity: " << object->getVelocity().x << ", " << object->getVelocity().y << ", " << object->getVelocity().z;
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 34), winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
 		ss << "Elapsed: " << elapsedTime;
@@ -413,9 +410,6 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
-		ss << "Player1 charge: " << p1BombCharge;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 26.f, winWidth, winHeight);
 	}
 }
 

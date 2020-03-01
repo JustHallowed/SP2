@@ -723,7 +723,7 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		std::string dataStr = "Scoreboard:\n" + nameScoreData, dataSubStr;
 		while(!dataStr.empty()){
 			dataSubStr = dataStr.substr(0, dataStr.find('\n'));
-			RenderTextOnScreen(getTextMesh(), dataSubStr, Color(1.f, .5f, .6f), 3.2f, 14.1f, 26.2f - offset, winWidth, winHeight);
+			RenderTextOnScreen(getTextMesh(), dataSubStr, Color(1.f, .5f, .6f), 3.2f, 14.1f, float(winHeight / 36) - offset, winWidth, winHeight);
 			++offset;
 			dataStr.erase(0, dataStr.find('\n') + 1);
 		}
