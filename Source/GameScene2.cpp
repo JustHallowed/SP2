@@ -298,7 +298,7 @@ void GameScene2::updateGame(double dt)
 
 void GameScene2::resetGame()
 {
-	p1BombCharge, p2BombCharge = 1;
+	p1BombCharge = p2BombCharge = 1;
 	survivalTime = 0;
 	object[UFO_BASE1].setTranslation(150,0 ,0 );
 	object[UFO_BASE1].setVelocity(0, 0.0, 0);

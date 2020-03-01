@@ -537,10 +537,10 @@ void GameScene::Render(double dt, int winWidth, int winHeight) {
 		RenderScreen2(dt, winWidth, winHeight);
 	} else if(baseDead && !redDead){
 		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
-		RenderScreen1(dt, winWidth, winHeight);
+		RenderScreen2(dt, winWidth, winHeight);
 	} else if(!baseDead && redDead){
 		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
-		RenderScreen2(dt, winWidth, winHeight);
+		RenderScreen1(dt, winWidth, winHeight);
 	} else{
 		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
 		RenderNameScoreData(winWidth, winHeight);
