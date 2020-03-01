@@ -205,35 +205,35 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::ROBOT_BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_body.obj");
 	meshList[unsigned int(MESH::ROBOT_BODY)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
-	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ROBOT_BODY)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::ROBOT_ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_arm.obj");
 	meshList[unsigned int(MESH::ROBOT_ARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
-	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ROBOT_ARM)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::ROBOT_FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_forearm.obj");
 	meshList[unsigned int(MESH::ROBOT_FOREARM)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
-	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ROBOT_FOREARM)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_upperleg.obj");
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
-	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ROBOT_UPPERLEG)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/robot_lowerleg.obj");
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->textureID = LoadTGA("Resources/TGAs/robot.tga");
-	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ROBOT_LOWERLEG)]->material.kShininess = 4.f;
@@ -253,35 +253,35 @@ void MotorScene::InitMeshes(){
 
 	meshList[unsigned int(MESH::ARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharArm.obj");
 	meshList[unsigned int(MESH::ARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
-	meshList[unsigned int(MESH::ARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::ARM)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::ARM)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::ARM)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::ARM)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::FOREARM)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharForearm.obj");
 	meshList[unsigned int(MESH::FOREARM)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
-	meshList[unsigned int(MESH::FOREARM)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::FOREARM)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::FOREARM)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::FOREARM)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::FOREARM)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::BODY)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharBody.obj");
 	meshList[unsigned int(MESH::BODY)]->textureID = LoadTGA("Resources/TGAs/robot_lutfi.tga");
-	meshList[unsigned int(MESH::BODY)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::BODY)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::BODY)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::BODY)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::BODY)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::LOWER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharLowerLeg.obj");
 	meshList[unsigned int(MESH::LOWER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
-	meshList[unsigned int(MESH::LOWER_LEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::LOWER_LEG)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::LOWER_LEG)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::LOWER_LEG)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::LOWER_LEG)]->material.kShininess = 4.f;
 
 	meshList[unsigned int(MESH::UPPER_LEG)] = MeshBuilder::GenerateOBJ("Resources/OBJs/MainCharUpperLeg.obj");
 	meshList[unsigned int(MESH::UPPER_LEG)]->textureID = LoadTGA("Resources/TGAs/MainChar.tga");
-	meshList[unsigned int(MESH::UPPER_LEG)]->material.kAmbient.Set(0.1f, 0.1f, 0.1f);
+	meshList[unsigned int(MESH::UPPER_LEG)]->material.kAmbient.Set(0.5f, 0.5f, 0.5f);
 	meshList[unsigned int(MESH::UPPER_LEG)]->material.kDiffuse.Set(0.6f, 0.6f, 0.6f);
 	meshList[unsigned int(MESH::UPPER_LEG)]->material.kSpecular.Set(0.3f, 0.3f, 0.3f);
 	meshList[unsigned int(MESH::UPPER_LEG)]->material.kShininess = 4.f;
