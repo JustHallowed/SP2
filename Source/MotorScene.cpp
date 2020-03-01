@@ -305,7 +305,6 @@ void MotorScene::CreateInstances(){
 	createVehicles();
 	createStage();
 	createSpeaker();
-
 }
 
 void MotorScene::Init(){ //Init scene
@@ -509,7 +508,7 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 
 	menu.Update(dt);
 	iCamera.Update(dt);
-	UpdateMainChar(dt);
+	UpdateMainChar(dt, buttons);
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom

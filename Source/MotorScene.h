@@ -104,13 +104,13 @@ class MotorScene final: public Scene{
 	IdleCamera iCamera;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int);
-	bool RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int), renderObject(Object* obj);
 	void InitLight() const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const;
 	void RenderAnimation(Mesh*, int) const, RenderText(Mesh*, std::string, Color) const, RenderAnimation(Mesh*, std::string, Color) const;
 	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(), createStage(), createSpeaker();
 	void UpdateMainChar(double, const unsigned char*), UpdateMainTranslateXZ(double, const unsigned char*);
 	void UpdateMainRotateY(double, const unsigned char*), UpdateMainTranslateY(double, const unsigned char*);
-	void RenderMainChar(), RenderAnimationOnScreen(Mesh*, int, float, float, float, int, int);
+	void RenderMainChar(), RenderAnimationOnScreen(Mesh*, int, float, float, float, int, int), RenderSkybox(bool);
+	void RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int), renderObject(Object* obj);
 	void animateNpc(int instance), carCheck(int instance, const char* audioFileName), npcCheck(int instance, const char* audioFileName);
 public:
 	~MotorScene() override{}
