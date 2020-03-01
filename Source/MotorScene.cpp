@@ -1,5 +1,4 @@
 #include "MotorScene.h"
-#include "GameScene.h"
 #include "SceneManager.h"
 #include "irrKlang.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
@@ -436,7 +435,7 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 		p->birthLife = p->life;
 		p->pos = Vector3(float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f), 1.f, float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f));
 		p->pos = p->pos.Normalized() * float(rand() % 30 + 1);
-		p->pos.y = 3.f;
+		p->pos.y = 5.f;
 		++smokeGenerator.currAmt;
 		smokeBounceTime = elapsedTime + 0.01;
 	}
@@ -477,11 +476,6 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	//}
 
 	object[PLATFORM1].addRotation(1, 'y');
-
-	if (Application::IsKeyPressed('E'))
-	{
-		SceneManager::getScMan()->AddScene(new GameScene);
-	}
 
 
 	//!testing! if w is pressed, sound effects will be played

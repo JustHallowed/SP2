@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "Mtx44.h"
 #include "SceneManager.h"
+#include "GameScene.h"
+#include "GameScene2.h"
 
 double modeBounceTime = 0.0;
 extern double elapsedTime = 0.0;
@@ -10,7 +12,6 @@ extern float FOV;
 Camera::Camera() : focusSpd(100.f), freeSpd(50.f) { //Default ctor
 	mode = MODE::FOCUS;
 	leftMouse = rightMouse = 0;
-	canMove = true;
 }
 
 void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up) { //Init cam
@@ -21,7 +22,8 @@ void Camera::Init(const Vector3 pos, const Vector3 target, const Vector3 up) { /
 
 void Camera::Update(double dt, const float* axes, const unsigned char* buttons){ //Update cam
 	displacement.SetZero();
-	if(canMove){
+	if(!dynamic_cast<GameScene*>(SceneManager::getScMan()->sceneStorage[SceneManager::getScMan()->currSceneID]) &&
+		!dynamic_cast<GameScene2*>(SceneManager::getScMan()->sceneStorage[SceneManager::getScMan()->currSceneID])){ //If scene is neither GameScene nor GameScene2
 		if((Application::IsKeyPressed('B') || (buttons != 0 && bool(buttons[1]))) && modeBounceTime <= elapsedTime){ //Change cam mode
 			mode = MODE(!bool(mode));
 			Vector3 dir = target - pos, front = dir.Normalized(), right = front.Cross(up).Normalized();
@@ -110,7 +112,8 @@ void Camera::Update(double dt, const float* axes, const unsigned char* buttons){
 }
 
 void Camera::UpdateCamVectors(float yaw, float pitch) { //For cam to respond to mouse movement
-	if(SceneManager::getScMan()->currSceneID != 1){
+	if(!dynamic_cast<GameScene*>(SceneManager::getScMan()->sceneStorage[SceneManager::getScMan()->currSceneID]) &&
+		!dynamic_cast<GameScene2*>(SceneManager::getScMan()->sceneStorage[SceneManager::getScMan()->currSceneID])){ //If scene is neither GameScene nor GameScene2
 		Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
 		right.y = 0;
 		Mtx44 r1, r2;

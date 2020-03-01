@@ -6,7 +6,6 @@ class Camera final{
 	enum class MODE{
 		FOCUS, FREE
 	};
-	bool canMove;
 	friend class Application;
 	friend class MotorScene;
 	friend class GhostScene;

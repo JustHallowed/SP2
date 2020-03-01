@@ -1,5 +1,4 @@
 #include "GhostScene.h"
-#include "GameScene.h"
 #include "SceneManager.h"
 
 extern bool gameOver;
@@ -299,6 +298,7 @@ void GhostScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
+	camera.mode = Camera::MODE::FOCUS;
 	MainChar::getMainChar().Init(Vector3(0.f, 0.f, 0.f), Vector3(0.f, 0.f, 1.f));
 	light[0].power = 1.f;
 	InitLight();
@@ -413,7 +413,7 @@ void GhostScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 		p->birthLife = p->life;
 		p->pos = Vector3(float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f), 1.f, float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f));
 		p->pos = p->pos.Normalized() * float(rand() % 30 + 1);
-		p->pos.y = 3.f;
+		p->pos.y = 5.f;
 		++smokeGenerator.currAmt;
 		smokeBounceTime = elapsedTime + 0.01;
 	}
@@ -439,11 +439,6 @@ void GhostScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	}
 
 	object[PLATFORM1].addRotation(1, 'y');
-
-	if(Application::IsKeyPressed('E'))
-	{
-		SceneManager::getScMan()->AddScene(new GameScene);
-	}
 
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");

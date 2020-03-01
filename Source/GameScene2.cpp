@@ -1,12 +1,4 @@
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include "GameScene2.h"
-#include "GL\glew.h"
-#include "Application.h"
-#include "MeshBuilder.h"
-#include "Utility.h"
-#include "LoadTGA.hpp"
 #include "SceneManager.h"
 
 extern Camera camera;
