@@ -105,7 +105,6 @@ void GameScene2::Init() { //Init scene
 	InitLight();
 	InitMeshes();
 	CreateInstances();
-	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	bulletBounceTime = debugBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = cullBounceTime = polyBounceTime = 0.0;
 	survivalTime = 0;
@@ -252,8 +251,8 @@ void GameScene2::updateGame(double dt)
 		if (p2BombCharge > 0)
 		{
 			float force = 8;
-			Vector3 T = (player1.getObject()->getPos() - player2.getObject()->getPos());//unit vector p2 to p1
-			if (T != Vector3(0, 0, 0))
+			Vector3 T = (player1.getObject()->getPos() - player2.getObject()->getPos()); //unit vector p2 to p1
+			if(T != Vector3(0, 0, 0))
 				T.Normalize();
 			player1.getObject()->setVelocity(player1.getObject()->getVelocity().x + T.x * force, player1.getObject()->getVelocity().y + force, player1.getObject()->getVelocity().z + T.z * force);
 			player2.getObject()->setVelocity(player2.getObject()->getVelocity().x, player2.getObject()->getVelocity().y + force, player2.getObject()->getVelocity().z);
@@ -398,7 +397,7 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 	}
 
 	std::ostringstream ss;
-	if (showDebugInfo) {
+	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
 		ss << "Player 1's charge: " << p1BombCharge;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);

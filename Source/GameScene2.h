@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ParticleSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
 
@@ -30,7 +29,6 @@ class GameScene2 final : public Scene {
 	Light light[1]{ Light(0.f, 192.f, 0.f) };
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
-	ParticleEmitter bulletGenerator;
 	Vehicle player1,player2;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
