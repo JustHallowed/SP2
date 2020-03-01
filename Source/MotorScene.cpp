@@ -481,9 +481,9 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	npcCheck(ROBOT_BODY1, "Resources/Sound/robot1.wav");
 	npcCheck(ROBOT_BODY2, "Resources/Sound/robot2.wav");
 	npcCheck(ROBOT_BODY3, "Resources/Sound/robot3.wav");
-	animateNpc(ROBOT_BODY1);
-	animateNpc(ROBOT_BODY2);
-	animateNpc(ROBOT_BODY3);
+	animateNpc(ROBOT_BODY1,dt);
+	animateNpc(ROBOT_BODY2,dt);
+	animateNpc(ROBOT_BODY3, dt);
 	carCheck(PLATFORM7, "Resources/Sound/engine.mp3");
 	carCheck(PLATFORM8, "Resources/Sound/carkey.mp3");
 	carCheck(PLATFORM9, "Resources/Sound/carchime.mp3");
@@ -1609,21 +1609,23 @@ void MotorScene::npcCheck(int instance, const char* audioFileName)
 	}
 }
 
-void MotorScene::animateNpc(int instance)
+void MotorScene::animateNpc(int instance, double dt)
 {
 	Vector3 objectToPlayer = camera.pos - object[instance].getPos();
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
-	float angle = object[instance].getAngle(objectFront, objectToPlayer) * 180 / 3.14159f;
+	float angle = Math::RadianToDegree(object[instance].getAngle(objectFront, objectToPlayer));
 
 	if (interacted[instance])
 	{
-		if (angle > 3)
-		object[instance].addRotation(angle, 'y');
+		if (angle > 30)
+		{
+		object[instance].addRotation(100 * dt, 'y');
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');
 		object[instance + 4].setRotation(-40, 'x');
+		}
 
 		if (object[instance + 1].getAngle().x <= -90)
 		{
@@ -1635,13 +1637,13 @@ void MotorScene::animateNpc(int instance)
 		}
 		if (Switch)
 		{
-			object[instance + 1].addRotation(3, 'x');
-			object[instance + 2].addRotation(3, 'x');
+			object[instance + 1].addRotation(130 * dt, 'x');
+			object[instance + 2].addRotation(130 * dt, 'x');
 		}
 		else
 		{
-			object[instance + 1].addRotation(-3, 'x');
-			object[instance + 2].addRotation(-3, 'x');
+			object[instance + 1].addRotation(-130 * dt, 'x');
+			object[instance + 2].addRotation(-130 * dt, 'x');
 		}
 	}
 	else
@@ -1653,8 +1655,8 @@ void MotorScene::animateNpc(int instance)
 
 		if (object[instance + 1].getAngle().x < 0)
 		{
-			object[instance + 1].addRotation(1, 'x');
-			object[instance + 2].addRotation(1, 'x');
+			object[instance + 1].addRotation(40 * dt, 'x');
+			object[instance + 2].addRotation(40 * dt, 'x');
 		}
 	}
 }

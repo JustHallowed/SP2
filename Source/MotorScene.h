@@ -105,7 +105,7 @@ class MotorScene final: public Scene{
 	void UpdateMainRotateY(double, const unsigned char*), UpdateMainTranslateY(double, const unsigned char*);
 	void RenderMainChar(), RenderAnimationOnScreen(Mesh*, int, float, float, float, int, int), RenderSkybox(bool);
 	void RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int), renderObject(Object* obj);
-	void animateNpc(int instance), carCheck(int instance, const char* audioFileName), npcCheck(int instance, const char* audioFileName);
+	void animateNpc(int instance,double dt), carCheck(int instance, const char* audioFileName), npcCheck(int instance, const char* audioFileName);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float, const unsigned char* = 0) override, Render(double, int, int) override, Exit(Scene*) override;
