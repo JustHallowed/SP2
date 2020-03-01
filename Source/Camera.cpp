@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "Application.h"
 #include "Mtx44.h"
+#include "SceneManager.h"
 
 double modeBounceTime = 0.0;
 extern double elapsedTime = 0.0;
@@ -109,18 +110,20 @@ void Camera::Update(double dt, const float* axes, const unsigned char* buttons){
 }
 
 void Camera::UpdateCamVectors(float yaw, float pitch) { //For cam to respond to mouse movement
-	Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
-	right.y = 0;
-	Mtx44 r1, r2;
-	r1.SetToRotation(-yaw, 0, 1, 0);
-	r2.SetToRotation(-pitch, right.x, right.y, right.z);
-	if(mode == MODE::FOCUS){
-		front = r1 * r2 * (target - pos);
-		pos = target - front;
-		up = r1 * r2 * up;
-	} else if(mode == MODE::FREE){
-		front = r1 * r2 * front;
-		target = pos + front;
+	if(SceneManager::getScMan()->currSceneID != 1){
+		Vector3 front = (target - pos).Normalized(), right = front.Cross(up).Normalized();
+		right.y = 0;
+		Mtx44 r1, r2;
+		r1.SetToRotation(-yaw, 0, 1, 0);
+		r2.SetToRotation(-pitch, right.x, right.y, right.z);
+		if(mode == MODE::FOCUS){
+			front = r1 * r2 * (target - pos);
+			pos = target - front;
+			up = r1 * r2 * up;
+		} else if(mode == MODE::FREE){
+			front = r1 * r2 * front;
+			target = pos + front;
+		}
+		up = right.Cross(front).Normalized();
 	}
-	up = right.Cross(front).Normalized();
 }

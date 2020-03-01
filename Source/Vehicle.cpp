@@ -62,20 +62,24 @@ void Vehicle::update(double dt)
 	{
 		keyPress[BACK_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[LEFT_KEY]) || (axes != 0 && axes[0] < 0))
-	{
+	if(Application::IsKeyPressed(keyCode[LEFT_KEY]) ||
+		(this->keyCode[LEFT_KEY] == VK_LEFT && -(axes != 0 && axes[0] == int(axes[0]) ? axes[0] : 0) > 0) ||
+		(this->keyCode[LEFT_KEY] == 'A' && -(axes != 0 && axes[2] == int(axes[2]) ? axes[2] : 0) > 0)){
 		keyPress[LEFT_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[RIGHT_KEY]) || (axes != 0 && axes[0] > 0))
-	{
+	if(Application::IsKeyPressed(keyCode[RIGHT_KEY]) ||
+		(this->keyCode[RIGHT_KEY] == VK_RIGHT && -(axes != 0 && axes[0] == int(axes[0]) ? axes[0] : 0) < 0) ||
+		(this->keyCode[RIGHT_KEY] == 'D' && -(axes != 0 && axes[2] == int(axes[2]) ? axes[2] : 0) < 0)){
 		keyPress[RIGHT_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[DOWN_KEY]))
-	{
+	if(Application::IsKeyPressed(keyCode[DOWN_KEY]) ||
+		(this->keyCode[DOWN_KEY] == VK_DOWN && -(axes != 0 && axes[3] == int(axes[3]) ? axes[3] : 0) < 0) ||
+		(this->keyCode[DOWN_KEY] == 'S' && -(axes != 0 && axes[1] == int(axes[1]) ? axes[1] : 0) < 0)){
 		keyPress[DOWN_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[UP_KEY]))
-	{
+	if(Application::IsKeyPressed(keyCode[UP_KEY]) ||
+		(this->keyCode[UP_KEY] == VK_UP && -(axes != 0 && axes[3] == int(axes[3]) ? axes[3] : 0) > 0) ||
+		(this->keyCode[UP_KEY] == 'W' && -(axes != 0 && axes[1] == int(axes[1]) ? axes[1] : 0) > 0)){
 		keyPress[UP_KEY] = true;
 	}
 

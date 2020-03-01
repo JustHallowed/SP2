@@ -10,6 +10,7 @@ class SceneManager final{ //Singleton
 	SceneManager& operator=(const SceneManager&){}; //Private copy assignment operator
 	SceneManager& operator=(SceneManager&&) noexcept{}; //Private move assignment operator
 	double screenBounceTime, switchBounceTime;
+	friend class Camera;
 	int currSceneID, nextSceneID;
 	static SceneManager* sceneMan;
 	std::vector<Scene*> sceneStorage;

@@ -117,8 +117,7 @@ void GameScene2::Init() { //Init scene
 	CreateInstances();
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
-	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = cullBounceTime = polyBounceTime = 0.0;
+	bulletBounceTime = debugBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = cullBounceTime = polyBounceTime = 0.0;
 	survivalTime = 0;
 	p1BombCharge, p2BombCharge = 1;
 	player1.disableKey(4);//disable fly
@@ -180,10 +179,6 @@ void GameScene2::Update(double dt, float FOV, const unsigned char* buttons) { //
 	}
 	if(Application::IsKeyPressed('0') || (buttons != 0 && bool(buttons[7]))){ //Change scene
 		SceneManager::getScMan()->SetNextScene();
-	}
-	if((Application::IsKeyPressed('P') || (buttons != 0 && bool(buttons[2]))) && lightBounceTime <= elapsedTime){ //Show/Hide light sphere
-		showLightSphere = !showLightSphere;
-		lightBounceTime = elapsedTime + 0.4;
 	}
 	if((Application::IsKeyPressed(VK_SHIFT) || (buttons != 0 && bool(buttons[3]))) && debugBounceTime <= elapsedTime){ //Show/Hide debug info
 		showDebugInfo = !showDebugInfo;
@@ -452,13 +447,6 @@ void GameScene2::RenderLight() {
 	else {
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].position_cameraspace"), 1, &lightPosition_cameraspace.x);
-	}
-	if (showLightSphere) {
-		modelStack.PushMatrix();
-		modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-		modelStack.Scale(2.f, 2.f, 2.f);
-		RenderMesh(meshList[unsigned int(MESH::LIGHT_SPHERE)], 0);
-		modelStack.PopMatrix();
 	}
 }
 
