@@ -306,6 +306,9 @@ void GameScene2::resetGame()
 	
 	object[UFO_RED1].setTranslation(-150, 0, 0);
 	object[UFO_RED1].setVelocity(0, 0.0, 0);
+
+	object[GROUND].setScale(400, 10, 400);
+	object[GROUND].setDimension(400, 10, 400);
 	for (int i = 0; i < activeObstacleQueue.size(); ++i)
 	{
 		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));

@@ -222,6 +222,7 @@ void GameScene::Init() { //Init scene
 	player1.disableKey(2);
 	player1.disableKey(4);
 	player1.disableKey(5);
+	player1.disableAnimation(true);
 
 	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
 
@@ -230,6 +231,7 @@ void GameScene::Init() { //Init scene
 	player2.disableKey(2);
 	player2.disableKey(4);
 	player2.disableKey(5);
+	player2.disableAnimation(true);
 }
 
 void GameScene::Exit(Scene* newScene) { //Exit scene

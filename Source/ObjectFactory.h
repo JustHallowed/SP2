@@ -6,6 +6,6 @@ class ObjectFactory
 {
 public:
 
-	static Object* createObject(int objectType,Mesh* mesh)
+	static Object* createObject(int objectType, Mesh* mesh);
 };
 
