@@ -1614,7 +1614,7 @@ void MotorScene::animateNpc(int instance)
 	Vector3 objectToPlayer = camera.pos - object[instance].getPos();
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
-	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
+	float angle = object[instance].getAngle(objectFront, objectToPlayer) * 180 / 3.14159f;
 
 	if (interacted[instance])
 	{
