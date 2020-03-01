@@ -31,11 +31,6 @@ double MotorScene::CalcFrameRate() const{
 	return valueFPS;
 }
 
-void MotorScene::GetNameScoreData(bool showType) const{
-	scoreMan->addNameScore(std::make_pair("Sam", 0));
-	scoreMan->sortNameScoreData();
-}
-
 void MotorScene::InitLight() const{
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].type"), GLint(light[0].type));
 	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].color"), 1, &light[0].color.R);
@@ -321,7 +316,6 @@ void MotorScene::Init(){ //Init scene
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //Enable depth test
 	scoreMan = new ScoreManager;
-	GetNameScoreData(0);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	iCamera.Init(Vector3(0.f, 20.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
@@ -336,7 +330,7 @@ void MotorScene::Init(){ //Init scene
 	CreateInstances();
 	animateDir = showDebugInfo = 1;
 	state = showLightSphere = 0;
-	debugBounceTime = lightBounceTime = interactBounceTime = timePressed = swingBounceTime = 0.0;
+	cullBounceTime = debugBounceTime = interactBounceTime = lightBounceTime = polyBounceTime = smokeBounceTime = swingBounceTime = 0.0;
 	light[0].power = 1.f;
 	Ani1 = 0;
 	Switch = 0;
@@ -381,43 +375,50 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 }
 
 void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //Update scene
-	for (int i = 0; i < 7; ++i)
-	{
-		if (Application::IsKeyPressed(keys[i])) {
-			switch (keys[i]) {
-			case '1': glDisable(GL_CULL_FACE); break; //Disable back-face culling
-			case '2': glEnable(GL_CULL_FACE); break; //Enable back-face culling
-			case '3': glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break; //Set polygon mode to GL_FILL (default mode)
-			case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
-			case '8': { //Off the light
-				light[0].power = 0.f;
-				glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
-				break;
+	if(buttons != 0 && bool(buttons[4]) && cullBounceTime <= elapsedTime){ //Toggle back-face culling
+		glIsEnabled(GL_CULL_FACE) ? glDisable(GL_CULL_FACE) : glEnable(GL_CULL_FACE);
+		cullBounceTime = elapsedTime + 0.3;
+	}
+	if(buttons != 0 && bool(buttons[5]) && polyBounceTime <= elapsedTime){ //Switch between polygon modes
+		GLint polyMode;
+		glGetIntegerv(GL_POLYGON_MODE, &polyMode);
+		polyMode == GL_LINE ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		polyBounceTime = elapsedTime + 0.3;
+	}
+	if(Application::IsKeyPressed('1')){ //Disable back-face culling
+		glDisable(GL_CULL_FACE);
+	}
+	if(Application::IsKeyPressed('2')){ //Enable back-face culling
+		glEnable(GL_CULL_FACE);
+	}
+	if(Application::IsKeyPressed('3')){ //Set polygon mode to GL_FILL (default mode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if(Application::IsKeyPressed('4')){ //Set polygon mode to GL_LINE (wireframe mode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if(Application::IsKeyPressed('8') || (buttons != 0 && bool(buttons[8]))){ //Off the light
+		light[0].power = 0.f;
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
+	}
+	if(Application::IsKeyPressed('9') || (buttons != 0 && bool(buttons[9]))){ //On the light
+		light[0].power = 1.f;
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
+	}
+	if(Application::IsKeyPressed('0') || (buttons != 0 && bool(buttons[7]))){ //Change scene
+		if(inRange[PLATFORM1] && !interacted[PLATFORM1]){
+			SceneManager::getScMan()->SetNextScene();
+			printf("\n\n");
+			for(auto itr = upDown->begin(); itr != upDown->end(); ++itr){
+				std::cout << itr->first << '\t' << itr->second << '\n';
 			}
-			case '9': { //On the light
-				light[0].power = 1.f;
-					glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
-				break;
+			std::cout << std::endl;
+			for(auto itr = leftRight->begin(); itr != leftRight->end(); ++itr){
+				std::cout << itr->first << '\t' << itr->second << '\n';
 			}
-			case '0': {
-
-				if (inRange[PLATFORM1] && !interacted[PLATFORM1])
-				{
-					SceneManager::getScMan()->SetNextScene(); //Change scene
-					printf("\n\n");
-					for (auto itr = upDown->begin(); itr != upDown->end(); ++itr) {
-						std::cout << itr->first << '\t' << itr->second << '\n';
-					}
-					std::cout << std::endl;
-					for (auto itr = leftRight->begin(); itr != leftRight->end(); ++itr) {
-						std::cout << itr->first << '\t' << itr->second << '\n';
-					}
-					std::cout << std::endl;
-					for (auto itr = jump->begin(); itr != jump->end(); ++itr) {
-						std::cout << itr->first << '\t' << itr->second << '\n';
-					}
-				}
-			}
+			std::cout << std::endl;
+			for(auto itr = jump->begin(); itr != jump->end(); ++itr){
+				std::cout << itr->first << '\t' << itr->second << '\n';
 			}
 		}
 	}
@@ -515,19 +516,20 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	projectionStack.LoadMatrix(projection);
 }
 
-void MotorScene::UpdateMainChar(double dt){
-	UpdateMainTranslateXZ(dt);
-	UpdateMainRotateY(dt);
-	UpdateMainTranslateY(dt);
+void MotorScene::UpdateMainChar(double dt, const unsigned char* buttons){
+	UpdateMainTranslateXZ(dt, buttons);
+	UpdateMainRotateY(dt, buttons);
+	UpdateMainTranslateY(dt, buttons);
 }
 
-void MotorScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from target
-	if(Application::IsKeyPressed(VK_UP) ^ Application::IsKeyPressed(VK_DOWN)){
-		float moveVelocity = float(Application::IsKeyPressed(VK_UP) - Application::IsKeyPressed(VK_DOWN)) * 10.f * float(dt);
+void MotorScene::UpdateMainTranslateXZ(double dt, const unsigned char* buttons){ //Move towards or away from target
+	if((Application::IsKeyPressed(VK_UP) || (buttons != 0 && bool(buttons[10]))) ^ (Application::IsKeyPressed(VK_DOWN) || (buttons != 0 && bool(buttons[12])))){
+		float moveVelocity = float((Application::IsKeyPressed(VK_UP) || (buttons != 0 && bool(buttons[10]))) -
+			(Application::IsKeyPressed(VK_DOWN) || (buttons != 0 && bool(buttons[12])))) * 10.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
 		MainChar::getMainChar().setPos(MainChar::getMainChar().getPos() + moveVelocity * front);
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getTarget() + moveVelocity * front);
-		const char* keyPressed = (Application::IsKeyPressed(VK_UP) ? "up" : "down");
+		const char* keyPressed = (Application::IsKeyPressed(VK_UP) || (buttons != 0 && bool(buttons[10])) ? "up" : "down");
 		if(keyPressed != upDown->back().first){
 			upDown->push_back(std::pair<const char*, double>(keyPressed, elapsedTime));
 		}
@@ -570,15 +572,16 @@ void MotorScene::UpdateMainTranslateXZ(double dt){ //Move towards or away from t
 	}
 }
 
-void MotorScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing and hence target
-	if(Application::IsKeyPressed(VK_LEFT) ^ Application::IsKeyPressed(VK_RIGHT)){ //Move left or right
-		float turnVelocity = float(Application::IsKeyPressed(VK_LEFT) - Application::IsKeyPressed(VK_RIGHT)) * 100.f * float(dt);
+void MotorScene::UpdateMainRotateY(double dt, const unsigned char* buttons){ //Rotate body, changing facing and hence target
+	if((Application::IsKeyPressed(VK_LEFT) || (buttons != 0 && bool(buttons[13]))) ^ (Application::IsKeyPressed(VK_RIGHT) || (buttons != 0 && bool(buttons[11])))){ //Move left or right
+		float turnVelocity = float((Application::IsKeyPressed(VK_LEFT) || (buttons != 0 && bool(buttons[13]))) -
+			(Application::IsKeyPressed(VK_RIGHT) || (buttons != 0 && bool(buttons[11])))) * 100.f * float(dt);
 		Vector3 front = (MainChar::getMainChar().getTarget() - MainChar::getMainChar().getPos()).Normalized();
 		Mtx44 r;
 		r.SetToRotation(turnVelocity, 0.f, 1.f, 0.f);
 		front = r * front;
 		MainChar::getMainChar().setTarget(MainChar::getMainChar().getPos() + front);
-		const char* keyPressed = (Application::IsKeyPressed(VK_LEFT) ? "left" : "right");
+		const char* keyPressed = (Application::IsKeyPressed(VK_LEFT) || (buttons != 0 && bool(buttons[13])) ? "left" : "right");
 		if(keyPressed != leftRight->back().first){
 			leftRight->push_back(std::pair<const char*, double>(keyPressed, elapsedTime));
 		}
@@ -588,8 +591,8 @@ void MotorScene::UpdateMainRotateY(double dt){ //Rotate body, changing facing an
 	}
 }
 
-void MotorScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
-	if(Application::IsKeyPressed(VK_SPACE) && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
+void MotorScene::UpdateMainTranslateY(double dt, const unsigned char* buttons){ //Jump, mini jump, double jump
+	if((Application::IsKeyPressed(VK_SPACE) || (buttons != 0 && bool(buttons[0]))) && MainChar::getMainChar().getMaxJump() && MainChar::getMainChar().isKeyReleased()){
 		MainChar::getMainChar().setGrav(5.f * float(dt));
 		MainChar::getMainChar().setJumpHeight(80.f * float(dt));
 		MainChar::getMainChar().setJumping(1);
@@ -599,7 +602,7 @@ void MotorScene::UpdateMainTranslateY(double dt){ //Jump, mini jump, double jump
 			jump->push_back(std::pair<bool, double>(1, elapsedTime));
 		}
 	}
-	if(!Application::IsKeyPressed(VK_SPACE)){
+	if(!(Application::IsKeyPressed(VK_SPACE) || (buttons != 0 && bool(buttons[0])))){
 		MainChar::getMainChar().setKeyReleased(1);
 		if(MainChar::getMainChar().isJumping() && MainChar::getMainChar().getJumpHeight() > 0.0f){
 			MainChar::getMainChar().setJumpHeight(0.f);

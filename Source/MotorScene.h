@@ -13,7 +13,10 @@
 
 class MotorScene final: public Scene{
 	enum class MESH {
-		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM, ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG, SMOKE, ARM, FOREARM, UPPER_LEG, LOWER_LEG, BODY, SPRITE1, STAGE, STAND, SPEAKER, TEXTBOX, NUM_GEOMETRY,
+		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN,
+		UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, GY_CAR, EH_CAR, LF_CAR, YW_CAR, PLATFORM,
+		ROBOT_BODY, ROBOT_ARM, ROBOT_FOREARM, ROBOT_UPPERLEG, ROBOT_LOWERLEG,
+		SMOKE, ARM, FOREARM, UPPER_LEG, LOWER_LEG, BODY, SPRITE1, STAGE, STAND, SPEAKER, TEXTBOX, NUM_GEOMETRY
 	};
 	enum OBJECT_INSTANCES{
 		PLATFORM1,
@@ -77,8 +80,7 @@ class MotorScene final: public Scene{
 	};
 	bool animateDir, showDebugInfo, showLightSphere, state;
 	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
-	char keys[7] = {'1', '2', '3', '4', '8', '9', '0'};
-	double smokeBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, swingBounceTime, timePressed;
+	double cullBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, polyBounceTime, smokeBounceTime, swingBounceTime, timePressed;
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
@@ -92,23 +94,24 @@ class MotorScene final: public Scene{
 		Light('s', -48.f, 6.f, 68.f, 1.f, 0.6f, 0.f, Vector3(1, 0, 0)), //lf car
 		Light('s', -84.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
 		Light('s', -76.f, 6.f, -11.f, 1.f, 0.f, 0.f, Vector3(0, 0, 1)), //yw car 
-	}; 
-
-
+	};
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter smokeGenerator;
 	ScoreManager* scoreMan;
+	std::string nameScoreData;
 	Menu menu;
 	IdleCamera iCamera;
 	unsigned m_vertexArrayID;
-	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
-	void InitLight() const, RenderParticle(Mesh*, GLfloat) const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const, RenderAnimation(Mesh*, int) const, RenderAnimationOnScreen(Mesh*,int,float,float,float,int,int), RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(), createStage(), createSpeaker(), UpdateMainChar(double),UpdateMainTranslateXZ(double),UpdateMainRotateY(double),UpdateMainTranslateY(double), RenderMainChar(), GetNameScoreData(bool) const, RenderAnimation(Mesh*, std::string, Color) const;;
-	void npcCheck(int instance, const char* audioFileName);
-	void animateNpc(int instance);
-	void carCheck(int instance, const char* audioFileName);
-
+	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int);
+	bool RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int), renderObject(Object* obj);
+	void InitLight() const, RenderMesh(Mesh*, bool, GLfloat = 1.f) const;
+	void RenderAnimation(Mesh*, int) const, RenderText(Mesh*, std::string, Color) const, RenderAnimation(Mesh*, std::string, Color) const;
+	void createPlatforms(), createUFOs(), createRobot1(), createVehicles(), createRobot2(), createRobot3(), createStage(), createSpeaker();
+	void UpdateMainChar(double, const unsigned char*), UpdateMainTranslateXZ(double, const unsigned char*);
+	void UpdateMainRotateY(double, const unsigned char*), UpdateMainTranslateY(double, const unsigned char*);
+	void RenderMainChar(), RenderAnimationOnScreen(Mesh*, int, float, float, float, int, int);
+	void animateNpc(int instance), carCheck(int instance, const char* audioFileName), npcCheck(int instance, const char* audioFileName);
 public:
 	~MotorScene() override{}
 	void Init() override, Update(double, float, const unsigned char* = 0) override, Render(double, int, int) override, Exit(Scene*) override;
