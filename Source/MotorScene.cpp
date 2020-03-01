@@ -1,14 +1,10 @@
 #include "MotorScene.h"
 #include "GameScene.h"
-#include "GL\glew.h"
-#include "Application.h"
-#include "MeshBuilder.h"
-#include "Utility.h"
-#include "LoadTGA.hpp"
 #include "SceneManager.h"
 #include "irrKlang.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
+extern bool gameOver;
 extern Camera camera;
 extern double elapsedTime;
 std::vector<std::pair<bool, double>>* jump = new std::vector<std::pair<bool, double>>;
@@ -310,15 +306,14 @@ void MotorScene::CreateInstances(){
 void MotorScene::Init(){ //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
+	glEnable(GL_DEPTH_TEST); //Enable depth test
 	glEnable(GL_CULL_FACE); //Enable back-face culling
 	glEnable(GL_BLEND); //Enable blend
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST); //Enable depth test
+	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
 	scoreMan = new ScoreManager;
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	iCamera.Init(Vector3(0.f, 20.f, -30.f), Vector3(0.f, 5.f, 0.f), Vector3(0.f, 1.f, 0.f));
-	light[0].power = 1.f;
 	InitLight();
 	InitMeshes();
 	menu.Init();
@@ -330,11 +325,10 @@ void MotorScene::Init(){ //Init scene
 	animateDir = showDebugInfo = 1;
 	state = showLightSphere = 0;
 	cullBounceTime = debugBounceTime = interactBounceTime = lightBounceTime = polyBounceTime = smokeBounceTime = swingBounceTime = 0.0;
-	light[0].power = 1.f;
 	Ani1 = 0;
 	Switch = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
-	
+	nameScoreData = "";
 
 	//play 3d sound //sound gets softer when further away frm speakers
 	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
@@ -421,29 +415,51 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 			}
 		}
 	}
-	if (Application::IsKeyPressed('P') && lightBounceTime <= elapsedTime) { //Show/Hide light sphere
+	if((Application::IsKeyPressed('P') || (buttons != 0 && bool(buttons[2]))) && lightBounceTime <= elapsedTime){ //Show/Hide light sphere
 		showLightSphere = !showLightSphere;
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
+	if((Application::IsKeyPressed(VK_SHIFT) || (buttons != 0 && bool(buttons[3]))) && debugBounceTime <= elapsedTime){ //Show/Hide debug info
 		showDebugInfo = !showDebugInfo;
 		debugBounceTime = elapsedTime + 0.5;
 	}
-	if(smokeBounceTime <= elapsedTime && smokeGenerator.currAmt < smokeGenerator.maxAmt){
+
+	if(smokeBounceTime <= elapsedTime){
 		Particle* p = smokeGenerator.particlePool[smokeGenerator.GetIndex()];
-		p->dir = Vector3(0, 1, 0);
-		p->life = 1.f;
-		p->pos = Vector3(0, 0, 0) + p->dir * 2.5f + Vector3(0.f, 7.5f, 0.f);
+		p->xScale = p->yScale = p->zScale = 1.5f;
+		p->accel = -0.1f;
+		p->spd = GLfloat(rand() % 20 + 11);
+		do{
+			p->dir = Vector3(float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f), 0.f, float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f));
+		} while(!p->dir.Length());
+		p->dir = p->dir.Normalized();
+		p->life = 3.f;
+		p->birthLife = p->life;
+		p->pos = Vector3(float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f), 1.f, float(pow(-1, rand() & 1)) * ((rand() % 11) / 10.f));
+		p->pos = p->pos.Normalized() * float(rand() % 30 + 1);
+		p->pos.y = 3.f;
 		++smokeGenerator.currAmt;
-		smokeBounceTime = elapsedTime + 0.2;
+		smokeBounceTime = elapsedTime + 0.01;
 	}
 	smokeGenerator.UpdateParticles(dt);
+	smokeGenerator.SortParticles();
 
-	smokeGenerator.UpdateParticles(dt);
+	//Billboarding for particles
+	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
+	pAngleXZ = Math::RadianToDegree(acos(pFrontXZ.Dot(Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z)) /
+		(pFrontXZ.Length() * Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z).Length())));
+	Vector3 pFront = Vector3(camera.pos.x, camera.pos.y, camera.pos.z);
+	pAngle = Math::RadianToDegree(acos(pFront.Dot(Vector3(camera.pos.x, 0.f, camera.pos.z)) /
+		(pFront.Length() * Vector3(camera.pos.x, 0.f, camera.pos.z).Length())));
+	if(camera.pos.x < 0.f){
+		pAngleXZ = 360.f - pAngleXZ;
+	}
+	if(camera.pos.y < 0.f){
+		pAngle = 360.f - pAngle;
+	}
 
 
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
+	for (int i = 0; i < NUM_INSTANCES; ++i){
 		object[i].resetCollision();
 	}
 
@@ -484,17 +500,6 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	carCheck(PLATFORM9, "Resources/Sound/carchime.mp3");
 	carCheck(PLATFORM1, "");
 
-	//Billboarding for particles
-	Vector3 pFrontXZ = Vector3(camera.pos.x, 0.f, camera.pos.z);
-	pAngleXZ = Math::RadianToDegree(acos(pFrontXZ.Dot(Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z)) /
-		(pFrontXZ.Length() * Vector3(camera.defaultPos.x, 0.f, camera.defaultPos.z).Length())));
-	Vector3 pFront = Vector3(camera.pos.x, camera.pos.y, camera.pos.z);
-	pAngle = Math::RadianToDegree(acos(pFront.Dot(Vector3(camera.pos.x, 0.f, camera.pos.z)) /
-		(pFront.Length() * Vector3(camera.pos.x, 0.f, camera.pos.z).Length())));
-	if(camera.pos.x < 0.f){
-		pAngleXZ = 360.f - pAngleXZ;
-	}
-
 	static float lastTime = 0.0f;
 	float currentTime = GetTickCount64() * 0.001f;
 	if (currentTime - lastTime > 0.02f)
@@ -509,6 +514,20 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	menu.Update(dt);
 	iCamera.Update(dt);
 	UpdateMainChar(dt, buttons);
+
+	constexpr auto VK_ENTER = 13;
+	if(Application::IsKeyPressed('X') && !gameOver && lightBounceTime <= elapsedTime){
+		gameOver = 1;
+		memset(Scene::getTyped(), '\0', 10);
+		lightBounceTime = elapsedTime + 0.4;
+	}
+	if(Application::IsKeyPressed(VK_ENTER) && gameOver && Scene::getTyped()[0] != '\0' && lightBounceTime <= elapsedTime){
+		gameOver = 0;
+		scoreMan->addNameScore(std::make_pair(Scene::getTyped(), 25));
+		scoreMan->sortNameScoreData();
+		nameScoreData = scoreMan->retrieveNameScoreData(0);
+		lightBounceTime = elapsedTime + 0.4;
+	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -649,10 +668,22 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 	RenderLight();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 100.f, 0.f);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	RenderSkybox(!light[0].power);
+		modelStack.Translate(0.f, 100.f, 0.f);
+		modelStack.Scale(2.f, 2.f, 2.f);
+		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
+
+	for(Particle* p : smokeGenerator.particlePool){
+		if(p->life > 0.0f){
+			modelStack.PushMatrix();
+			modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
+			modelStack.Rotate(pAngleXZ, 0.f, 1.f, 0.f);
+			modelStack.Rotate(-pAngle, 1.f, 0.f, 0.f);
+			modelStack.Scale(p->xScale, p->yScale, p->zScale);
+			RenderMesh(meshList[unsigned int(MESH::SMOKE)], 0, p->life / p->birthLife);
+			modelStack.PopMatrix();
+		}
+	}
 
 	//modelStack.PushMatrix();
 	//modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
@@ -685,31 +716,35 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		}
 	}
 
-	for(Particle* p: smokeGenerator.particlePool){
-		if(p->life > 0.0f){
-			modelStack.PushMatrix();
-			modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
-			modelStack.Rotate(pAngleXZ, 0.f, 1.f, 0.f);
-			modelStack.Rotate(-pAngle, 1.f, 0.f, 0.f);
-			RenderMesh(meshList[unsigned int(MESH::SMOKE)], 0, p->life);
-			modelStack.PopMatrix();
-		}
-	}
-
 	std::ostringstream ss;
-	ss << "Typed: ";
-	for(short i = 0; i < 10; ++i){
-		ss << Scene::getTyped()[i];
+	float offset = 0.f;
+	if(gameOver){
+		ss << "Enter name: ";
+		for(short i = 0; i < 10; ++i){
+			ss << Scene::getTyped()[i];
+			offset += float(Scene::getTyped()[i] != '\0') / 2.f;
+		}
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, 14.1f - offset, 15.f, winWidth, winHeight);
+		ss.str("");
 	}
-	RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 15.f, winWidth, winHeight);
-	ss.str("");
+	offset = 0.f;
+	if(nameScoreData.length()){
+		std::string dataStr = "Scoreboard:\n" + nameScoreData, dataSubStr;
+		while(!dataStr.empty()){
+			dataSubStr = dataStr.substr(0, dataStr.find('\n'));
+			RenderTextOnScreen(getTextMesh(), dataSubStr, Color(1.f, .5f, .6f), 3.2f, 14.1f, 26.2f - offset, winWidth, winHeight);
+			++offset;
+			dataStr.erase(0, dataStr.find('\n') + 1);
+		}
+		ss.str("");
+	}
 	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
 		ss << "MainChar's target: " << MainChar::getMainChar().getTarget().x << ", " << MainChar::getMainChar().getTarget().y << ", " << MainChar::getMainChar().getTarget().z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 29.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 33), winWidth, winHeight);
 		ss.str("");
 		ss << "MainChar's pos: " << MainChar::getMainChar().getPos().x << ", " << MainChar::getMainChar().getPos().y << ", " << MainChar::getMainChar().getPos().z;
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 28.f, winWidth, winHeight);
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, float(winHeight / 34), winWidth, winHeight);
 		ss.str("");
 		ss << std::setprecision(3);
 		ss << "Elapsed time: " << elapsedTime;
@@ -717,9 +752,7 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
-		ss.str("");
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 
 	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
 		RenderTextOnScreen(meshList[unsigned int(MESH::TEXT_ON_SCREEN)], "Press [0] to play game", Color(0.5f, 0.5, 1.f), 4.f, 6.f, 8.f, winWidth, winHeight);
@@ -1175,6 +1208,7 @@ void MotorScene::RenderAnimation(Mesh* mesh, int frame) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "alpha"), 1.f); //Set alpha uniform
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
@@ -1206,6 +1240,7 @@ void MotorScene::RenderAnimationOnScreen(Mesh* mesh, int frame, float size, floa
 	modelStack.LoadIdentity(); //Reset modelStack
 	modelStack.Translate(x, y, 0);
 	modelStack.Scale(size, size, size);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "alpha"), 1.f); //Set alpha uniform
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
@@ -1231,6 +1266,7 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	if(!mesh || mesh->textureID < 0){
 		return;
 	}
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "alpha"), 1.f); //Set alpha uniform
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
 	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textColor"), 1, &color.R);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
@@ -1247,6 +1283,45 @@ void MotorScene::RenderText(Mesh* mesh, std::string text, Color color) const{
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+	glEnable(GL_DEPTH_TEST);
+}
+
+void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
+	if(!mesh || mesh->textureID <= 0){ //Proper error check return
+		glDisable(GL_DEPTH_TEST);
+	}
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need cam for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity(); //Reset modelStack
+	modelStack.Scale(size, size, size);
+	modelStack.Translate(x, y, 0);
+	glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "alpha"), 1.f); //Set alpha uniform
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
+	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textColor"), 1, &color.R);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
+	glActiveTexture(GL_TEXTURE0);
+	if(mesh != 0){
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	}
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
+	for(unsigned i = 0; i < text.length(); ++i){
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+		mesh->Render((unsigned)text[i] * 6, 6);
+	}
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -1511,44 +1586,6 @@ void MotorScene::createSpeaker()
 	object[SPEAKER2].setDimension(20, 80, 20);
 }
 
-void MotorScene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, int winWidth, int winHeight){
-	if(!mesh || mesh->textureID <= 0){ //Proper error check return
-		glDisable(GL_DEPTH_TEST);
-	}
-	Mtx44 ortho;
-	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
-	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);
-	viewStack.PushMatrix();
-	viewStack.LoadIdentity(); //No need cam for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
-	modelStack.Translate(x, y, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 1);
-	glUniform3fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textColor"), 1, &color.R);
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
-	glActiveTexture(GL_TEXTURE0);
-	if(mesh != 0){
-		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	}
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
-	for(unsigned i = 0; i < text.length(); ++i){
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i * 1.f, 0, 0); //1.f is spacing
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
-}
-
 void MotorScene::renderObject(Object* obj){
 	if (obj->isRender() && obj->getMesh() != nullptr)
 	{
@@ -1584,6 +1621,7 @@ void MotorScene::renderObject(Object* obj){
 		RenderMesh(obj->getMesh(), true);
 	}
 }
+
 void MotorScene::npcCheck(int instance, const char* audioFileName)
 {	//finds angle in between two vectors
 	Vector3 posToObject = object[instance].getPos() - camera.pos;

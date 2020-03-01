@@ -41,7 +41,7 @@ uniform vec3 textColor;
 uniform float alpha;
 
 void main(){
-	vec4 materialColor = (colorTextureEnabled ? texture2D(colorTexture, texCoord) : vec4(fragmentColor, alpha));
+	vec4 materialColor = (colorTextureEnabled ? texture2D(colorTexture, texCoord) : vec4(fragmentColor, 1.f));
 	if(lightEnabled){
 		vec3 eyeDirection_cameraspace = -vertexPosition_cameraspace, E = normalize(eyeDirection_cameraspace), N = normalize(vertexNormal_cameraspace);
 		color = materialColor * vec4(material.kAmbient, 1); //Ambient (simulates indirect lighting)
@@ -56,6 +56,9 @@ void main(){
 		}
 	} else{
 		color = materialColor;
+		if(color.a >= 0.05f && color.a < 1.f){
+			color.a = alpha;
+		}
 	}
 	if(textEnabled){
 		color *= vec4(textColor, 1);
