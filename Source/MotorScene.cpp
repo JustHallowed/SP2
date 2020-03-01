@@ -489,6 +489,9 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 	carCheck(PLATFORM9, "Resources/Sound/carchime.mp3");
 	carCheck(PLATFORM1, "");
 
+
+	engine->setListenerPosition(vec3df(camera.pos.x, camera.pos.y, camera.pos.z), vec3df(0, 0, 1));
+
 	static float lastTime = 0.0f;
 	float currentTime = GetTickCount64() * 0.001f;
 	if (currentTime - lastTime > 0.02f)
@@ -1612,8 +1615,7 @@ void MotorScene::animateNpc(int instance)
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
 	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
-	if (instance == 36)
-	std::cout << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << angle;
+
 	if (interacted[instance])
 	{
 		object[instance].addRotation(angle - 5, 'y');
