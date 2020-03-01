@@ -1618,14 +1618,13 @@ void MotorScene::animateNpc(int instance, double dt)
 
 	if (interacted[instance])
 	{
-		if (angle > 30)
-		{
-		object[instance].addRotation(100 * dt, 'y');
+		if (angle > 12)
+		object[instance].addRotation(1000 * dt, 'y');
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');
 		object[instance + 4].setRotation(-40, 'x');
-		}
+		
 
 		if (object[instance + 1].getAngle().x <= -90)
 		{
