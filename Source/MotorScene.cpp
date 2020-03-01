@@ -673,18 +673,6 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
-	for(Particle* p : smokeGenerator.particlePool){
-		if(p->life > 0.0f){
-			modelStack.PushMatrix();
-			modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
-			modelStack.Rotate(pAngleXZ, 0.f, 1.f, 0.f);
-			modelStack.Rotate(-pAngle, 1.f, 0.f, 0.f);
-			modelStack.Scale(p->xScale, p->yScale, p->zScale);
-			RenderMesh(meshList[unsigned int(MESH::SMOKE)], 0, p->life / p->birthLife);
-			modelStack.PopMatrix();
-		}
-	}
-
 	//modelStack.PushMatrix();
 	//modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
 	//RenderMesh(meshList[unsigned int(MESH::HITSPHERE)], false);
@@ -705,13 +693,24 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 			modelStack.PopMatrix();
 		}
 	}
+
 	//render all objects
-	for (int i = 0; i < NUM_INSTANCES; ++i)
-	{
-		if (object[i].getParent() == nullptr)
-		{
+	for(int i = 0; i < NUM_INSTANCES; ++i){
+		if(object[i].getParent() == nullptr){
 			modelStack.PushMatrix();
 			renderObject(&object[i]);
+			modelStack.PopMatrix();
+		}
+	}
+
+	for(Particle* p : smokeGenerator.particlePool){
+		if(p->life > 0.0f){
+			modelStack.PushMatrix();
+			modelStack.Translate(p->pos.x, p->pos.y, p->pos.z);
+			modelStack.Rotate(pAngleXZ, 0.f, 1.f, 0.f);
+			modelStack.Rotate(-pAngle, 1.f, 0.f, 0.f);
+			modelStack.Scale(p->xScale, p->yScale, p->zScale);
+			RenderMesh(meshList[unsigned int(MESH::SMOKE)], 0, p->life / p->birthLife);
 			modelStack.PopMatrix();
 		}
 	}
