@@ -74,8 +74,8 @@
     <IncludePath>$(SolutionDir)\irrklang\include;$(SolutionDir)\Common\Source;$(SolutionDir)\glfw\include;$(SolutionDir)\glew\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>$(SolutionDir)\glfw\lib-vc2019;$(SolutionDir)\glew\lib;$(SolutionDir)\$(Configuration);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)\Common\Source;$(SolutionDir)\glfw\include;$(SolutionDir)\glew\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\irrklang\lib;$(SolutionDir)\glfw\lib-vc2019;$(SolutionDir)\glew\lib;$(SolutionDir)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\irrklang\include;$(SolutionDir)\Common\Source;$(SolutionDir)\glfw\include;$(SolutionDir)\glew\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

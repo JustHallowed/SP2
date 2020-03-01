@@ -1,0 +1,33 @@
+﻿  MotorScene.cpp
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005: 'APIENTRY': macro redefinition
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\glfw\include\GLFW\glfw3.h(104): message : see previous definition of 'APIENTRY'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1369,49): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1412,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1417,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1422,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1427,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1434,49): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1457,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1461,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1465,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1469,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1476,49): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1501,56): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1505,55): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1509,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1513,52): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1525,42): warning C4305: 'argument': truncation from 'double' to 'float'
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1625,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1627,39): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1645,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1646,41): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1650,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1651,42): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1663,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\MotorScene.cpp(1664,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\DM2122 Prac\Source\Object.cpp(470): warning C4715: 'Object::hasFaceIntersection': not all control paths return a value
+  All 1423 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  DM2122 Prac.vcxproj -> D:\Desktop\Yr 1\SEM 2\SP2 (CG PROJ)\Release\DM2122 Prac.exe
