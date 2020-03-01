@@ -252,7 +252,9 @@ void GameScene2::updateGame(double dt)
 		if (p2BombCharge > 0)
 		{
 			float force = 8;
-			Vector3 T = (player1.getObject()->getPos() - player2.getObject()->getPos()).Normalized();//unit vector p2 to p1
+			Vector3 T = (player1.getObject()->getPos() - player2.getObject()->getPos());//unit vector p2 to p1
+			if (T != Vector3(0, 0, 0))
+				T.Normalize();
 			player1.getObject()->setVelocity(player1.getObject()->getVelocity().x + T.x * force, player1.getObject()->getVelocity().y + force, player1.getObject()->getVelocity().z + T.z * force);
 			player2.getObject()->setVelocity(player2.getObject()->getVelocity().x, player2.getObject()->getVelocity().y + force, player2.getObject()->getVelocity().z);
 			--p2BombCharge;
