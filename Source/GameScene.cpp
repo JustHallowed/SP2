@@ -227,7 +227,6 @@ void GameScene::Init() { //Init scene
 	survivalTime = 0;
 	p2HitPoints = p1HitPoints = 3;
 
-	srand(time(NULL));
 	player1.disableKey(0);//disable movement in z and y axis
 	player1.disableKey(2);
 	player1.disableKey(4);

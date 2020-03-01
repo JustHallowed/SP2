@@ -111,11 +111,6 @@ void GameScene2::CreateInstances()
 void GameScene2::Init() { //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
-	glEnable(GL_CULL_FACE); //Enable back-face cullingyg
-	glEnable(GL_BLEND); //Enable blend
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_DEPTH_TEST); //Enable depth test
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 330.f, -500.f), Vector3(0.f, 1.f, 0.f), Vector3(0.f, 0.f, 1.f));
 	InitLight();
 	InitMeshes();
@@ -126,13 +121,12 @@ void GameScene2::Init() { //Init scene
 	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = 0.0;
 	survivalTime = 0;
 	p1BombCharge, p2BombCharge = 1;
-	srand(time(NULL));
 	player1.disableKey(4);//disable fly
 	player2.disableKey(4);
 	player2.setKeys('W', 'A', 'S', 'D', 0, 0);
 }
 
-void GameScene2::Exit(Scene* newScene) { //Exit scene
+void GameScene2::Exit(Scene* newScene){ //Exit scene
 	for(int i = 0; i < int(MESH::NUM_GEOMETRY); ++i){
 		if(meshList[i] != 0){
 			delete meshList[i];
@@ -355,6 +349,7 @@ void GameScene2::updateObstacleState(double dt)
 }
 
 void GameScene2::Render(double dt, int winWidth, int winHeight) {
+	glViewport(0, 0, winWidth, winHeight);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	viewStack.LoadIdentity();
 	viewStack.LookAt(camera.pos.x, camera.pos.y, camera.pos.z,
