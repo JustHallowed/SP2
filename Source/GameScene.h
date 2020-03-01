@@ -3,16 +3,15 @@
 #include "Scene.h"
 #include "Mesh.h"
 #include "Light.h"
-#include "ParticleSystem.h"
+#include "ScoreSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
 
-class GameScene final: public Scene {
-	enum class MESH {
+class GameScene final: public Scene{
+	enum class MESH{
 		REDHITBOX, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, HEALTHBAR, NUM_GEOMETRY
 	};
-	enum OBJECT_INSTANCES
-	{
+	enum OBJECT_INSTANCES{
 		UFO_BASE1,
 		UFO_RED1,
 		ENDWALL,
@@ -24,7 +23,7 @@ class GameScene final: public Scene {
 	};
 	std::vector<Object*> activeObstacleQueue;
 	std::vector<Object*> inactiveObstacleQueue;
-	bool showDebugInfo, showLightSphere;
+	bool baseDead, redDead, showDebugInfo, showLightSphere, showTextInputBox;
 	double debugBounceTime, lightBounceTime, timeSinceLastObstacle, cullBounceTime, polyBounceTime;
 	double CalcFrameRate() const;
 	float survivalTime;
@@ -33,13 +32,14 @@ class GameScene final: public Scene {
 	Light light[1]{ Light(0.f, 192.f, 0.f) };
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
-	ParticleEmitter bulletGenerator;
+	ScoreManager* scoreMan;
+	std::string nameScoreData;
 	Vehicle player1, player2;
 	Camera camera2;
 	unsigned m_vertexArrayID;
 	void InitMeshes(), CreateInstances(), RenderLight(), RenderMeshOnScreen(Mesh*, float, float, float, float, int, int), RenderSkybox(bool), RenderTextOnScreen(Mesh*, std::string, Color, float, float, float, int, int);
 	void InitLight() const, RenderMesh(Mesh*, bool) const, RenderAnimation(Mesh*, std::string, Color) const, RenderText(Mesh*, std::string, Color) const, renderObject(Object* obj);
-	void updateObstacleState(double dt), resetGame(), updateGame(double dt), RenderAnimationOnScreen(Mesh*, int, float, float, float, float, int, int);
+	void updateObstacleState(double dt), updateGame(double dt), RenderAnimationOnScreen(Mesh*, int, float, float, float, float, int, int), RenderNameScoreData(int, int);
 public:
 	~GameScene() override {}
 	void Init() override, Update(double, float, const unsigned char* = 0) override, Render(double, int, int) override, RenderScreen1(double, int, int), RenderScreen2(double, int, int), Exit(Scene*) override;

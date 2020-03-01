@@ -4,7 +4,6 @@
 #include "Mesh.h"
 #include "Light.h"
 #include "ParticleSystem.h"
-#include "ScoreSystem.h"
 #include "Object.h"
 #include "Vehicle.h"
 #include "Menu.h"
@@ -77,13 +76,11 @@ class MotorScene final: public Scene{
 
 		NUM_INSTANCES,
 	};
-	bool animateDir, showDebugInfo, showLightSphere, state;
-	bool inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
+	bool animateDir, showDebugInfo, showLightSphere, state, Switch, inRange[NUM_INSTANCES], interacted[NUM_INSTANCES];
 	double cullBounceTime, debugBounceTime, interactBounceTime, lightBounceTime, polyBounceTime, smokeBounceTime, swingBounceTime, timePressed;
 	double CalcFrameRate() const;
 	float pAngleXZ, pAngle, mainCharAngle, leftUpperAngle, leftLowerAngle, rightUpperAngle, rightLowerAngle, leftArmAngle, leftForearmAngle, rightArmAngle, rightForearmAngle;
 	int Ani1;
-	bool Switch;
 	Object object[NUM_INSTANCES];
 	Light light[7]{
 		Light('d', 0.f, 192.f, 0.f, 1.f, 1.f, 1.f, Vector3(0, 1, 0)), //ceilling light
@@ -97,8 +94,6 @@ class MotorScene final: public Scene{
 	Mesh* meshList[static_cast<unsigned int>(MESH::NUM_GEOMETRY)];
 	MS modelStack, viewStack, projectionStack;
 	ParticleEmitter smokeGenerator;
-	ScoreManager* scoreMan;
-	std::string nameScoreData;
 	Menu menu;
 	IdleCamera iCamera;
 	unsigned m_vertexArrayID;

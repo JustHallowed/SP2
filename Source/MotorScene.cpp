@@ -3,7 +3,6 @@
 #include "irrKlang.h"
 #pragma comment(lib, "irrKlang.lib") // link with irrKlang.dll
 
-extern bool gameOver;
 extern Camera camera;
 extern double elapsedTime;
 std::vector<std::pair<bool, double>>* jump = new std::vector<std::pair<bool, double>>;
@@ -307,7 +306,6 @@ void MotorScene::Init(){ //Init scene
 	glEnable(GL_CULL_FACE); //Enable back-face culling
 	glEnable(GL_BLEND); //Enable blend
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
-	scoreMan = new ScoreManager;
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 5.f, 30.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
 	iCamera.Init(Vector3(0.f, 20.f, -30.f), Vector3(0.f, 0.f, 0.f), Vector3(0.f, 1.f, 0.f));
@@ -326,7 +324,6 @@ void MotorScene::Init(){ //Init scene
 	Ani1 = 0;
 	Switch = 0;
 	pAngleXZ = pAngle = mainCharAngle = leftUpperAngle = leftLowerAngle = rightUpperAngle = rightLowerAngle = leftArmAngle = leftForearmAngle = rightArmAngle = rightForearmAngle = 0.f;
-	nameScoreData = "";
 
 	//play 3d sound //sound gets softer when further away frm speakers
 	speaker1 = engine->play3D("Resources/Sound/bgm.mp3", vec3df(65, 0.5, 85), true, false, true);
@@ -344,7 +341,6 @@ void MotorScene::Exit(Scene* newScene){ //Exit scene
 		}
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
-	delete scoreMan;
 	if(dynamic_cast<MotorScene*>(newScene) != this){
 		newScene->Init();
 	} else{
@@ -503,23 +499,9 @@ void MotorScene::Update(double dt, float FOV, const unsigned char* buttons) { //
 		lastTime = currentTime;
 	}
 	
-
 	menu.Update(dt);
 	iCamera.Update(dt);
 	UpdateMainChar(dt, buttons);
-
-	if(Application::IsKeyPressed('X') && !gameOver && lightBounceTime <= elapsedTime){
-		gameOver = 1;
-		memset(Scene::getTyped(), '\0', 10);
-		lightBounceTime = elapsedTime + 0.4;
-	}
-	if(Application::IsKeyPressed(VK_RETURN) && gameOver && Scene::getTyped()[0] != '\0' && lightBounceTime <= elapsedTime){
-		gameOver = 0;
-		scoreMan->addNameScore(std::make_pair(Scene::getTyped(), 25));
-		scoreMan->sortNameScoreData();
-		nameScoreData = scoreMan->retrieveNameScoreData(0);
-		lightBounceTime = elapsedTime + 0.4;
-	}
 
 	Mtx44 projection;
 	projection.SetToPerspective(FOV, 4.f / 3.f, 0.1f, 1000.f); //FOV value affects cam zoom
@@ -708,27 +690,6 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 	}
 
 	std::ostringstream ss;
-	float offset = 0.f;
-	if(gameOver){
-		ss << "Enter name: ";
-		for(short i = 0; i < 10; ++i){
-			ss << Scene::getTyped()[i];
-			offset += float(Scene::getTyped()[i] != '\0') / 2.f;
-		}
-		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, 14.1f - offset, 15.f, winWidth, winHeight);
-		ss.str("");
-	}
-	offset = 0.f;
-	if(nameScoreData.length()){
-		std::string dataStr = "Scoreboard:\n" + nameScoreData, dataSubStr;
-		while(!dataStr.empty()){
-			dataSubStr = dataStr.substr(0, dataStr.find('\n'));
-			RenderTextOnScreen(getTextMesh(), dataSubStr, Color(1.f, .5f, .6f), 3.2f, 14.1f, float(winHeight / 36) - offset, winWidth, winHeight);
-			++offset;
-			dataStr.erase(0, dataStr.find('\n') + 1);
-		}
-		ss.str("");
-	}
 	if(showDebugInfo){
 		ss << std::fixed << std::setprecision(2);
 		ss << "MainChar's target: " << MainChar::getMainChar().getTarget().x << ", " << MainChar::getMainChar().getTarget().y << ", " << MainChar::getMainChar().getTarget().z;
@@ -743,6 +704,7 @@ void MotorScene::RenderScreen(double dt, int winWidth, int winHeight)
 		ss.str("");
 		ss << "FPS: " << (1.0 / dt + CalcFrameRate()) / 2.0;
 		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, .2f, 0.f, winWidth, winHeight);
+		ss.str("");
 	}
 
 	if (inRange[PLATFORM1] && !interacted[PLATFORM1])
@@ -1650,11 +1612,11 @@ void MotorScene::animateNpc(int instance)
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
 	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
-
+	if (instance == 36)
+	std::cout << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << angle;
 	if (interacted[instance])
 	{
-		if (angle > 10)
-			object[instance].addRotation(angle, 'y');
+		object[instance].addRotation(angle - 5, 'y');
 		object[instance + 3].setRotation(-90, 'y');
 		object[instance + 3].setRotation(-40, 'x');
 		object[instance + 4 ].setRotation(-90, 'y');

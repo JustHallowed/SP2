@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 
+extern bool gameOver;
 extern Camera camera;
 extern double elapsedTime;
 
@@ -204,18 +205,19 @@ void GameScene::CreateInstances()
 void GameScene::Init() { //Init scene
 	glGenVertexArrays(1, &m_vertexArrayID); //Generate a default VAO
 	glBindVertexArray(m_vertexArrayID);
+	scoreMan = new ScoreManager;
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 	camera.Init(Vector3(0.f, 30.f, -50.f), Vector3(0.f, 0.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	camera2.Init(Vector3(0.f, 330.f, -50.f), Vector3(0.f, 300.6f, 50.f), Vector3(0.f, 1.f, 0.f));
 	InitLight();
 	InitMeshes();
 	CreateInstances();
-	//bulletGenerator.InitParticles();
 	showDebugInfo = 1;
-	showLightSphere = 0;
+	baseDead = redDead = showLightSphere = showTextInputBox = 0;
 	debugBounceTime = lightBounceTime = timeSinceLastObstacle = cullBounceTime = polyBounceTime = 0.0;
 	survivalTime = 0;
 	p2HitPoints = p1HitPoints = 3;
+	nameScoreData = "";
 
 	//Disable movement in y and z axes
 	player1.disableKey(0);
@@ -299,14 +301,20 @@ void GameScene::Update(double dt, float FOV, const unsigned char* buttons) { //U
 		showDebugInfo = !showDebugInfo;
 		debugBounceTime = elapsedTime + 0.5;
 	}
-	if(Application::IsKeyPressed('R')){
-		resetGame();
-	}
 
 	player1.update(dt);
 	player2.update(dt);
 
-	updateGame(dt);
+	if(!gameOver){
+		updateGame(dt);
+	}
+	if(Application::IsKeyPressed(VK_RETURN) && gameOver && Scene::getTyped()[0] != '\0'){
+		showTextInputBox = 0;
+		scoreMan->addNameScore(std::make_pair(Scene::getTyped(), int(elapsedTime)));
+		scoreMan->sortNameScoreData();
+		nameScoreData = scoreMan->retrieveNameScoreData(0);
+		memset(Scene::getTyped(), '\0', 10);
+	}
 
 	for (int i = 0; i < NUM_INSTANCES; ++i)
 	{
@@ -332,10 +340,8 @@ void GameScene::Update(double dt, float FOV, const unsigned char* buttons) { //U
 }
 
 
-void GameScene::updateGame(double dt)
-{
+void GameScene::updateGame(double dt){
 	survivalTime += dt;
-
 	updateObstacleState(dt);
 
 	if (camera.pos.x< player1.getObject()->getPos().x || camera.pos.x > player1.getObject()->getPos().x)//camera follow player
@@ -346,7 +352,7 @@ void GameScene::updateGame(double dt)
 	}
 
 
-	if (camera2.pos.x< player2.getObject()->getPos().x || camera2.pos.x > player2.getObject()->getPos().x)//camera follow player
+	if (camera2.pos.x < player2.getObject()->getPos().x || camera2.pos.x > player2.getObject()->getPos().x)//camera follow player
 	{
 		float camera2XDisplacement = camera2.pos.x - player2.getObject()->getPos().x;
 		camera2.pos.x -= camera2XDisplacement * 5 * dt;
@@ -360,9 +366,8 @@ void GameScene::updateGame(double dt)
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 			--p1HitPoints;
-			if (p1HitPoints < 0)
-			{
-				resetGame();
+			if(p1HitPoints <= 0){
+				baseDead = 1;
 			}
 		}
 		if (object[UFO_RED1].updateCollision(activeObstacleQueue.at(i), dt) && activeObstacleQueue.at(i) != nullptr)
@@ -370,10 +375,14 @@ void GameScene::updateGame(double dt)
 			inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
 			activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
 			--p2HitPoints;
-			if (p2HitPoints < 0)
-			{
-				resetGame();
+			if(p2HitPoints <= 0){
+				redDead = 1;
 			}
+		}
+		if(p1HitPoints <= 0 && p2HitPoints <= 0){ //End the game
+			gameOver = 1;
+			showTextInputBox = 1;
+			memset(Scene::getTyped(), '\0', 10);
 		}
 	}
 
@@ -418,23 +427,6 @@ void GameScene::updateGame(double dt)
 
 }
 
-void GameScene::resetGame()
-{
-	
-	p1HitPoints = p2HitPoints = 3;
-	survivalTime = 0;
-	object[UFO_BASE1].setTranslation(0, 0.6, 35);
-	object[UFO_BASE1].setVelocity(0, 0.0, 0);
-	object[UFO_RED1].setTranslation(0, 300.6, 35);
-	object[UFO_RED1].setVelocity(0, 0.0, 0);
-	for (int i = 0; i < activeObstacleQueue.size(); ++i)
-	{
-		inactiveObstacleQueue.push_back(activeObstacleQueue.at(i));
-		activeObstacleQueue.erase(activeObstacleQueue.begin() + i);
-	}
-	camera.pos.Set(0.f, 30.f, -50.f), camera.target.Set(0.f, 5.f, 50.f), camera.up.Set(0.f, 1.f, 0.f);
-	camera2.pos.Set(0.f, 330.f, -50.f), camera.target.Set(0.f, 305.f, 50.f), camera.up.Set(0.f, 1.f, 0.f);
-}
 void GameScene::updateObstacleState(double dt)
 {
 	float spawnInterval = 5 - survivalTime / 15; //increases rate of obstacle spawn as time passes
@@ -535,13 +527,47 @@ void GameScene::updateObstacleState(double dt)
 	}
 }
 
-void GameScene::Render(double dt, int winWidth, int winHeight) 
-{
+void GameScene::Render(double dt, int winWidth, int winHeight) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glViewport(winWidth / 4, winHeight / 2, winWidth / 2, winHeight / 2);
-	RenderScreen1(dt, winWidth, winHeight);
-	glViewport(winWidth / 4, 0, winWidth / 2, winHeight / 2);
-	RenderScreen2(dt, winWidth, winHeight);
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	if(!baseDead && !redDead){
+		glViewport(winWidth / 4, winHeight / 2, winWidth / 2, winHeight / 2);
+		RenderScreen1(dt, winWidth, winHeight);
+		glViewport(winWidth / 4, 0, winWidth / 2, winHeight / 2);
+		RenderScreen2(dt, winWidth, winHeight);
+	} else if(baseDead && !redDead){
+		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
+		RenderScreen1(dt, winWidth, winHeight);
+	} else if(!baseDead && redDead){
+		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
+		RenderScreen2(dt, winWidth, winHeight);
+	} else{
+		glViewport(0, 0, int(mode->width * 2 / 3), int(mode->width * 2 / 3) * 3 / 4);
+		RenderNameScoreData(winWidth, winHeight);
+	}
+}
+
+void GameScene::RenderNameScoreData(int winWidth, int winHeight){
+	std::ostringstream ss;
+	float offset = 0.f;
+	if(showTextInputBox){
+		ss << "Enter name: ";
+		for(short i = 0; i < 10; ++i){
+			ss << Scene::getTyped()[i];
+			offset += float(Scene::getTyped()[i] != '\0') / 2.f;
+		}
+		RenderTextOnScreen(getTextMesh(), ss.str(), Color(1.f, .5f, .6f), 3.2f, 14.1f - offset, 15.f, winWidth, winHeight);
+	}
+	offset = 0.f;
+	if(nameScoreData.length()){
+		std::string dataStr = "Scoreboard:\n" + nameScoreData, dataSubStr;
+		while(!dataStr.empty()){
+			dataSubStr = dataStr.substr(0, dataStr.find('\n'));
+			RenderTextOnScreen(getTextMesh(), dataSubStr, Color(1.f, .5f, .6f), 3.2f, 14.1f, float(winHeight / 36) - offset, winWidth, winHeight);
+			++offset;
+			dataStr.erase(0, dataStr.find('\n') + 1);
+		}
+	}
 }
 
 void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
@@ -610,6 +636,7 @@ void GameScene::RenderScreen1(double dt, int winWidth, int winHeight)
 	}
 	RenderAnimationOnScreen(meshList[unsigned int(MESH::HEALTHBAR)], 3 - p1HitPoints, 35.f, 20.f, 0.2, 29, winWidth, winHeight);
 }
+
 void GameScene::RenderScreen2(double dt, int winWidth, int winHeight)
 {
 	viewStack.LoadIdentity();
@@ -921,38 +948,38 @@ void GameScene::renderObject(Object* obj)
 	}
 
 }
-	void GameScene::RenderAnimationOnScreen(Mesh * mesh, int frame, float sizeX, float sizeY, float x, float y, int winWidth, int winHeight)
-	{
-		if (!mesh || mesh->textureID <= 0) { //Proper error check return
-			glDisable(GL_DEPTH_TEST);
-		}
-		Mtx44 ortho;
-		ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
-		projectionStack.PushMatrix();
-		projectionStack.LoadMatrix(ortho);
-		viewStack.PushMatrix();
-		viewStack.LoadIdentity(); //No need cam for ortho mode
-		modelStack.PushMatrix();
-		modelStack.LoadIdentity(); //Reset modelStack
-		modelStack.Translate(x, y, 0);
-		modelStack.Scale(sizeX, sizeY, 1);
-		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
-		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
-		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
-		glActiveTexture(GL_TEXTURE0);
-		if (mesh != nullptr)
-		{
-			glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-		}
-		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
-		glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
-		mesh->Render(frame * 6, 6);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
-		projectionStack.PopMatrix();
-		viewStack.PopMatrix();
-		modelStack.PopMatrix();
-		glEnable(GL_DEPTH_TEST);
+void GameScene::RenderAnimationOnScreen(Mesh * mesh, int frame, float sizeX, float sizeY, float x, float y, int winWidth, int winHeight){
+	if(!mesh || mesh->textureID <= 0) { //Proper error check return
+		glDisable(GL_DEPTH_TEST);
 	}
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, winWidth / 10, 0, winHeight / 10, -10, 10); //Size of screen UI
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity(); //No need cam for ortho mode
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity(); //Reset modelStack
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(sizeX, sizeY, 1);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lightEnabled"), 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTextureEnabled"), 1);
+	glActiveTexture(GL_TEXTURE0);
+	if(mesh != nullptr)
+	{
+		glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	}
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "colorTexture"), 0);
+	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "MVP"), 1, GL_FALSE, &MVP.a[0]);
+	mesh->Render(frame * 6, 6);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "textEnabled"), 0);
+	projectionStack.PopMatrix();
+	viewStack.PopMatrix();
+	modelStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
