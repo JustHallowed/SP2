@@ -1,5 +1,8 @@
 #include "Vehicle.h"
 
+int count;
+const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
+
 Vehicle::Vehicle()
 {
 	object = nullptr;
@@ -13,6 +16,7 @@ Vehicle::Vehicle()
 	keyCode[UP_KEY] = VK_SPACE;
 	keyCode[DOWN_KEY] = VK_SHIFT;
 }
+
 Object* Vehicle::getObject() const
 {
 	return object;
@@ -52,19 +56,18 @@ void Vehicle::update(double dt)
 	object->setAcceleration(0, 0, 0);
 
 	//sets keypress boolean
-	if (Application::IsKeyPressed(keyCode[FRONT_KEY]))
-	{
+	if(Application::IsKeyPressed(keyCode[FRONT_KEY])){
 		keyPress[FRONT_KEY] = true;
 	}
 	if (Application::IsKeyPressed(keyCode[BACK_KEY]))
 	{
 		keyPress[BACK_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[LEFT_KEY]))
+	if (Application::IsKeyPressed(keyCode[LEFT_KEY]) || (axes != 0 && axes[0] < 0))
 	{
 		keyPress[LEFT_KEY] = true;
 	}
-	if (Application::IsKeyPressed(keyCode[RIGHT_KEY]))
+	if (Application::IsKeyPressed(keyCode[RIGHT_KEY]) || (axes != 0 && axes[0] > 0))
 	{
 		keyPress[RIGHT_KEY] = true;
 	}

@@ -25,8 +25,7 @@ class GameScene final : public Scene {
 	std::vector<Object*> activeObstacleQueue;
 	std::vector<Object*> inactiveObstacleQueue;
 	bool showDebugInfo, showLightSphere;
-	char keys[7] = { '1', '2', '3', '4', '8', '9', '0' };
-	double debugBounceTime, lightBounceTime, timeSinceLastObstacle;
+	double debugBounceTime, lightBounceTime, timeSinceLastObstacle, cullBounceTime, polyBounceTime;
 	double CalcFrameRate() const;
 	float survivalTime;
 	int p1HitPoints, p2HitPoints;

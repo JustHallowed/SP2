@@ -118,7 +118,7 @@ void GameScene2::Init() { //Init scene
 	bulletGenerator.InitParticles();
 	showDebugInfo = 1;
 	showLightSphere = 0;
-	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = 0.0;
+	bulletBounceTime = debugBounceTime = lightBounceTime = timeSinceLastObstacle = spaceBounceTime = enterBounceTime = cullBounceTime = polyBounceTime = 0.0;
 	survivalTime = 0;
 	p1BombCharge, p2BombCharge = 1;
 	player1.disableKey(4);//disable fly
@@ -148,37 +148,49 @@ void GameScene2::Exit(Scene* newScene){ //Exit scene
 }
 
 void GameScene2::Update(double dt, float FOV, const unsigned char* buttons) { //Update scene
-	for (int i = 0; i < 7; ++i) {
-		if (Application::IsKeyPressed(keys[i])) {
-			switch (keys[i]) {
-			case '1': glDisable(GL_CULL_FACE); break; //Disable back-face culling
-			case '2': glEnable(GL_CULL_FACE); break; //Enable back-face culling
-			case '3': glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); break; //Set polygon mode to GL_FILL (default mode)
-			case '4': glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); break; //Set polygon mode to GL_LINE (wireframe mode)
-			case '8': { //Off the light
-				light[0].power = 0.f;
-				glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
-				break;
-			}
-			case '9': { //On the light
-				light[0].power = 1.f;
-				glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
-				break;
-			}
-			case '0': SceneManager::getScMan()->SetNextScene(); //Change scene
-			}
-		}
+	if(buttons != 0 && bool(buttons[4]) && cullBounceTime <= elapsedTime){ //Toggle back-face culling
+		glIsEnabled(GL_CULL_FACE) ? glDisable(GL_CULL_FACE) : glEnable(GL_CULL_FACE);
+		cullBounceTime = elapsedTime + 0.3;
 	}
-	if (Application::IsKeyPressed('P') && lightBounceTime <= elapsedTime) { //Show/Hide light sphere
+	if(buttons != 0 && bool(buttons[5]) && polyBounceTime <= elapsedTime){ //Switch between polygon modes
+		GLint polyMode;
+		glGetIntegerv(GL_POLYGON_MODE, &polyMode);
+		polyMode == GL_LINE ? glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) : glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		polyBounceTime = elapsedTime + 0.3;
+	}
+	if(Application::IsKeyPressed('1')){ //Disable back-face culling
+		glDisable(GL_CULL_FACE);
+	}
+	if(Application::IsKeyPressed('2')){ //Enable back-face culling
+		glEnable(GL_CULL_FACE);
+	}
+	if(Application::IsKeyPressed('3')){ //Set polygon mode to GL_FILL (default mode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if(Application::IsKeyPressed('4')){ //Set polygon mode to GL_LINE (wireframe mode)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	if(Application::IsKeyPressed('8') || (buttons != 0 && bool(buttons[8]))){ //Off the light
+		light[0].power = 0.f;
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
+	}
+	if(Application::IsKeyPressed('9') || (buttons != 0 && bool(buttons[9]))){ //On the light
+		light[0].power = 1.f;
+		glUniform1f(glGetUniformLocation(ShaderManager::getShaderMan().getProgID(), "lights[0].power"), light[0].power);
+	}
+	if(Application::IsKeyPressed('0') || (buttons != 0 && bool(buttons[7]))){ //Change scene
+		SceneManager::getScMan()->SetNextScene();
+	}
+	if((Application::IsKeyPressed('P') || (buttons != 0 && bool(buttons[2]))) && lightBounceTime <= elapsedTime){ //Show/Hide light sphere
 		showLightSphere = !showLightSphere;
 		lightBounceTime = elapsedTime + 0.4;
 	}
-	if (Application::IsKeyPressed('R')) { //Show/Hide light sphere
-		resetGame();
-	}
-	if (Application::IsKeyPressed(VK_SHIFT) && debugBounceTime <= elapsedTime) { //Show/Hide debug info
+	if((Application::IsKeyPressed(VK_SHIFT) || (buttons != 0 && bool(buttons[3]))) && debugBounceTime <= elapsedTime){ //Show/Hide debug info
 		showDebugInfo = !showDebugInfo;
 		debugBounceTime = elapsedTime + 0.5;
+	}
+	if(Application::IsKeyPressed('R')){
+		resetGame();
 	}
 
 	camera.pos.Set(0.f, 330.f, -500.f), camera.target.Set(0.f, 1.f, 0.f), camera.up.Set(0.f, 0.f, 1.f);
@@ -360,9 +372,9 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 	RenderLight();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0.f, 50.f, 380.f);
-	modelStack.Scale(2.f, 2.f, 2.f);
-	RenderSkybox(!light[0].power);
+		modelStack.Translate(0.f, 50.f, 380.f);
+		modelStack.Scale(2.f, 2.f, 2.f);
+		RenderSkybox(!light[0].power);
 	modelStack.PopMatrix();
 
 	for (int i = 0; i < activeObstacleQueue.size(); ++i) //Display obstacle hitboxes
@@ -423,7 +435,6 @@ void GameScene2::Render(double dt, int winWidth, int winHeight) {
 		ss.str("");
 
 	}
-	RenderMeshOnScreen(meshList[unsigned int(MESH::LIGHT_SPHERE)], 15.f, 15.f, 2.f, 2.f, winWidth, winHeight);
 }
 
 void GameScene2::RenderLight() {

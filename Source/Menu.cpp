@@ -84,12 +84,9 @@ void Menu::menu1()
 	POINT p;
 	if (GetCursorPos(&p))
 	{
-		system("cls");
-		std::cout << p.x << std::endl << p.y << std::endl;
 		HWND hwnd = ::GetActiveWindow();
 		if (ScreenToClient(hwnd, &p))
 		{
-			std::cout << p.x << std::endl << p.y << std::endl;
 			//PLAY
 			if (p.x > 65 && p.x < 265 && p.y > 730 && p.y < 766)
 			{
@@ -158,12 +155,9 @@ void Menu::menu2()
 	POINT p;
 	if (GetCursorPos(&p))
 	{
-		system("cls");
-		std::cout << p.x << std::endl << p.y << std::endl;
 		HWND hwnd = ::GetActiveWindow();
 		if (ScreenToClient(hwnd, &p))
 		{
-			std::cout << p.x << std::endl << p.y << std::endl;
 			//CONTROLS
 			if (p.x > 65 && p.x < 500 && p.y > 730 && p.y < 766)
 			{
@@ -238,12 +232,9 @@ void Menu::pause()
 	POINT p;
 	if (GetCursorPos(&p))
 	{
-		system("cls");
-		std::cout << p.x << std::endl << p.y << std::endl;
 		HWND hwnd = ::GetActiveWindow();
 		if (ScreenToClient(hwnd, &p))
 		{
-			std::cout << p.x << std::endl << p.y << std::endl;
 			//RESUME
 			if (p.x > 65 && p.x < 392 && p.y > 670 && p.y < 708)
 			{
@@ -319,8 +310,6 @@ void Menu::controls()
 	POINT p;
 	if (GetCursorPos(&p))
 	{
-		system("cls");
-		std::cout << p.x << std::endl << p.y << std::endl;
 		HWND hwnd = ::GetActiveWindow();
 		if (ScreenToClient(hwnd, &p))
 		{
@@ -352,8 +341,6 @@ void Menu::howtoplay()
 	POINT p;
 	if (GetCursorPos(&p))
 	{
-		system("cls");
-		std::cout << p.x << std::endl << p.y << std::endl;
 		HWND hwnd = ::GetActiveWindow();
 		if (ScreenToClient(hwnd, &p))
 		{

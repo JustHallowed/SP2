@@ -22,8 +22,7 @@ class GameScene2 final : public Scene {
 	std::vector<Object*> activeObstacleQueue;
 	std::vector<Object*> inactiveObstacleQueue;
 	bool showDebugInfo, showLightSphere;
-	char keys[7] = { '1', '2', '3', '4', '8', '9', '0' };
-	double bulletBounceTime, debugBounceTime, lightBounceTime, timeSinceLastObstacle, spaceBounceTime,enterBounceTime;
+	double bulletBounceTime, debugBounceTime, lightBounceTime, timeSinceLastObstacle, spaceBounceTime, enterBounceTime, cullBounceTime, polyBounceTime;
 	double CalcFrameRate() const;
 	float survivalTime;
 	int p1BombCharge,p2BombCharge;
