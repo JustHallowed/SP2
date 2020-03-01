@@ -1612,8 +1612,7 @@ void MotorScene::animateNpc(int instance)
 	Vector3 objectFront = Vector3(sin(Math::DegreeToRadian(object[instance].getAngle().y)), 0,
 		cos(Math::DegreeToRadian(-object[instance].getAngle().y))).Normalized();
 	float angle = object[instance].getAngle(objectToPlayer, objectFront) * 180 / 3.14159f;
-	if (instance == 36)
-	std::cout << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl << angle;
+
 	if (interacted[instance])
 	{
 		object[instance].addRotation(angle - 5, 'y');
