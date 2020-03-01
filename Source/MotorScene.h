@@ -10,7 +10,6 @@
 #include "Menu.h"
 #include "IdleCamera.h"
 
-
 class MotorScene final: public Scene{
 	enum class MESH {
 		HITBOXWHITE, HITBOXRED, BULLET, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN,

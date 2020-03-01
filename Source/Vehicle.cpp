@@ -1,8 +1,5 @@
 #include "Vehicle.h"
 
-int count;
-const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
-
 Vehicle::Vehicle()
 {
 	object = nullptr;
@@ -52,8 +49,10 @@ void Vehicle::update(double dt)
 		movementDir = object->getVelocity().Normalized();
 
 	keyPress[0] = keyPress[1] = keyPress[2] = keyPress[3] = keyPress[4] = keyPress[5] = false;
-
 	object->setAcceleration(0, 0, 0);
+
+	int count;
+	const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &count);
 
 	//sets keypress boolean
 	if(Application::IsKeyPressed(keyCode[FRONT_KEY])){
@@ -155,17 +154,17 @@ void Vehicle::update(double dt)
 			}
 		}
 
-		if (keyPress[BACK_KEY] && !disabledKey[BACK_KEY])//accelerate back
+		if (keyPress[BACK_KEY] && !disabledKey[BACK_KEY]) //accelerate back
 		{
 			object->setAcceleration(object->getAcceleration() - (front * accelerationConstant * 2));
 			keyPressed = true;
 		}
-		if (keyPress[UP_KEY] && !disabledKey[UP_KEY])//accelerate up
+		if (keyPress[UP_KEY] && !disabledKey[UP_KEY]) //accelerate up
 		{
 			object->setAcceleration(object->getAcceleration() + (Vector3(0, 1, 0) * accelerationConstant * 1.5));
 			keyPressed = true;
 		}
-		if (keyPress[DOWN_KEY] && !disabledKey[DOWN_KEY])//accelerate down
+		if (keyPress[DOWN_KEY] && !disabledKey[DOWN_KEY]) //accelerate down
 		{
 			object->setAcceleration(object->getAcceleration() + (Vector3(0, -1, 0) * accelerationConstant));
 			keyPressed = true;

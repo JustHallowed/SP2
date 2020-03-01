@@ -7,7 +7,7 @@
 #include "Object.h"
 #include "Vehicle.h"
 
-class GameScene final : public Scene {
+class GameScene final: public Scene {
 	enum class MESH {
 		REDHITBOX, LEFT, RIGHT, FRONT, BACK, TOP, BOTTOM, LIGHT_SPHERE, TEXT_ON_SCREEN, UFO_BASE, UFO_PURPLE, UFO_RED, UFO_BLUE, UFO_PINK, PLATFORM, HEALTHBAR, NUM_GEOMETRY
 	};
